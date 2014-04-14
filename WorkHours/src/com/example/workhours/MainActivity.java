@@ -1,7 +1,13 @@
 package com.example.workhours;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.zip.Inflater;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -16,12 +22,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
+import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
+	CalendarView calendar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,8 +42,25 @@ public class MainActivity extends FragmentActivity {
 				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+	}	
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		
+		Intent shiftData = getIntent();
+		Calendar dateFrom = (Calendar) shiftData.getSerializableExtra("DATEFROM");
+		Calendar dateTo = (Calendar) shiftData.getSerializableExtra("DATETO");
+		
+		try{
+			Toast.makeText(getApplicationContext(), "From:"+dateFrom.toString(), Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), "To:"+dateTo.toString(), Toast.LENGTH_LONG).show();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -52,7 +79,7 @@ public class MainActivity extends FragmentActivity {
 				Fragment fragment = null;
 				switch(position){
 				case 0:
-					fragment = new AddShiftFragment();
+					fragment = new ShiftFragment();
 					break;
 				case 1:
 					fragment = new DebtFragment();
@@ -88,15 +115,8 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-	/**
-	 * A dummy fragment representing a section of the app, but that simply
-	 * displays dummy text.
-	 */
 	public static class DummySectionFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
+
 		public static final String ARG_SECTION_NUMBER = "section_number";
 
 		public DummySectionFragment() {
@@ -115,15 +135,39 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 	
-	public static class AddShiftFragment extends Fragment{
-		public AddShiftFragment(){}
+	public static class ShiftFragment extends Fragment{
+		CalendarView calendar;
 		
+		public ShiftFragment(){}
+				
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState){
-			
+
 			return inflater.inflate(R.layout.fragment_add_shift, container, false);
 		}
+		
+		@Override
+	    public void onActivityCreated(Bundle savedInstanceState)
+	    {
+	        super.onActivityCreated(savedInstanceState);
+	        
+	        //View rootView = getView().findViewById(R.layout.fragment_add_shift);
+			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
+			calendar.setOnDateChangeListener(new OnDateChangeListener(){
+				
+				@Override
+				public void onSelectedDayChange(CalendarView view, int year,
+						int month, int dayOfMonth) {
+					Intent intent = new Intent(getActivity(), ShiftActivity.class);
+					intent.putExtra("YEAR", year);
+					intent.putExtra("MONTH", month);
+					intent.putExtra("DAY", dayOfMonth);
+					Log.d("DAY CHANGED", "aaaaaaaaa");
+					startActivity(intent);
+				}			
+			});
+	    }
 	}
 	
 	public static class DebtFragment extends Fragment{
