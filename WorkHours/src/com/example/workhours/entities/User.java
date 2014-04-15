@@ -10,6 +10,7 @@ public class User {
 	private String passHash;
 	private double hourlyWage;
 	private double tax;
+	 
 	
 	public User() {}
 	
@@ -26,7 +27,7 @@ public class User {
 		hourlyWage = hWage;
 		this.tax = tax;
 		
-		password = PasswordHash.hash(password);
+		this.passHash = PasswordHash.hash(password);
 		
 	}
 	
@@ -77,6 +78,11 @@ public class User {
 	public void setEmployerEmail(String employerEmail) {
 		
 		this.employerEmail = employerEmail;
+	}
+	
+	public String toString() {
+		
+		return name + ";" + email + ";" + passHash + ";" + employerEmail + ";" + hourlyWage + ";" + tax;
 	}
 	
 	

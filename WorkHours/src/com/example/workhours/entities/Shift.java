@@ -1,7 +1,6 @@
 package com.example.workhours.entities;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class Shift{
 	private long id;

@@ -63,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/section_label"
         android:layout_alignParentBottom="true"
+        android:onClick="signUp"
         android:layout_marginBottom="28dp"
         android:text="@string/sign_up" />
 

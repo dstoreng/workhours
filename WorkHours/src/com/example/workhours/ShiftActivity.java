@@ -1,20 +1,14 @@
 package com.example.workhours;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
 import com.example.workhours.entities.Shift;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract.Events;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;

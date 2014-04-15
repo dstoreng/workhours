@@ -1,25 +1,18 @@
 package com.example.workhours;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.zip.Inflater;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CalendarView;
@@ -27,7 +20,13 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.workhours.dao.UserDAO;
+import com.example.workhours.dao.UserDAOImpl;
+import com.example.workhours.entities.User;
+
 public class MainActivity extends FragmentActivity {
+	
+	private UserDAO dao;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -36,13 +35,28 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.d("Entered", "MainActivity");
+		
 		setContentView(R.layout.activity_main);
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-	}	
+		
+		dao = new UserDAOImpl(this);
+		dao.open();
+		
+		User user = dao.getUser();
+		
+		if(user != null)
+			Log.d("User account successfully created", user.toString());
+		else
+			Log.d("User creation failed", "OMG");
+	}
+	
+	
 	
 	@Override
 	protected void onResume(){
@@ -52,6 +66,8 @@ public class MainActivity extends FragmentActivity {
 		Calendar dateFrom = (Calendar) shiftData.getSerializableExtra("DATEFROM");
 		Calendar dateTo = (Calendar) shiftData.getSerializableExtra("DATETO");
 		
+		dao.open();
+		
 		try{
 			Toast.makeText(getApplicationContext(), "From:"+dateFrom.toString(), Toast.LENGTH_LONG).show();
 			Toast.makeText(getApplicationContext(), "To:"+dateTo.toString(), Toast.LENGTH_LONG).show();
@@ -60,6 +76,12 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 	}
+	
+	@Override
+	  protected void onPause() {
+	    dao.close();
+	    super.onPause();
+	  }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
