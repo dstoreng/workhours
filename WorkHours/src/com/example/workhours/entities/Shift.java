@@ -1,18 +1,19 @@
 package com.example.workhours.entities;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import android.util.Log;
 
-public class Shift{
+public class Shift implements Serializable{
+
+	private static final long serialVersionUID = 1L;
 	private long id;
 	private Calendar from;
 	private Calendar to;
-	private double wage;
 	private long hours;
-	private boolean weekly;
 	private boolean notify;
 	private boolean repeat;
 	
@@ -46,16 +47,8 @@ public class Shift{
 		return to;
 	}
 
-	public double getWage() {
-		return wage;
-	}
-
 	public double getHours() {
 		return hours;
-	}
-
-	public boolean isWeekly() {
-		return weekly;
 	}
 
 	public long getId() {

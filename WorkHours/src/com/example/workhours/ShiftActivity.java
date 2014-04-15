@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
+import com.example.workhours.entities.CustomObject;
 import com.example.workhours.entities.Shift;
 
 import android.net.Uri;
@@ -48,20 +49,18 @@ public class ShiftActivity extends Activity {
 
 		dao.addCalendarEvent(calEvent);
 
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("DATEFROM", dateFrom);
-		intent.putExtra("DATETO", dateTo);
+		Intent intent = new Intent(this, MainActivity.class);	
 		startActivity(intent);
 	}
 
 	public void retrieveData() {
-		// Retrieve data from windows
+		// Retrieve data from fragment
 		Intent i = getIntent();
 		// Date first
-		day = (Integer) i.getSerializableExtra("DAY");
-		month = (Integer) i.getSerializableExtra("MONTH");
-		year = (Integer) i.getSerializableExtra("YEAR");
-
+		long longDate = (Long) i.getSerializableExtra("DATE");
+		Calendar dateObject = Calendar.getInstance();
+		dateObject.setTimeInMillis(longDate);	
+		
 		// Time from
 		fromHour = from.getCurrentHour();
 		fromMin = from.getCurrentMinute();
@@ -70,10 +69,12 @@ public class ShiftActivity extends Activity {
 		toHour = to.getCurrentHour();
 		toMin = to.getCurrentMinute();
 
-		dateFrom = Calendar.getInstance();
-		dateFrom.set(year, month, day, fromHour, fromMin);	
-		dateTo = Calendar.getInstance();
-		dateTo.set(year, month, day, toHour, toMin);
+		dateFrom = dateObject;
+		dateFrom.set(Calendar.HOUR, fromHour);
+		dateFrom.set(Calendar.MINUTE, fromMin);
+		dateTo = dateObject;
+		dateTo.set(Calendar.HOUR, toHour);
+		dateTo.set(Calendar.MINUTE, toMin);
 		
 		//Ensure that the times are "even" before comparing further
 		dateFrom.set(Calendar.SECOND, 0);
