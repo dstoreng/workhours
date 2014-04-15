@@ -2,10 +2,7 @@ package com.example.workhours.entities;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import android.util.Log;
 
 public class Shift implements Serializable{
 
@@ -26,6 +23,8 @@ public class Shift implements Serializable{
 		this.hours = findHours();
 	}
 	
+	public Shift() {}
+
 	public long findHours(){
 		return TimeUnit.MILLISECONDS.toHours(Math.abs
 				(from.getTimeInMillis() - to.getTimeInMillis()));
@@ -53,6 +52,22 @@ public class Shift implements Serializable{
 
 	public long getId() {
 		return id;
+	}
+	
+	public void setFrom(Calendar from) {
+		this.from = from;
+	}
+
+	public void setTo(Calendar to) {
+		this.to = to;
+	}
+
+	public void setNotify(boolean notify) {
+		this.notify = notify;
+	}
+
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
 	}
 	/*
 	public long getFromMilliseconds(){
