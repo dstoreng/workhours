@@ -1,7 +1,18 @@
 package com.example.workhours.entities;
 
-import android.content.ContentResolver;
+import java.util.List;
 
 public interface CalendarDAO {
-	public long addCalendarEvent(Shift shift);
+	
+	/**
+	 * Add new event to android calendar.
+	 * 
+	 * Id is stored @List<Long> in DAOImpl
+	 */
+	public void addCalendarEvent(Shift shift);
+	
+	/**
+	 * Returns the unique id of all added events.
+	 */
+	public List<Long> getAddedEventsId();
 }

@@ -2,6 +2,7 @@ package com.example.workhours;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
@@ -26,6 +27,7 @@ public class ShiftActivity extends Activity {
 	private TimePicker from, to;
 	private CheckBox notify, repeat;
 	private CalendarDAO dao;
+	private Shift calEvent;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +46,6 @@ public class ShiftActivity extends Activity {
 		getHandles();
 		retrieveData();
 
-		Shift calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
 		dao.addCalendarEvent(calEvent);
 
 		Intent intent = new Intent(this, MainActivity.class);
@@ -70,20 +71,22 @@ public class ShiftActivity extends Activity {
 		toMin = to.getCurrentMinute();
 
 		dateFrom = Calendar.getInstance();
-		dateFrom.set(year, month, day, fromHour, fromMin);
+		dateFrom.set(year, month, day, fromHour, fromMin);	
 		dateTo = Calendar.getInstance();
 		dateTo.set(year, month, day, toHour, toMin);
-		/*
-		 * String dateFromNonLocalized = year+"-"+month+"-"+day +
-		 * " "+fromHour+":"+fromMin; String dateToNonLocalized =
-		 * year+"-"+month+"-"+day + " "+toHour+":"+toMin; SimpleDateFormat
-		 * dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm",
-		 * Locale.getDefault());
-		 * 
-		 * try { dateFrom = dateformat.parse(dateFromNonLocalized); dateTo =
-		 * dateformat.parse(dateToNonLocalized); } catch (ParseException e) {
-		 * Log.d("Parse error", "simpledateformat wtf"); }
-		 */
+		
+		//Ensure that the times are "even" before comparing further
+		dateFrom.set(Calendar.SECOND, 0);
+		dateFrom.set(Calendar.MILLISECOND, 0);
+		dateTo.set(Calendar.SECOND, 0);
+		dateTo.set(Calendar.MILLISECOND, 0);
+		
+		if(dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()){
+			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
+			dateTo.set(year, month, day+1, toHour, toMin);
+		}
+				
+		calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
 	}
 
 	public void getHandles() {
@@ -93,34 +96,5 @@ public class ShiftActivity extends Activity {
 		notify = (CheckBox) findViewById(R.id.notifyBox);
 		dao = new CalendarDAOImpl(getContentResolver());
 	}
-/*
-	public void addCalendarEvent(Shift shift) {
-		TimeZone timeZone = TimeZone.getDefault();
 
-		Intent intent = new Intent(Intent.ACTION_INSERT);
-		intent.setType("vnd.android.cursor.item/event");
-		ContentResolver cr = getContentResolver();
-		ContentValues values = new ContentValues();
-		
-		/*
-		 * TODO Needs some work
-		 
-		values.put(Events.DTSTART, dateFrom.getTimeInMillis());
-		values.put(Events.DTEND, dateTo.getTimeInMillis());
-		values.put(Events.TITLE, "Virker den lol?");
-		values.put(Events.DESCRIPTION, "Working hours application..");
-		//values.put(Events.HAS_ALARM, shift.isNotify());
-		if(shift.isRepeat())
-		{
-			values.put(Events.RRULE, "FREQ=DAILY;COUNT=10");
-		}
-		values.put(Events.CALENDAR_ID, 1);
-		values.put(Events.EVENT_TIMEZONE, timeZone.getID());
-		Uri uri = cr.insert(Events.CONTENT_URI, values);
-
-		// Should save this somewhere..
-		long eventID = Long.parseLong(uri.getLastPathSegment());
-
-	}
-*/
 }

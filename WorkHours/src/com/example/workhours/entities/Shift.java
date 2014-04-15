@@ -2,25 +2,19 @@ package com.example.workhours.entities;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import android.util.Log;
 
 public class Shift{
 	private long id;
 	private Calendar from;
 	private Calendar to;
 	private double wage;
-	private double hours;
+	private long hours;
 	private boolean weekly;
 	private boolean notify;
 	private boolean repeat;
-
-	public Shift(Calendar from, Calendar to, double hours, double wage, boolean weekly){
-		this.id = from.getTimeInMillis() + to.getTimeInMillis();
-		this.from = from;
-		this.to = to;
-		this.hours = hours;
-		this.wage = wage;
-		this.weekly = weekly;
-	}
 	
 	public Shift(Calendar from, Calendar to, boolean repeats, boolean notify){
 		this.id = from.getTimeInMillis() + to.getTimeInMillis();
@@ -28,6 +22,12 @@ public class Shift{
 		this.to = to;
 		this.notify = notify;
 		this.repeat = repeats;
+		this.hours = findHours();
+	}
+	
+	public long findHours(){
+		return TimeUnit.MILLISECONDS.toHours(Math.abs
+				(from.getTimeInMillis() - to.getTimeInMillis()));
 	}
 	
 	public boolean isNotify() {

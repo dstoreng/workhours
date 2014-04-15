@@ -1,5 +1,7 @@
 package com.example.workhours.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimeZone;
 
 import android.content.ContentResolver;
@@ -10,13 +12,18 @@ import android.provider.CalendarContract.Events;
 
 public class CalendarDAOImpl implements CalendarDAO {
 	private ContentResolver cr;
+	private List<Long> list;
 	
 	public CalendarDAOImpl(ContentResolver cr){
 		this.cr = cr;
+		list = new ArrayList<Long>();
 	}
 	
-	@Override
-	public long addCalendarEvent(Shift shift) {
+	public List<Long> getAddedEventsId(){
+		return list;
+	}
+	
+	public void addCalendarEvent(Shift shift) {
 		TimeZone timeZone = TimeZone.getDefault();
 
 		Intent intent = new Intent(Intent.ACTION_INSERT);
@@ -39,9 +46,9 @@ public class CalendarDAOImpl implements CalendarDAO {
 		Uri uri = cr.insert(Events.CONTENT_URI, values);
 
 		// Should save this somewhere..
-		return Long.parseLong(uri.getLastPathSegment());
-
-		
+		list.add(Long.parseLong(uri.getLastPathSegment()));		
 	}
+	
+	
 
 }
