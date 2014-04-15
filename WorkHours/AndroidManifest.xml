@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.workhours.MainActivity"
+            android:name="com.example.workhours.InitScreenActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,19 +27,19 @@
         </activity>
         <activity
             android:name="com.example.workhours.ShiftFragment"
-            android:label="@string/title_activity_shift" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.example.workhours.ShiftActivity"
-            android:label="@string/title_activity_shift" >
+            android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.workhours.InitScreenActivity"
-            android:label="@string/title_activity_init_screen" >
+            android:name="com.example.workhours.MainActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.example.workhours.LoginOptionsActivity"
-            android:label="@string/title_activity_login_options" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,19 +48,19 @@
         </activity>
         <activity
             android:name="com.example.workhours.SignUpOptionsActivity"
-            android:label="@string/title_activity_sign_up_options" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.example.workhours.SignUpEmailActivity"
-            android:label="@string/title_activity_sign_up_email" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.example.workhours.Login"
-            android:label="@string/title_activity_login" >
+            android:label="@string/app_name" >
         </activity>
         <activity
             android:name="com.example.workhours.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/app_name" >
         </activity>
     </application>
 
