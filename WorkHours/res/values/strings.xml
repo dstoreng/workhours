@@ -42,6 +42,5 @@
     <string name="title_activity_login_options">LoginOptionsActivity</string>
     <string name="title_activity_sign_up_options">SignUpOptionsActivity</string>
     <string name="title_activity_sign_up_email">SignUpEmailActivity</string>
-    <string name="title_activity_login">Login</string>
 
 </resources>
