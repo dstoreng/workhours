@@ -31,9 +31,37 @@
         </activity>
         <activity
             android:name="com.example.workhours.ShiftActivity"
-            android:label="@string/title_activity_shift">
+            android:label="@string/title_activity_shift" >
+        </activity>
+        <activity
+            android:name="com.example.workhours.InitScreenActivity"
+            android:label="@string/title_activity_init_screen" >
+        </activity>
+        <activity
+            android:name="com.example.workhours.LoginOptionsActivity"
+            android:label="@string/title_activity_login_options" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.workhours.SignUpOptionsActivity"
+            android:label="@string/title_activity_sign_up_options" >
+        </activity>
+        <activity
+            android:name="com.example.workhours.SignUpEmailActivity"
+            android:label="@string/title_activity_sign_up_email" >
+        </activity>
+        <activity
+            android:name="com.example.workhours.Login"
+            android:label="@string/title_activity_login" >
+        </activity>
+        <activity
+            android:name="com.example.workhours.LoginActivity"
+            android:label="@string/title_activity_login" >
         </activity>
     </application>
 
 </manifest>
-
