@@ -1,5 +1,7 @@
 package com.example.workhours.entities;
 
+import android.content.ContentResolver;
+
 public interface CalendarDAO {
-	public void addCalendarEvent(Shift shift);
+	public long addCalendarEvent(Shift shift);
 }

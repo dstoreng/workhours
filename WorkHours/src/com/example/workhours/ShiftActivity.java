@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import com.example.workhours.entities.CalendarDAO;
+import com.example.workhours.entities.CalendarDAOImpl;
 import com.example.workhours.entities.Shift;
 
 import android.net.Uri;
@@ -19,11 +20,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TimePicker;
 
-public class ShiftActivity extends Activity implements CalendarDAO {
+public class ShiftActivity extends Activity {
 	private int day, month, year, fromHour, fromMin, toHour, toMin;
 	private Calendar dateFrom, dateTo;
 	private TimePicker from, to;
 	private CheckBox notify, repeat;
+	private CalendarDAO dao;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,15 +44,9 @@ public class ShiftActivity extends Activity implements CalendarDAO {
 		getHandles();
 		retrieveData();
 
-		Log.d("Date from:-----", dateFrom.toString());
-		Log.d("Date TO:-----", dateTo.toString());
-		/*
-		 * Insert into Android calendar
-		 */
-
 		Shift calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
-		addCalendarEvent(calEvent);
-		// //////////////////////////////
+		dao.addCalendarEvent(calEvent);
+
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("DATEFROM", dateFrom);
 		intent.putExtra("DATETO", dateTo);
@@ -95,8 +91,9 @@ public class ShiftActivity extends Activity implements CalendarDAO {
 		to = (TimePicker) findViewById(R.id.shiftTo);
 		repeat = (CheckBox) findViewById(R.id.repeatsBox);
 		notify = (CheckBox) findViewById(R.id.notifyBox);
+		dao = new CalendarDAOImpl(getContentResolver());
 	}
-
+/*
 	public void addCalendarEvent(Shift shift) {
 		TimeZone timeZone = TimeZone.getDefault();
 
@@ -107,7 +104,7 @@ public class ShiftActivity extends Activity implements CalendarDAO {
 		
 		/*
 		 * TODO Needs some work
-		 */
+		 
 		values.put(Events.DTSTART, dateFrom.getTimeInMillis());
 		values.put(Events.DTEND, dateTo.getTimeInMillis());
 		values.put(Events.TITLE, "Virker den lol?");
@@ -125,5 +122,5 @@ public class ShiftActivity extends Activity implements CalendarDAO {
 		long eventID = Long.parseLong(uri.getLastPathSegment());
 
 	}
-
+*/
 }
