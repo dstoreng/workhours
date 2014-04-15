@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity$AddShiftFragment" >
+
+   	<Button
+   	    android:id="@+id/shiftOk"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignLeft="@+id/shiftTo"
+   	    android:layout_alignParentBottom="true"
+   	    android:layout_alignRight="@+id/shiftTo"
+   	    android:text="@string/button_save_shift" 
+   	    android:onClick="saveShift"/>
+
+   	<TimePicker
+   	    android:id="@+id/shiftFrom"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_below="@+id/textShiftFrom"
+   	    android:layout_centerHorizontal="true" />
+
+   	<TextView
+   	    android:id="@+id/textShiftFrom"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignParentTop="true"
+   	    android:layout_centerHorizontal="true"
+   	    android:text="@string/description_shift_from"
+   	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+   	<TextView
+   	    android:id="@+id/textShiftTo"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_below="@+id/shiftFrom"
+   	    android:layout_centerHorizontal="true"
+   	    android:text="@string/description_shift_to"
+   	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+   	<TimePicker
+   	    android:id="@+id/shiftTo"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_below="@+id/textShiftTo"
+   	    android:layout_centerHorizontal="true" />
+
+   	<CheckBox
+   	    android:id="@+id/repeatsBox"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignLeft="@+id/shiftTo"
+   	    android:layout_below="@+id/shiftTo"
+   	    android:text="@string/box_repeats" />
+
+   	<CheckBox
+   	    android:id="@+id/notifyBox"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:layout_alignLeft="@+id/repeatsBox"
+   	    android:layout_below="@+id/repeatsBox"
+   	    android:text="@string/box_notify" />
+
+</RelativeLayout>
