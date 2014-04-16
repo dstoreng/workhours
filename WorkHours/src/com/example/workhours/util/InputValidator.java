@@ -8,11 +8,12 @@ public class InputValidator {
 	private static final String EMAIL_PATTERN = 
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	/*
-	public InputValidator() {
-		pattern = Pattern.compile(EMAIL_PATTERN);
-	}*/
 	
+	private static final String PASSWORD_PATTERN = 
+            "((?=.*\\d)(?=.*[a-z]).{8,20})";
+	
+//	"((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{8,20})";
+
 	public static boolean email(final String hex) {
 		
 		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
@@ -22,8 +23,11 @@ public class InputValidator {
  
 	}
 	
-	public static int password(final String pass) {
+	public static boolean passwordStrength(final String passw) {
 		
-		return pass.length();
+		Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+		Matcher matcher = pattern.matcher(passw);
+		matcher = pattern.matcher(passw);
+		return matcher.matches();
 	}
 }

@@ -32,21 +32,23 @@ public class InitScreenActivity extends Activity {
 		SharedPreferences.Editor editor = preferences.edit(); 
 	
 	//  editor.putString("user", user.getName());
-		editor.putString("user", null);
+		editor.clear();
+	//	editor.putString("user", null);
 		editor.commit();
 		
 		
 		
 		//If user has existing account, go to main page 
-//		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String existingAccount = preferences2.getString("user", null);
 		
 		if(existingAccount != null){
+			
 			Log.d("account", "exists");
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
-		} else { Log.d("yolo", "yolo hard"); }
+			
+		} 
 	}
 
 	@Override

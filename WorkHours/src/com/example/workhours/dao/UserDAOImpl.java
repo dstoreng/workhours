@@ -55,8 +55,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
 		
 		database.insert(UserOpenHelper.TABLE_USER, null, values);
-		
-		database.close();
+
 	}
 
 	@Override
@@ -76,9 +75,11 @@ public class UserDAOImpl implements UserDAO {
 		if (cursor != null)
 	        cursor.moveToFirst();			
 		
+		
 		user = cursorToUser(cursor);
 		
-		cursor.close();
+		if(cursor != null && !cursor.isClosed())
+		    cursor.close();
 		
 		return user;
 	}

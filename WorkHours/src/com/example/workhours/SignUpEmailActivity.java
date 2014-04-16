@@ -53,11 +53,11 @@ public class SignUpEmailActivity extends Activity {
 		else if(password.matches("") || password2.matches(""))
 			Toast.makeText(this, "Enter password", Toast.LENGTH_SHORT).show();
 		
-		else if(InputValidator.password(password) < 8)
-			Toast.makeText(this, "Password should have more than 8 characters", Toast.LENGTH_SHORT).show();
-		
 		else if(!password.equals(password2))
 			Toast.makeText(this, "Password mismatch", Toast.LENGTH_SHORT).show();
+		
+		else if(InputValidator.passwordStrength(password) == false)
+			Toast.makeText(this, "Password should have more than 8 characters and at least one digit", Toast.LENGTH_SHORT).show();
 		
 		else 
 			user = new User(username, email, password);
@@ -93,7 +93,7 @@ public class SignUpEmailActivity extends Activity {
 		
 		fieldUsername  = (EditText) findViewById(R.id.name);
 		fieldEmail     = (EditText) findViewById(R.id.email_address);
-		fieldPassword   = (EditText) findViewById(R.id.password);
+		fieldPassword  = (EditText) findViewById(R.id.password);
 		fieldPassword2 = (EditText) findViewById(R.id.password2);
 	}
 	
