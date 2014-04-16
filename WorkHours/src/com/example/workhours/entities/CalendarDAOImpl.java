@@ -32,14 +32,14 @@ public class CalendarDAOImpl implements CalendarDAO {
 		/*
 		 * TODO Needs some work
 		 */
-		values.put(Events.DTSTART, shift.getFrom().getTimeInMillis());
-		values.put(Events.DTEND, shift.getTo().getTimeInMillis());
-		values.put(Events.TITLE, "Virker den lol?");
+		values.put(Events.DTSTART, shift.getFrom());
+		values.put(Events.DTEND, shift.getTo());
+		values.put(Events.TITLE, "Working hours");
 		values.put(Events.DESCRIPTION, "Working hours application..");
 		//values.put(Events.HAS_ALARM, shift.isNotify());
 		if(shift.isRepeat())
 		{
-			values.put(Events.RRULE, "FREQ=DAILY;COUNT=10");
+			values.put(Events.RRULE, "FREQ=DAILY;COUNT=2");
 		}
 		values.put(Events.CALENDAR_ID, 1);
 		values.put(Events.EVENT_TIMEZONE, timeZone.getID());

@@ -50,6 +50,10 @@ public class ShiftActivity extends Activity {
 		dao.addCalendarEvent(calEvent);
 
 		Intent intent = new Intent(this, MainActivity.class);	
+		long hh = calEvent.getHours();
+		String hoursString = Long.toString(hh);
+		
+		intent.putExtra("HOURS", hoursString);
 		startActivity(intent);
 	}
 
@@ -60,6 +64,8 @@ public class ShiftActivity extends Activity {
 		long longDate = (Long) i.getSerializableExtra("DATE");
 		Calendar dateObject = Calendar.getInstance();
 		dateObject.setTimeInMillis(longDate);	
+
+		calEvent = new Shift();
 		
 		// Time from
 		fromHour = from.getCurrentHour();
@@ -70,11 +76,14 @@ public class ShiftActivity extends Activity {
 		toMin = to.getCurrentMinute();
 
 		dateFrom = dateObject;
-		dateFrom.set(Calendar.HOUR, fromHour);
+		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
 		dateFrom.set(Calendar.MINUTE, fromMin);
+		calEvent.setFrom(dateFrom.getTimeInMillis());
+		
 		dateTo = dateObject;
-		dateTo.set(Calendar.HOUR, toHour);
+		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
 		dateTo.set(Calendar.MINUTE, toMin);
+		calEvent.setTo(dateTo.getTimeInMillis());
 		
 		//Ensure that the times are "even" before comparing further
 		dateFrom.set(Calendar.SECOND, 0);
@@ -86,8 +95,11 @@ public class ShiftActivity extends Activity {
 			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
 			dateTo.set(year, month, day+1, toHour, toMin);
 		}
-				
-		calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
+		
+		
+		Log.d("Date from.:,.-'¨'-.,", Long.toString(calEvent.getFrom()));
+		Log.d("Date to.:,.-'¨'-.,", Long.toString(calEvent.getTo()));
+		//calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
 	}
 
 	public void getHandles() {

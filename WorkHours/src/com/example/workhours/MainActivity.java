@@ -2,9 +2,9 @@ package com.example.workhours;
 
 import java.util.Calendar;
 import java.util.Date;
+
 import java.util.List;
 import java.util.Locale;
-import java.util.zip.Inflater;
 
 import com.example.workhours.entities.Shift;
 
@@ -12,6 +12,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import com.example.workhours.entities.SharedPrefs;
+import com.example.workhours.entities.Shift;
+
+import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,13 +23,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class MainActivity extends FragmentActivity {
 				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
 	}	
 	
 	@Override
@@ -58,12 +60,12 @@ public class MainActivity extends FragmentActivity {
 		super.onResume();
 		
 		Intent shiftData = getIntent();
-		Calendar dateFrom = (Calendar) shiftData.getSerializableExtra("DATEFROM");
-		Calendar dateTo = (Calendar) shiftData.getSerializableExtra("DATETO");
-		
 		try{
-			Toast.makeText(getApplicationContext(), "From:"+dateFrom.toString(), Toast.LENGTH_LONG).show();
-			Toast.makeText(getApplicationContext(), "To:"+dateTo.toString(), Toast.LENGTH_LONG).show();
+			String intentHours = (String) shiftData.getSerializableExtra("HOURS");
+			SharedPrefs prefs = new SharedPrefs(this);
+			prefs.addHours(Long.parseLong(intentHours));
+			Log.d("HOURS!!", intentHours);
+			Toast.makeText(getApplicationContext(), "Hours: " + intentHours, Toast.LENGTH_LONG).show();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -164,6 +166,13 @@ public class MainActivity extends FragmentActivity {
 	    public void onActivityCreated(Bundle savedInstanceState)
 	    {
 	        super.onActivityCreated(savedInstanceState);
+	        
+	        
+	        TextView hourText = (TextView) getView().findViewById(R.id.displayHoursText);
+	        SharedPrefs prefs = new SharedPrefs(getActivity());
+	        double scheduledHours = prefs.getHours();
+	        Log.d("HOURS SCHEDULED", Double.toString(scheduledHours));
+	        hourText.append(" -- " + scheduledHours);
 	        
 	        //View rootView = getView().findViewById(R.layout.fragment_add_shift);
 			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);

@@ -2,33 +2,31 @@ package com.example.workhours.entities;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
-
-import android.util.Log;
 
 public class Shift implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private long id;
-	private Calendar from;
-	private Calendar to;
 	private long hours;
+
+	private long from;
+	private long to;
 	private boolean notify;
 	private boolean repeat;
 	
-	public Shift(Calendar from, Calendar to, boolean repeats, boolean notify){
-		this.id = from.getTimeInMillis() + to.getTimeInMillis();
+	public Shift(long from, long to, boolean repeats, boolean notify){
+		this.id = from + to;
 		this.from = from;
 		this.to = to;
 		this.notify = notify;
 		this.repeat = repeats;
-		this.hours = findHours();
 	}
 	
-	public long findHours(){
-		return TimeUnit.MILLISECONDS.toHours(Math.abs
-				(from.getTimeInMillis() - to.getTimeInMillis()));
+	public Shift() {}
+
+	private long findHours(){
+		return TimeUnit.MILLISECONDS.toHours(Math.abs(from-to));
 	}
 	
 	public boolean isNotify() {
@@ -39,20 +37,36 @@ public class Shift implements Serializable{
 		return repeat;
 	}
 	
-	public Calendar getFrom() {
+	public long getFrom() {
 		return from;
 	}
 
-	public Calendar getTo() {
+	public long getTo() {
 		return to;
 	}
 
-	public double getHours() {
-		return hours;
+	public long getHours() {
+		return findHours();
 	}
 
 	public long getId() {
 		return id;
+	}
+	
+	public void setFrom(long from) {
+		this.from = from;
+	}
+
+	public void setTo(long to) {
+		this.to = to;
+	}
+
+	public void setNotify(boolean notify) {
+		this.notify = notify;
+	}
+
+	public void setRepeat(boolean repeat) {
+		this.repeat = repeat;
 	}
 	/*
 	public long getFromMilliseconds(){
