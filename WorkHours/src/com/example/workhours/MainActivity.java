@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 
 import com.example.workhours.entities.Shift;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
@@ -16,6 +15,7 @@ import com.example.workhours.entities.SharedPrefs;
 import com.example.workhours.entities.Shift;
 
 import android.app.ActionBar.LayoutParams;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -37,7 +37,13 @@ import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.workhours.dao.UserDAO;
+import com.example.workhours.dao.UserDAOImpl;
+import com.example.workhours.entities.User;
+
 public class MainActivity extends FragmentActivity {
+	
+	private UserDAO dao;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -46,20 +52,35 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Log.d("Entered", "MainActivity");
+		
 		setContentView(R.layout.activity_main);
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+
+		dao = new UserDAOImpl(this);
+		dao.open();
 		
-	}	
+		User user = dao.getUser();
+		
+		if(user != null)
+			Log.d("User account successfully created", user.toString());
+		else
+			Log.d("User creation failed", "OMG");
+	}
+	
 	
 	@Override
 	protected void onResume(){
 		super.onResume();
 		
 		Intent shiftData = getIntent();
+		dao.open();
+		
 		try{
 			String intentHours = (String) shiftData.getSerializableExtra("HOURS");
 			SharedPrefs prefs = new SharedPrefs(this);
@@ -71,6 +92,12 @@ public class MainActivity extends FragmentActivity {
 		}
 		
 	}
+	
+	@Override
+	  protected void onPause() {
+	    dao.close();
+	    super.onPause();
+	  }
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

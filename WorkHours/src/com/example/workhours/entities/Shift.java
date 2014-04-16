@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
+
 public class Shift implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -1,7 +1,10 @@
 package com.example.workhours.entities;
 
+<<<<<<< HEAD
 import java.util.List;
 
+=======
+>>>>>>> refs/heads/b2
 public interface CalendarDAO {
 	
 	/**
