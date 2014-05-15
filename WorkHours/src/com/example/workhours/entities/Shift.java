@@ -1,7 +1,6 @@
 package com.example.workhours.entities;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 
@@ -9,7 +8,7 @@ public class Shift implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	private long id;
-	private long hours;
+//	private long hours;
 
 	private long from;
 	private long to;

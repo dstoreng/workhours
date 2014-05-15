@@ -13,36 +13,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <EditText
+        android:id="@+id/login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/login"
+        android:layout_alignLeft="@+id/login"
+        android:ems="10"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword" >
+    </EditText>
+
     <Button
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/section_label"
+        android:layout_alignLeft="@+id/login_email"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="18dp"
+        android:onClick="login"
         android:text="@string/login" />
 
-
-
     <EditText
-        android:id="@+id/editTextPasswordLogin"
+        android:id="@+id/login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/login"
-        android:layout_centerHorizontal="true"
-        android:ems="10"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword" >
-
-        <requestFocus />
-    </EditText>
-
-    <EditText
-        android:id="@+id/editTextEmailLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextPasswordLogin"
-        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/login_password"
+        android:layout_alignLeft="@+id/section_label"
         android:ems="10"
         android:hint="@string/hint_email"
         android:inputType="textEmailAddress" />

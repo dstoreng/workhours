@@ -1,7 +1,10 @@
 package com.example.workhours;
 
+import java.util.List;
+
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
+import com.example.workhours.entities.User;
 import com.example.workhours.util.PageAssister;
 
 import android.os.Bundle;
@@ -23,22 +26,31 @@ public class InitScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_init_screen);
-		
+	
+		/*Debug purposes*/
 		dao = new UserDAOImpl(this);
 		dao.open();
-		dao.dropUser();
+		List<User> users = dao.getUsers();
+		for(User u : users) {
+			
+			Log.d("USER", u.toString());
+		}
 		
+		dao.dropUser();
+		/*
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SharedPreferences.Editor editor = preferences.edit(); 
-	
+		*/
 	//  editor.putString("user", user.getName());
-		editor.clear();
+	//	editor.clear();
 	//	editor.putString("user", null);
-		editor.commit();
+	//	editor.commit();
 		
-		
-		
-		//If user has existing account, go to main page 
+		/**
+		 * If the user has an existing account
+		 * and hasn't logged out since the last session
+		 * The user is navigated to the main page 
+		 * */
 		SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String existingAccount = preferences2.getString("user", null);
 		
@@ -47,7 +59,6 @@ public class InitScreenActivity extends Activity {
 			Log.d("account", "exists");
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
-			
 		} 
 	}
 

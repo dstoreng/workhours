@@ -1,5 +1,7 @@
 package com.example.workhours.entities;
 
+import android.util.Log;
+
 import com.example.workhours.util.PasswordHash;
 
 public class User {
@@ -27,8 +29,10 @@ public class User {
 		hourlyWage = hWage;
 		this.tax = tax;
 		
-		this.passHash = PasswordHash.hash(password);
+		Log.d("PASSWORD IN CLASS:", password);
 		
+		this.passHash = PasswordHash.hash(password);
+
 	}
 	
 	public String getName() {

@@ -1,24 +1,13 @@
 package com.example.workhours;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import java.util.List;
 import java.util.Locale;
 
-import com.example.workhours.entities.Shift;
-import android.app.Activity;
-import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
-import android.content.Context;
-import com.example.workhours.entities.SharedPrefs;
-import com.example.workhours.entities.Shift;
-
-import android.app.ActionBar.LayoutParams;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -27,19 +16,21 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.LinearLayout;
 import android.widget.CalendarView.OnDateChangeListener;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
-import com.example.workhours.entities.User;
+import com.example.workhours.entities.SharedPrefs;
+import com.facebook.Session;
 
 public class MainActivity extends FragmentActivity {
 	
@@ -64,13 +55,14 @@ public class MainActivity extends FragmentActivity {
 
 		dao = new UserDAOImpl(this);
 		dao.open();
-		
+		/*
 		User user = dao.getUser();
 		
 		if(user != null)
 			Log.d("User account successfully created", user.toString());
 		else
 			Log.d("User creation failed", "OMG");
+			*/
 	}
 	
 	
@@ -226,8 +218,8 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public static class EventFragment extends Fragment{
-		private List<Shift> list;
-		private TextView view;
+//		private List<Shift> list;
+	//	private TextView view;
 		
 		private int txtSize = 16;
 		private int color = Color.BLACK;
@@ -297,6 +289,33 @@ public class MainActivity extends FragmentActivity {
 			
 			return inflater.inflate(R.layout.fragment_add_debt, container, false);
 		}
+		
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		if(R.id.action_log_out == item.getItemId()) {
+			
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.clear();
+			editor.commit();
+			
+			Session session = Session.getActiveSession();
+			if(session != null)
+				session.closeAndClearTokenInformation();
+			
+			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
+			startActivity(intent);
+			
+			return true;
+			
+		}else {
+			
+			return super.onOptionsItemSelected(item);
+		}
+		
 		
 	}
 

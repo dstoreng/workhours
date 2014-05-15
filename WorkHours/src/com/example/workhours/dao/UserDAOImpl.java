@@ -1,5 +1,8 @@
 package com.example.workhours.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,11 +11,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.workhours.entities.User;
+import com.example.workhours.util.PasswordHash;
 import com.example.workhours.util.UserOpenHelper;
 
 public class UserDAOImpl implements UserDAO {
 	
 	private SQLiteDatabase database;
+	private List<User> users = new ArrayList<User>();
 	private UserOpenHelper dbHelper;
 	private String[] allColumns =
 		{
@@ -55,7 +60,6 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
 		
 		database.insert(UserOpenHelper.TABLE_USER, null, values);
-
 	}
 
 	@Override
@@ -65,7 +69,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User getUser() {
+	public List<User> getUsers() {
 		
 		User user;
 		
@@ -74,14 +78,18 @@ public class UserDAOImpl implements UserDAO {
 		
 		if (cursor != null)
 	        cursor.moveToFirst();			
-		
-		
-		user = cursorToUser(cursor);
+	
+		while(!cursor.isAfterLast()) {
+			
+			user = cursorToUser(cursor);
+			users.add(user);
+			cursor.moveToNext();
+		}
 		
 		if(cursor != null && !cursor.isClosed())
 		    cursor.close();
-		
-		return user;
+
+		return users;
 	}
 	
 	@Override
@@ -100,6 +108,35 @@ public class UserDAOImpl implements UserDAO {
 		user.setEmployerEmail(cursor.getString(3));
 		user.setHourlyWage(cursor.getDouble(4));
 		user.setTax(cursor.getDouble(5));
+		
+		return user;
+	}
+
+	@Override
+	public User getUser(String email, String pass) {
+		
+		User user;
+		
+		Log.d("SELECT: ", email + ";" + pass);
+		
+		Cursor cursor; 
+		cursor = database.query(
+								UserOpenHelper.TABLE_USER,
+								allColumns, 
+								" email ='" + email + "' AND passw_hash ='" + pass + "'", 
+								null, 
+								null, 
+								null, 
+								null
+								);
+		if (cursor != null)
+	        cursor.moveToFirst();			
+		
+		
+		user = cursorToUser(cursor);
+		
+		if(cursor != null && !cursor.isClosed())
+		    cursor.close();
 		
 		return user;
 	}

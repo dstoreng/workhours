@@ -17,21 +17,20 @@
         android:id="@+id/login_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/login_facebook"
+        android:layout_alignLeft="@+id/section_label"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="18dp"
         android:onClick="buttonClick"
         android:text="@string/login_email" />
 
-    <Button
-        android:id="@+id/login_facebook"
-        style="@style/AppTheme"
-        android:layout_width="match_parent"
+    <com.facebook.widget.LoginButton
+        xmlns:fb="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/login_email"
-        android:onClick="buttonClick"
         android:layout_alignLeft="@+id/section_label"
-        android:text="@string/login_facebook" />
-
+        android:layout_alignRight="@+id/login_email"
+        fb:login_text="Login with Facebook" />
 
 </RelativeLayout>

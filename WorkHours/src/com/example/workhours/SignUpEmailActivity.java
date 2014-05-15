@@ -1,5 +1,7 @@
 package com.example.workhours;
 
+import java.util.List;
+
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
 import com.example.workhours.entities.User;
@@ -64,21 +66,38 @@ public class SignUpEmailActivity extends Activity {
 		
 		if(user != null) {
 			
-			Toast.makeText(this, "Hello " + user.getName(), Toast.LENGTH_SHORT).show();
-			
 			//Stores username in shared preferences 
-		//	SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			SharedPreferences.Editor editor = preferences.edit(); 
-	
-			editor.putString("user", user.getName());
-			editor.commit();
 			
+			/**
+			 * Check if email account already exists 
+			 * */
+			boolean exisitingAccount = false;
 			dao.open();
-			dao.addUser(user);
+			List<User> users = dao.getUsers();
+			for(User u : users) {
+				
+				if(u.getEmail().equals(email)) 
+					exisitingAccount = true;
+			}
 			
-			Intent intent = new Intent(v.getContext(), MainActivity.class);
-			startActivity(intent);
+			if(exisitingAccount) {
+				Toast.makeText(this, "Sorry, it looks like " + email + "belongs to an existing account.", Toast.LENGTH_SHORT).show();
+			
+			} else {
+				
+				editor.putString("user", user.getName());
+				editor.commit();
+				
+				dao.open();
+				dao.addUser(user);
+				
+				Intent intent = new Intent(v.getContext(), MainActivity.class);
+				Toast.makeText(this, "Hello " + user.toString() + ";" + password + ";" + password2, Toast.LENGTH_LONG).show();
+				startActivity(intent);
+				
+			}
 		}
 	}
 
