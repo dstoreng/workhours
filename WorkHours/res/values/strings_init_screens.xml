@@ -12,5 +12,10 @@
    	<string name="hint_re_password">Re enter password</string>
    	<string name="hint_email">Email</string>
    	<string name="hint_name">Name</string>
+   	<string name="log_out">Log out</string>
+   	<string name="app_id">1438259566416199</string>
+   	<string name="dialog_new_account">No existing account found. Would you like to create a new account?</string>
+   	<string name="dialog_new_account_yes">Yes</string>
+   	<string name="dialog_new_account_no">No</string>
     
 </resources>

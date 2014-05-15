@@ -4,7 +4,6 @@ import java.util.Calendar;
 
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
-import com.example.workhours.entities.CustomObject;
 import com.example.workhours.entities.Shift;
 
 import android.os.Bundle;
