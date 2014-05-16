@@ -1,14 +1,22 @@
 package com.example.workhours.entities;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
+import com.tyczj.extendedcalendarview.CalendarProvider;
+import com.tyczj.extendedcalendarview.Event;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract.Events;
+import android.text.format.Time;
+import android.util.Log;
 
 public class CalendarDAOImpl implements CalendarDAO {
 	private ContentResolver cr;
@@ -21,6 +29,51 @@ public class CalendarDAOImpl implements CalendarDAO {
 	
 	public List<Long> getAddedEventsId(){
 		return list;
+	}
+	
+	public List<Shift> getAddedEvents(){
+		List<Shift> li = new ArrayList<Shift>();
+		Cursor cursor = null;
+		Uri uri = CalendarProvider.CONTENT_URI;
+		final String[] projection = new String[] { 
+				CalendarProvider.START, 		//0
+				CalendarProvider.END,			//1
+				CalendarProvider.DESCRIPTION, 	//2
+				CalendarProvider.ID };			//3	
+		/*
+		String selection = CalendarProvider.DESCRIPTION + " = " + "'Working hours application..'";
+		String[] selectionArgs = null;
+		String sortOrder = null;	
+		cursor = cr.query(uri, projection, selection, selectionArgs, sortOrder);
+		*/
+		cursor = cr.query(uri, projection, null, null, null);
+		Log.d("CALENDARPROVIDER - before while", "");
+		
+		while(cursor.moveToNext()){
+			Shift tmp = new Shift();
+			String start = null;
+			String end = null;
+			String desc = null;
+			String id = null;
+			
+			start = cursor.getString(0);
+			end = cursor.getString(1);
+			desc = cursor.getString(2);
+			id = cursor.getString(3);
+			
+			tmp = new Shift(Integer.parseInt(id),
+					Long.parseLong(start),
+					Long.parseLong(end),
+					true, true);
+			
+			tmp.setFrom(Long.parseLong(start));
+			tmp.setTo(Long.parseLong(end));
+			
+			li.add(tmp);
+			Log.d("CALENDARPROVIDER", "Start: "+start+ " End: "+end+ "Description: "+desc);		
+		}
+			
+		return li;
 	}
 	
 	public void addCalendarEvent(Shift shift) {
@@ -36,11 +89,10 @@ public class CalendarDAOImpl implements CalendarDAO {
 		values.put(Events.DTEND, shift.getTo());
 		values.put(Events.TITLE, "Working hours");
 		values.put(Events.DESCRIPTION, "Working hours application..");
-		//values.put(Events.HAS_ALARM, shift.isNotify());
-		if(shift.isRepeat())
-		{
-			values.put(Events.RRULE, "FREQ=DAILY;COUNT=2");
-		}
+		if(shift.isNotify())
+			values.put(Events.HAS_ALARM, shift.isNotify());
+		if(shift.isRepeat())	
+			values.put(Events.RRULE, "FREQ=WEEKLY;COUNT=5");
 		values.put(Events.CALENDAR_ID, 1);
 		values.put(Events.EVENT_TIMEZONE, timeZone.getID());
 		Uri uri = cr.insert(Events.CONTENT_URI, values);
@@ -49,6 +101,29 @@ public class CalendarDAOImpl implements CalendarDAO {
 		list.add(Long.parseLong(uri.getLastPathSegment()));		
 	}
 	
-	
+	public void addExtendedCalendarEvent(Shift shift){
+		Calendar cal = Calendar.getInstance();
+	    TimeZone tz = TimeZone.getDefault();
+		ContentValues values = new ContentValues();
+		
+		values.put(CalendarProvider.COLOR, Event.COLOR_RED);
+	    values.put(CalendarProvider.DESCRIPTION, "Workek");
+	    values.put(CalendarProvider.LOCATION, "Some location");
+	    values.put(CalendarProvider.EVENT, "Event name");   		
+	    values.put(CalendarProvider.START, shift.getFrom());
+	    values.put(CalendarProvider.ID, Integer.toString(shift.getId()));
+	    
+	    //Calculate julian day, required by ExtendedCalendarView
+	    int startDay = Time.getJulianDay(shift.getFrom(), TimeUnit.MILLISECONDS.toSeconds
+	    		(tz.getOffset(cal.getTimeInMillis())));   
+	    int endDay = Time.getJulianDay(shift.getTo(), TimeUnit.MILLISECONDS.toSeconds
+	    		(tz.getOffset(cal.getTimeInMillis())));
+	    
+	    values.put(CalendarProvider.START_DAY, startDay);
+	    values.put(CalendarProvider.END, shift.getTo());
+	    values.put(CalendarProvider.END_DAY, endDay);
 
+	    Uri uri = cr.insert(CalendarProvider.CONTENT_URI, values);
+	}
+	
 }

@@ -1,33 +1,40 @@
 package com.example.workhours.entities;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 
 public class Shift implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private long id;
+	private int id;
 	private long hours;
+	private String dateFormat = "dd.MM.yy - hh:mm";
 
 	private long from;
 	private long to;
 	private boolean notify;
 	private boolean repeat;
 	
-	public Shift(long from, long to, boolean repeats, boolean notify){
-		this.id = from + to;
+	public Shift(int id, long from, long to, boolean repeats, boolean notify){
+		this.id = id;
 		this.from = from;
 		this.to = to;
 		this.notify = notify;
 		this.repeat = repeats;
 	}
 	
-	public Shift() {}
+	public Shift() {
+		Calendar c = Calendar.getInstance();
+		Long time = c.getTimeInMillis();
+		this.id = time.intValue();
+	}
 
 	private long findHours(){
-		return TimeUnit.MILLISECONDS.toHours(Math.abs(from-to));
+		return TimeUnit.MILLISECONDS.toHours(Math.abs(to-from));
 	}
 	
 	public boolean isNotify() {
@@ -50,11 +57,12 @@ public class Shift implements Serializable{
 		return findHours();
 	}
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	
 	public void setFrom(long from) {
+		
 		this.from = from;
 	}
 
@@ -68,6 +76,44 @@ public class Shift implements Serializable{
 
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
+	}
+	
+	/**
+	 * 
+	 * Returns FROM date in a human readable format
+	 */
+	public String getFromFormatted(){
+		return getDateString(from);
+	}
+	
+	/**
+	 * 
+	 * Returns TO date in a human readable format
+	 */
+	public String getToFormatted(){
+		return getDateString(to);
+	}
+	
+	private String getDateString(long date){
+		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date);
+		
+		return sdf.format(cal.getTime());
+	}
+	
+	/**
+	 * Return FROM date in string format
+	 */
+	public String fromSQLFormat(){
+		return Long.toString(from);
+	}
+	
+	/**
+	 * Return TO date in string format
+	 */
+	public String toSQLFormat(){
+		return Long.toString(to);
 	}
 	/*
 	public long getFromMilliseconds(){

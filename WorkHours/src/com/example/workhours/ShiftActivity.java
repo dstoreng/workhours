@@ -42,7 +42,8 @@ public class ShiftActivity extends Activity {
 		retrieveData();
 
 		dao.addCalendarEvent(calEvent);
-
+		dao.addExtendedCalendarEvent(calEvent);
+		
 		Intent intent = new Intent(this, MainActivity.class);	
 		long hh = calEvent.getHours();
 		String hoursString = Long.toString(hh);
@@ -58,7 +59,6 @@ public class ShiftActivity extends Activity {
 		long longDate = (Long) i.getSerializableExtra("DATE");
 		Calendar dateObject = Calendar.getInstance();
 		dateObject.setTimeInMillis(longDate);	
-
 		calEvent = new Shift();
 		
 		// Time from
@@ -69,31 +69,30 @@ public class ShiftActivity extends Activity {
 		toHour = to.getCurrentHour();
 		toMin = to.getCurrentMinute();
 
+		/*
+		 * Calendar uses static variables, set object properties one at a time.
+		 */
 		dateFrom = dateObject;
 		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
 		dateFrom.set(Calendar.MINUTE, fromMin);
+		dateFrom.set(Calendar.SECOND, 0);
+		dateFrom.set(Calendar.MILLISECOND, 0);
+		//Set event from property
 		calEvent.setFrom(dateFrom.getTimeInMillis());
 		
 		dateTo = dateObject;
 		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
 		dateTo.set(Calendar.MINUTE, toMin);
-		calEvent.setTo(dateTo.getTimeInMillis());
-		
-		//Ensure that the times are "even" before comparing further
-		dateFrom.set(Calendar.SECOND, 0);
-		dateFrom.set(Calendar.MILLISECOND, 0);
 		dateTo.set(Calendar.SECOND, 0);
 		dateTo.set(Calendar.MILLISECOND, 0);
-		
+				
+		//Ensure that the times are "even" before comparing further	
 		if(dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()){
 			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
 			dateTo.set(year, month, day+1, toHour, toMin);
 		}
-		
-		
-		Log.d("Date from.:,.-'¨'-.,", Long.toString(calEvent.getFrom()));
-		Log.d("Date to.:,.-'¨'-.,", Long.toString(calEvent.getTo()));
-		//calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
+		//Set event to property
+		calEvent.setTo(dateTo.getTimeInMillis());
 	}
 
 	public void getHandles() {
