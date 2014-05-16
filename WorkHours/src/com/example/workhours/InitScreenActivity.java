@@ -26,13 +26,13 @@ public class InitScreenActivity extends Activity {
 		
 		dao = new UserDAOImpl(this);
 		dao.open();
-		dao.dropUser();
+		//dao.dropUser();
 		
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SharedPreferences.Editor editor = preferences.edit(); 
 	
 	//  editor.putString("user", user.getName());
-		editor.clear();
+	//	editor.clear();
 	//	editor.putString("user", null);
 		editor.commit();
 		
