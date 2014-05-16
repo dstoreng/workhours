@@ -68,11 +68,11 @@ public class ChangeShiftActivity extends Activity {
 			Calendar cal = Calendar.getInstance();
 			
 			cal.setTimeInMillis(shift.getFrom());		
-			timePickerFrom.setCurrentHour(cal.HOUR);
+			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
 			timePickerFrom.setCurrentMinute(cal.MINUTE);
 			
 			cal.setTimeInMillis(shift.getTo());
-			timePickerFrom.setCurrentHour(cal.HOUR);
+			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
 			timePickerFrom.setCurrentMinute(cal.MINUTE);
 			
 			repeatBox.setChecked(shift.isRepeat());
