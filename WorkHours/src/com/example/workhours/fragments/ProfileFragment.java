@@ -27,7 +27,7 @@ public class ProfileFragment extends Fragment {
 		return inflater.inflate(R.layout.fragment_profile, container, false);
 	}
 	
-	public void saveDetails(View v){
+	/*public void saveDetails(View v){
 		
 		employer_email = (TextView) getView().findViewById(R.id.employer_email);
 		emp_email = employer_email.getText().toString();
@@ -39,10 +39,7 @@ public class ProfileFragment extends Fragment {
 		tax_value = Double.parseDouble(tax.getText().toString());
 		
 		Log.d("FINISH UPDATING VALUES", " WOOOOOOOOOOP");
-		showOnlyDetails();
-		
-		
-		
+		showOnlyDetails();		
 	}
 	
 	private void showOnlyDetails(){
@@ -65,6 +62,6 @@ public class ProfileFragment extends Fragment {
 		ProfileFragment profile = (ProfileFragment) frag.findFragmentById(R.id.profile);
 		trans.hide(profile);
 		trans.commit();
-	}
+	}*/
 
 }
