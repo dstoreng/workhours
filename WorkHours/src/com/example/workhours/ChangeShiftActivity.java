@@ -2,6 +2,7 @@ package com.example.workhours;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,6 +14,8 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
 import com.example.workhours.entities.Shift;
@@ -25,6 +28,7 @@ public class ChangeShiftActivity extends Activity {
 	private String shiftString;
 	private Intent target;
 	private Shift shift;
+	private ShiftDAO shiftDao;
 	
 	private CheckBox repeatBox, notifyBox;
 	private TimePicker timePickerFrom, timePickerTo;
@@ -37,6 +41,7 @@ public class ChangeShiftActivity extends Activity {
 		super.onCreate(savedInstanceState);
 	
 		setContentView(R.layout.activity_change_shift);
+		shiftDao = new ShiftDAOImpl(getApplicationContext());
 		
 		repeatBox = (CheckBox) findViewById(R.id.changeRepeats);
 		notifyBox = (CheckBox) findViewById(R.id.changeNotify);
@@ -46,34 +51,16 @@ public class ChangeShiftActivity extends Activity {
 		Intent sender = getIntent();
 		shiftId = (Integer) sender.getSerializableExtra(OBJECT_ID);
 		
-		/*
-		 * TODO These are just for testing, delete plOx
-		 */
-		CalendarDAO dao = new CalendarDAOImpl(getContentResolver());
-		list = dao.getAddedEvents();
-		shift = null;
+		shiftDao.open();
+		shift = shiftDao.getShift(shiftId);
+		shiftDao.close();
 		
-		for(Shift s : list){
-			int id = s.getId();
-			if(id == shiftId){
-				shift = s;
-				Log.d("MATCH FOUND", shift.getId() + "");
-			}else{
-				Log.d("NO MATCH FOUND", id + " - " + shiftId);
-			}
-		}
-		/* * * * * * * * * * * * ********* ****************************/
-		
-		if(shift != null){			
-			Calendar cal = Calendar.getInstance();
+		if(shift != null){
+			timePickerFrom.setCurrentHour(shift.getDateSpecialFormat(shift.getFrom(), "hh"));
+			timePickerFrom.setCurrentMinute(shift.getDateSpecialFormat(shift.getFrom(), "mm"));
 			
-			cal.setTimeInMillis(shift.getFrom());		
-			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
-			timePickerFrom.setCurrentMinute(cal.MINUTE);
-			
-			cal.setTimeInMillis(shift.getTo());
-			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
-			timePickerFrom.setCurrentMinute(cal.MINUTE);
+			timePickerTo.setCurrentHour(shift.getDateSpecialFormat(shift.getTo(), "hh"));
+			timePickerTo.setCurrentMinute(shift.getDateSpecialFormat(shift.getTo(), "mm"));
 			
 			repeatBox.setChecked(shift.isRepeat());
 			notifyBox.setChecked(shift.isNotify());
@@ -89,6 +76,10 @@ public class ChangeShiftActivity extends Activity {
 	}
 	
 	public void Save_Click(View v){
+		shiftDao.open();
+		Shift tmpShift = shiftDao.getShift(shiftId);
+		//tmpShift.getChanges();
+		//shiftDao.updateShift(sID, tmpShift);
 		finish();
 	}
 	

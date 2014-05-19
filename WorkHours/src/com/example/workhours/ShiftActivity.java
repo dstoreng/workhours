@@ -56,14 +56,8 @@ public class ShiftActivity extends Activity {
 		
 		shiftdao.open();
 		shiftdao.addShift(calEvent);
+		shiftdao.close();
 		
-		/*
-		dao.addCalendarEvent(calEvent);
-		dao.addExtendedCalendarEvent(calEvent);
-		
-		Intent intent = new Intent(this, MainActivity.class);	
-		startActivity(intent);
-		*/
 		finish();
 	}
 
@@ -112,10 +106,12 @@ public class ShiftActivity extends Activity {
 		//Now handle some other info, get email from shared prefs first.
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String uid = prefs.getString("email", null);
+		
 		//Get notification and repeat info
 		calEvent.setUId(uid);
 		calEvent.setNotify(notify.isChecked());
 		calEvent.setRepeat(repeat.isChecked());
+		
 		//repeat = true
 		if(showVisible){
 			calEvent.setRepeatWeekly(weekly.isChecked());
