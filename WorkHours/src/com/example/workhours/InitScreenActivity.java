@@ -52,7 +52,7 @@ public class InitScreenActivity extends Activity {
 		 * The user is navigated to the main page 
 		 * */
 		SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String existingAccount = preferences2.getString("user", null);
+		String existingAccount = preferences2.getString("email", null);
 		
 		if(existingAccount != null){
 			

@@ -12,7 +12,16 @@ public interface CalendarDAO {
 	public void addCalendarEvent(Shift shift);
 	
 	/**
+	 * Add new event to ExtendedCalendarView content provider
+	 * 
+	 * Id is NOT stored @List<Long> in DAOImpl
+	 */
+	public void addExtendedCalendarEvent(Shift shift);
+	
+	/**
 	 * Returns the unique id of all added events.
 	 */
 	public List<Long> getAddedEventsId();
+	
+	public List<Shift> getAddedEvents();
 }

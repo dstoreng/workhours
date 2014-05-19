@@ -16,26 +16,28 @@
     <string name="description_shift_from">Shift start:</string>
     <string name="description_shift_to">Shift end:</string>
     <string name="title_activity_shift">New Shift</string>
-
     <string name="text_display_start">Start</string>
     <string name="text_display_end">End</string>
     <string name="text_display_hours">Hours</string>
-    
-   
+
     <!-- ********************************************************** -->
     <!-- **********     Button 	   Variables                 ****** -->
     <!-- ********************************************************** -->
 
     <string name="button_save_shift">Save shift</string>
+    <string name="button_cancel_change">Cancel</string>
+    <string name="button_save_change">Save</string>
     <string name="button_select_date">Select date</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Checkbox   Variables                 ****** -->
     <!-- ********************************************************** -->
 
-    <string name="box_repeats">Repeating event</string>
+    <string name="box_repeats">Repeating</string>
     <string name="box_notify">Notify</string>
-
+    <string name="radio_weekly">Weekly</string>
+    <string name="radio_monthly">Monthly</string>
+    
     <!-- ********************************************************** -->
     <!-- **********     ???????    Variables                 ****** -->
     <!-- ********************************************************** -->
@@ -48,5 +50,6 @@
     <string name="title_activity_login_options">LoginOptionsActivity</string>
     <string name="title_activity_sign_up_options">SignUpOptionsActivity</string>
     <string name="title_activity_sign_up_email">SignUpEmailActivity</string>
+    <string name="title_activity_change_shift">ChangeShiftActivity</string>
 
 </resources>

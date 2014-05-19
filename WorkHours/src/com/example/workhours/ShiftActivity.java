@@ -2,17 +2,24 @@ package com.example.workhours;
 
 import java.util.Calendar;
 
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
 import com.example.workhours.entities.Shift;
 
+import android.opengl.Visibility;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 
 public class ShiftActivity extends Activity {
@@ -20,13 +27,18 @@ public class ShiftActivity extends Activity {
 	private Calendar dateFrom, dateTo;
 	private TimePicker from, to;
 	private CheckBox notify, repeat;
+	private RadioGroup radioGroup;
+	private RadioButton weekly, monthly;
 	private CalendarDAO dao;
 	private Shift calEvent;
+	private boolean showVisible;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shift);
+		
+		getHandles();
 	}
 
 	@Override
@@ -37,11 +49,18 @@ public class ShiftActivity extends Activity {
 	}
 
 	public void saveShift(View v) {
+		showVisible = false;
 		getHandles();
 		retrieveData();
-
+		
+		ShiftDAO dao = new ShiftDAOImpl(getApplicationContext());
+		dao.open();
+		dao.addShift(calEvent);
+		
+		/*
 		dao.addCalendarEvent(calEvent);
-
+		dao.addExtendedCalendarEvent(calEvent);
+		*/
 		Intent intent = new Intent(this, MainActivity.class);	
 		long hh = calEvent.getHours();
 		String hoursString = Long.toString(hh);
@@ -57,8 +76,7 @@ public class ShiftActivity extends Activity {
 		long longDate = (Long) i.getSerializableExtra("DATE");
 		Calendar dateObject = Calendar.getInstance();
 		dateObject.setTimeInMillis(longDate);	
-
-		calEvent = new Shift();
+		calEvent = new Shift(true);
 		
 		// Time from
 		fromHour = from.getCurrentHour();
@@ -68,31 +86,44 @@ public class ShiftActivity extends Activity {
 		toHour = to.getCurrentHour();
 		toMin = to.getCurrentMinute();
 
+		/*
+		 * Calendar uses static variables, set object properties one at a time.
+		 */
 		dateFrom = dateObject;
 		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
 		dateFrom.set(Calendar.MINUTE, fromMin);
+		dateFrom.set(Calendar.SECOND, 0);
+		dateFrom.set(Calendar.MILLISECOND, 0);
+		//Set event from property
 		calEvent.setFrom(dateFrom.getTimeInMillis());
 		
 		dateTo = dateObject;
 		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
 		dateTo.set(Calendar.MINUTE, toMin);
-		calEvent.setTo(dateTo.getTimeInMillis());
-		
-		//Ensure that the times are "even" before comparing further
-		dateFrom.set(Calendar.SECOND, 0);
-		dateFrom.set(Calendar.MILLISECOND, 0);
 		dateTo.set(Calendar.SECOND, 0);
 		dateTo.set(Calendar.MILLISECOND, 0);
-		
+				
+		//Ensure that the times are "even" before comparing further	
 		if(dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()){
 			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
 			dateTo.set(year, month, day+1, toHour, toMin);
 		}
+		//Set event to property
+		calEvent.setTo(dateTo.getTimeInMillis());
 		
-		
-		Log.d("Date from.:,.-'¨'-.,", Long.toString(calEvent.getFrom()));
-		Log.d("Date to.:,.-'¨'-.,", Long.toString(calEvent.getTo()));
-		//calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
+		//Now handle some other info, get email from shared prefs first.
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String uid = prefs.getString("email", null);
+		//Get notification and repeat info
+		calEvent.setUId(uid);
+		calEvent.setNotify(notify.isChecked());
+		calEvent.setRepeat(repeat.isChecked());
+		//repeat = true
+		if(showVisible){
+			calEvent.setRepeatWeekly(weekly.isChecked());
+			calEvent.setRepeatMonthly(monthly.isChecked());
+		}
+
 	}
 
 	public void getHandles() {
@@ -100,7 +131,20 @@ public class ShiftActivity extends Activity {
 		to = (TimePicker) findViewById(R.id.shiftTo);
 		repeat = (CheckBox) findViewById(R.id.repeatsBox);
 		notify = (CheckBox) findViewById(R.id.notifyBox);
+		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+		weekly = (RadioButton) findViewById(R.id.radioWeekly);
+		monthly = (RadioButton) findViewById(R.id.radioMonthly);
 		dao = new CalendarDAOImpl(getContentResolver());
+	}
+	
+	public void Repeat_Click(View v){
+		if(!showVisible){
+			radioGroup.setVisibility(v.VISIBLE);
+			showVisible = true;
+		}else{
+			radioGroup.setVisibility(v.INVISIBLE);
+			showVisible = false;
+		}
 	}
 
 }
