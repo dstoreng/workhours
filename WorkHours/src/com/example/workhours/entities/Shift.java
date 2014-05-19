@@ -3,34 +3,43 @@ package com.example.workhours.entities;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 
 public class Shift implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private int id;
-	private long hours;
 	private String dateFormat = "dd.MM.yy - hh:mm";
 
+	private int id;
+	private String uId;
 	private long from;
 	private long to;
 	private boolean notify;
 	private boolean repeat;
+	private boolean repeatWeekly;
+	private boolean repeatMonthly;
 	
-	public Shift(int id, long from, long to, boolean repeats, boolean notify){
+	public Shift(int id, String uId, long from, long to, boolean repeats, boolean notify, boolean repeatWeekly, boolean repeatMonthly){
 		this.id = id;
+		this.uId = uId;
 		this.from = from;
 		this.to = to;
 		this.notify = notify;
 		this.repeat = repeats;
+		this.repeatWeekly = repeatWeekly;
+		this.repeatMonthly = repeatMonthly;
 	}
 	
-	public Shift() {
-		Calendar c = Calendar.getInstance();
-		Long time = c.getTimeInMillis();
-		this.id = time.intValue();
+	/**
+	 * True for new instance, false for DATABASE use
+	 */
+	public Shift(boolean isNewInstance) {
+		if(isNewInstance){
+			Calendar c = Calendar.getInstance();
+			Long time = c.getTimeInMillis();
+			this.id = time.intValue();
+		}
 	}
 
 	private long findHours(){
@@ -43,6 +52,14 @@ public class Shift implements Serializable{
 
 	public boolean isRepeat() {
 		return repeat;
+	}
+	
+	public boolean isRepeatWeekly() {
+		return repeatWeekly;
+	}
+	
+	public boolean isRepeatMonthly() {
+		return repeatMonthly;
 	}
 	
 	public long getFrom() {
@@ -61,6 +78,18 @@ public class Shift implements Serializable{
 		return id;
 	}
 	
+	public String getUId() {
+		return uId;
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public void setUId(String uId){
+		this.uId = uId;
+	}
+	
 	public void setFrom(long from) {
 		
 		this.from = from;
@@ -76,6 +105,14 @@ public class Shift implements Serializable{
 
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
+	}
+	
+	public void setRepeatWeekly(boolean value){
+		this.repeatWeekly = value;
+	}
+	
+	public void setRepeatMonthly(boolean value){
+		this.repeatMonthly = value;
 	}
 	
 	/**

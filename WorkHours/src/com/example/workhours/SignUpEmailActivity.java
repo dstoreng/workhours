@@ -71,7 +71,7 @@ public class SignUpEmailActivity extends Activity {
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			SharedPreferences.Editor editor = preferences.edit(); 
 	
-			editor.putString("user", user.getName());
+			editor.putString("email", user.getEmail());
 			editor.commit();
 			
 			dao.open();

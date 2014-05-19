@@ -33,9 +33,11 @@
     <!-- **********     Checkbox   Variables                 ****** -->
     <!-- ********************************************************** -->
 
-    <string name="box_repeats">Repeating event</string>
+    <string name="box_repeats">Repeating</string>
     <string name="box_notify">Notify</string>
-
+    <string name="radio_weekly">Weekly</string>
+    <string name="radio_monthly">Monthly</string>
+    
     <!-- ********************************************************** -->
     <!-- **********     ???????    Variables                 ****** -->
     <!-- ********************************************************** -->

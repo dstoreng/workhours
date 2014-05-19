@@ -39,7 +39,8 @@ public class CalendarDAOImpl implements CalendarDAO {
 				CalendarProvider.START, 		//0
 				CalendarProvider.END,			//1
 				CalendarProvider.DESCRIPTION, 	//2
-				CalendarProvider.ID };			//3	
+				CalendarProvider.ID,			//3
+				CalendarProvider.EVENT};		//4	
 		/*
 		String selection = CalendarProvider.DESCRIPTION + " = " + "'Working hours application..'";
 		String[] selectionArgs = null;
@@ -49,22 +50,25 @@ public class CalendarDAOImpl implements CalendarDAO {
 		cursor = cr.query(uri, projection, null, null, null);
 		Log.d("CALENDARPROVIDER - before while", "");
 		
+		Shift tmp;
 		while(cursor.moveToNext()){
-			Shift tmp = new Shift();
 			String start = null;
 			String end = null;
 			String desc = null;
 			String id = null;
+			String uid = null;
 			
 			start = cursor.getString(0);
 			end = cursor.getString(1);
 			desc = cursor.getString(2);
 			id = cursor.getString(3);
+			uid = cursor.getString(4);
 			
-			tmp = new Shift(Integer.parseInt(id),
-					Long.parseLong(start),
-					Long.parseLong(end),
-					true, true);
+			tmp = new Shift(Integer.parseInt(id), 
+							uid,
+							Long.parseLong(start),
+							Long.parseLong(end),
+							true, false, false, false);
 			
 			tmp.setFrom(Long.parseLong(start));
 			tmp.setTo(Long.parseLong(end));
@@ -112,6 +116,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 	    values.put(CalendarProvider.EVENT, "Event name");   		
 	    values.put(CalendarProvider.START, shift.getFrom());
 	    values.put(CalendarProvider.ID, Integer.toString(shift.getId()));
+	    values.put(CalendarProvider.EVENT, shift.getUId());
 	    
 	    //Calculate julian day, required by ExtendedCalendarView
 	    int startDay = Time.getJulianDay(shift.getFrom(), TimeUnit.MILLISECONDS.toSeconds
