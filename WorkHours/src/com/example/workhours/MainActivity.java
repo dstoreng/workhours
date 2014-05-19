@@ -227,7 +227,6 @@ public class MainActivity extends FragmentActivity {
 	
 	public static class EventFragment extends Fragment{
 		private List<Shift> list;
-		private TextView view;
 		private CalendarDAO calDao;
 		private int txtSize = 16;
 		private int color = Color.BLACK;
