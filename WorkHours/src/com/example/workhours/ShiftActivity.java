@@ -29,7 +29,8 @@ public class ShiftActivity extends Activity {
 	private CheckBox notify, repeat;
 	private RadioGroup radioGroup;
 	private RadioButton weekly, monthly;
-	private CalendarDAO dao;
+	private CalendarDAO caldao;
+	private ShiftDAO shiftdao;
 	private Shift calEvent;
 	private boolean showVisible;
 	
@@ -53,20 +54,17 @@ public class ShiftActivity extends Activity {
 		getHandles();
 		retrieveData();
 		
-		ShiftDAO dao = new ShiftDAOImpl(getApplicationContext());
-		dao.open();
-		dao.addShift(calEvent);
+		shiftdao.open();
+		shiftdao.addShift(calEvent);
 		
 		/*
 		dao.addCalendarEvent(calEvent);
 		dao.addExtendedCalendarEvent(calEvent);
-		*/
-		Intent intent = new Intent(this, MainActivity.class);	
-		long hh = calEvent.getHours();
-		String hoursString = Long.toString(hh);
 		
-		intent.putExtra("HOURS", hoursString);
+		Intent intent = new Intent(this, MainActivity.class);	
 		startActivity(intent);
+		*/
+		finish();
 	}
 
 	public void retrieveData() {
@@ -134,7 +132,8 @@ public class ShiftActivity extends Activity {
 		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 		weekly = (RadioButton) findViewById(R.id.radioWeekly);
 		monthly = (RadioButton) findViewById(R.id.radioMonthly);
-		dao = new CalendarDAOImpl(getContentResolver());
+		caldao = new CalendarDAOImpl(getContentResolver());
+		shiftdao = new ShiftDAOImpl(getApplicationContext());
 	}
 	
 	public void Repeat_Click(View v){

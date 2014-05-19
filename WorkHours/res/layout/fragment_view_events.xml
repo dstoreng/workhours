@@ -4,13 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".MainActivity$EventFragment" >
-
+	<!--  
         <com.tyczj.extendedcalendarview.ExtendedCalendarView
             android:id="@+id/calendarView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" 
             android:layout_weight="16"/>
-
+	-->
         <LinearLayout
             android:id="@+id/eventHeader"
             android:layout_width="match_parent"

@@ -1,25 +1,13 @@
 package com.example.workhours;
 
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Calendar;
-import java.util.Date;
-
 import java.util.List;
-import java.util.Locale;
-
 import com.example.workhours.entities.Shift;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
-
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
-import com.example.workhours.entities.SharedPrefs;
-import com.example.workhours.entities.Shift;
-
-import android.app.ActionBar.LayoutParams;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -42,11 +30,10 @@ import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
-import com.example.workhours.entities.SharedPrefs;
 import com.facebook.Session;
 
 public class MainActivity extends FragmentActivity {
@@ -87,21 +74,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onResume(){
 		super.onResume();
 		
-		Intent shiftData = getIntent();
 		dao.open();
-		
-		try{
-			String intentHours = (String) shiftData.getSerializableExtra("HOURS");
-			SharedPrefs prefs = new SharedPrefs(this);
-			amountOfHours = Long.parseLong(intentHours);
-			prefs.addHours(amountOfHours);
-			
-			Log.d("HOURS!!", intentHours);
-			Toast.makeText(getApplicationContext(), "Hours: " + intentHours, Toast.LENGTH_LONG).show();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
 	}
 	
 	@Override
@@ -138,13 +111,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				}
 				return fragment;	
-				
-				/*
-				 	fragment = new DummySectionFragment();
-					Bundle args = new Bundle();
-					args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-					fragment.setArguments(args);
-				 */
+
 		}
 
 		@Override
@@ -165,26 +132,6 @@ public class MainActivity extends FragmentActivity {
 				return getString(R.string.title_section3).toUpperCase(l);
 			}
 			return null;
-		}
-	}
-
-	public static class DummySectionFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_dummy,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
 		}
 	}
 	
@@ -246,10 +193,15 @@ public class MainActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
 			LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
 			
+			/*
 			calDao = new CalendarDAOImpl(rootView.getContext().getContentResolver());
 			list = calDao.getAddedEvents();
-			TextView txtView;		
+			*/
 			
+			ShiftDAO shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao.open();
+			list = shiftDao.getShifts();
+			TextView txtView;		
 			
 			int NUM = list.size();
 			for(int i = 0; i < NUM; i++){
@@ -320,10 +272,19 @@ public class MainActivity extends FragmentActivity {
 	        super.onActivityCreated(savedInstanceState);
 
 			TextView hourText = (TextView) getView().findViewById(R.id.displayHours);
-	        SharedPrefs prefs = new SharedPrefs(getActivity());
-	        double scheduledHours = prefs.getHours();
-	        Log.d("HOURS SCHEDULED", Double.toString(scheduledHours));
-	        hourText.append(" -- " + scheduledHours);
+			
+			// get all shifts to calculate hours scheduled
+			ShiftDAO dao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			dao.open();
+			List<Shift> list = new ArrayList<Shift>();
+			list = dao.getShifts();
+			double totalHours = 0;
+			
+			for(Shift s : list){
+				totalHours += s.getHours();
+			}
+			
+	        hourText.append(" -- " + totalHours);
 	    }
 
 		
