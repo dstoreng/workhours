@@ -3,16 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity$AddShiftFragment" >
-
-    <ImageView
-        android:id="@+id/headerChangePage"
-        android:src="@drawable/change_shift_header"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentTop="true"
-        android:scaleType="center"
-        android:background="#0094FF"
-        android:contentDescription="@string/app_name" />
     
     <TimePicker
         android:id="@+id/changeFrom"

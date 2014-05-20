@@ -216,7 +216,10 @@ public class MainActivity extends FragmentActivity {
 	
 	public static class EventFragment extends Fragment{
 		private List<Shift> list;
-		private CalendarDAO calDao;
+		private ShiftDAO shiftDao;
+		private TextView txtView;
+		private View rootView;
+		private LinearLayout llayout;
 		private int txtSize = 16;
 		private int color = Color.BLACK;
 		private boolean clickable = true;
@@ -227,19 +230,20 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){	
 	
-			View rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
-			LinearLayout llayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
+			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
+			llayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
 			
-			/*
-			calDao = new CalendarDAOImpl(rootView.getContext().getContentResolver());
-			list = calDao.getAddedEvents();
-			*/
-			
-			ShiftDAO shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
 			list = shiftDao.getShifts();
-			TextView txtView;		
+			shiftDao.close();
 			
+			refreshView();
+			
+			return rootView;
+		}
+		
+		public void refreshView(){
 			int NUM = list.size();
 			for(int i = 0; i < NUM; i++){
 				txtView = new TextView(getActivity());
@@ -247,16 +251,10 @@ public class MainActivity extends FragmentActivity {
 						list.get(i).getToFormatted() + spacing + 
 						list.get(i).getHours(), list.get(i), txtView, llayout, rootView.getContext());			
 			}
-			
-			return rootView;
 		}
 		
 		public void fillLayout(String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx){
 			view = new TextView(getActivity());
-			
-			/*
-			 * 
-			 */
 			view.setId(tmpShift.getId());
 			view.setText(data);
 			
@@ -279,7 +277,7 @@ public class MainActivity extends FragmentActivity {
 					Log.d("OBJECT LISTENER", objId + "");
 									
 					/*
-					 * Send Shift id to the ChangeActivity class
+					 * Send Shift id to the Shift activity class
 					 */
 					Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
 					intent.putExtra("OBJECT_ID", objId);
@@ -291,6 +289,23 @@ public class MainActivity extends FragmentActivity {
 			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 			layout.addView(view, lp);		
 		}
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+			
+			llayout.removeAllViews();
+			
+			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao.open();
+			
+			list = shiftDao.getShifts();
+			
+			shiftDao.close();
+			Log.d("Fetched SHIFTS.", list.size()+"");
+			refreshView();
+		}
+
 	}
 	
 	public static class DebtFragment extends Fragment{

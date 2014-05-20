@@ -1,8 +1,6 @@
 package com.example.workhours;
 
 import java.util.Calendar;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,73 +8,74 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
-
-import com.example.workhours.entities.CalendarDAO;
-import com.example.workhours.entities.CalendarDAOImpl;
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
 
 public class ChangeShiftActivity extends Activity {
 
 	private final String OBJECT_ID = "OBJECT_ID";
-	private final String OBJECT_STRING = "OBJECT_STRING";
-	private int shiftId, fHour, fMin, tHour, tMin;
-	private String shiftString;
-	private Intent target;
+	private int day, month, year, fromHour, fromMin, toHour, toMin, shiftId;
 	private Shift shift;
-	
-	private CheckBox repeatBox, notifyBox;
-	private TimePicker timePickerFrom, timePickerTo;
-	//
-	private List<Shift> list;
-	//
-	
+	private ShiftDAO shiftDao;
+	private long date;
+	private Calendar dateFrom, dateTo;
+
+	private RadioButton weekly, monthly;
+	private RadioGroup radioGroup;
+	private CheckBox repeat, notify;
+	private TimePicker from, to;
+	private boolean showVisible;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
-		setContentView(R.layout.activity_change_shift);
-		
-		repeatBox = (CheckBox) findViewById(R.id.changeRepeats);
-		notifyBox = (CheckBox) findViewById(R.id.changeNotify);
-		timePickerFrom = (TimePicker) findViewById(R.id.changeFrom);
-		timePickerTo = (TimePicker) findViewById(R.id.changeTo);
-		
+
+		setContentView(R.layout.activity_shift);
+		shiftDao = new ShiftDAOImpl(getApplicationContext());
+
+		getHandles();
+
 		Intent sender = getIntent();
 		shiftId = (Integer) sender.getSerializableExtra(OBJECT_ID);
-		
-		/*
-		 * TODO These are just for testing, delete plOx
-		 */
-		CalendarDAO dao = new CalendarDAOImpl(getContentResolver());
-		list = dao.getAddedEvents();
-		shift = null;
-		
-		for(Shift s : list){
-			int id = s.getId();
-			if(id == shiftId){
-				shift = s;
-				Log.d("MATCH FOUND", shift.getId() + "");
-			}else{
-				Log.d("NO MATCH FOUND", id + " - " + shiftId);
+
+		shiftDao.open();
+		shift = shiftDao.getShift(shiftId);
+		Log.d("RECIEVE OBJECT IS WEEKLY", shift.isRepeatWeekly() + "");
+		Log.d("RECIEVE OBJECT IS MONTHLY", shift.isRepeatMonthly() + "");
+		shiftDao.close();
+
+		if (shift != null) {
+			date = shift.getFrom();
+
+			// Hour from
+			int hf = shift.getDateSpecialFormat(shift.getFrom(), "hh");
+			int mf = shift.getDateSpecialFormat(shift.getFrom(), "mm");
+			from.setCurrentHour(hf);
+			from.setCurrentMinute(mf);
+
+			// Hour to
+			int ht = shift.getDateSpecialFormat(shift.getTo(), "hh");
+			int mt = shift.getDateSpecialFormat(shift.getTo(), "mm");
+			Log.d("Trying to set to", ht + ":" + mt);
+			to.setCurrentHour(ht);
+			to.setCurrentMinute(mt);
+
+			boolean rep = shift.isRepeat();
+			repeat.setChecked(rep);
+			if (rep) {
+				radioGroup.setVisibility(View.VISIBLE);
+				showVisible = true;
+				
+				if(shift.isRepeatWeekly())
+					weekly.setChecked(shift.isRepeatWeekly());
+				else
+					monthly.setChecked(shift.isRepeatMonthly());
 			}
-		}
-		/* * * * * * * * * * * * ********* ****************************/
-		
-		if(shift != null){			
-			Calendar cal = Calendar.getInstance();
-			
-			cal.setTimeInMillis(shift.getFrom());		
-			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
-			timePickerFrom.setCurrentMinute(cal.MINUTE);
-			
-			cal.setTimeInMillis(shift.getTo());
-			timePickerFrom.setCurrentHour(cal.HOUR_OF_DAY);
-			timePickerFrom.setCurrentMinute(cal.MINUTE);
-			
-			repeatBox.setChecked(shift.isRepeat());
-			notifyBox.setChecked(shift.isNotify());
+			notify.setChecked(shift.isNotify());
 		}
 
 	}
@@ -87,13 +86,88 @@ public class ChangeShiftActivity extends Activity {
 		getMenuInflater().inflate(R.menu.change_shift, menu);
 		return true;
 	}
-	
-	public void Save_Click(View v){
+
+	public void saveShift(View v) {
+		Calendar dateObject = Calendar.getInstance();
+		dateObject.setTimeInMillis(date);
+
+		// time from
+		fromHour = from.getCurrentHour();
+		fromMin = from.getCurrentMinute();
+
+		// time to
+		toHour = to.getCurrentHour();
+		toMin = to.getCurrentMinute();
+
+		/*
+		 * Calendar uses static variables, set object properties one at a time.
+		 */
+		dateFrom = dateObject;
+		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
+		dateFrom.set(Calendar.MINUTE, fromMin);
+		dateFrom.set(Calendar.SECOND, 0);
+		dateFrom.set(Calendar.MILLISECOND, 0);
+		// Set event from property
+		shift.setFrom(dateFrom.getTimeInMillis());
+
+		dateTo = dateObject;
+		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
+		dateTo.set(Calendar.MINUTE, toMin);
+		dateTo.set(Calendar.SECOND, 0);
+		dateTo.set(Calendar.MILLISECOND, 0);
+
+		// Ensure that the times are "even" before comparing further
+		if (dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()) {
+			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
+			dateTo.set(year, month, day + 1, toHour, toMin);
+		}
+		// Set event to property
+		shift.setTo(dateTo.getTimeInMillis());
+
+		// Get notification and repeat info
+		shift.setNotify(notify.isChecked());
+		shift.setRepeat(repeat.isChecked());
+
+		// repeat = true
+		if (showVisible) {
+			shift.setRepeatWeekly(weekly.isChecked());
+			shift.setRepeatMonthly(monthly.isChecked());
+		}
+
+		/*
+		 * Publish changes to DB
+		 */
+		shiftDao.open();
+		shiftDao.updateShift(shift.getId(), shift);
+		Log.d("Repeat weekly", shift.isRepeatWeekly() + "");
+		Log.d("Repeat monthly", shift.isRepeatMonthly()+"");
+		shiftDao.close();
+
 		finish();
 	}
-	
-	public void Cancel_Click(View v){
+
+	public void Cancel_Click(View v) {
 		finish();
+	}
+
+	public void Repeat_Click(View v) {
+		if (!showVisible) {
+			radioGroup.setVisibility(v.VISIBLE);
+			showVisible = true;
+		} else {
+			radioGroup.setVisibility(v.INVISIBLE);
+			showVisible = false;
+		}
+	}
+
+	public void getHandles() {
+		from = (TimePicker) findViewById(R.id.shiftFrom);
+		to = (TimePicker) findViewById(R.id.shiftTo);
+		repeat = (CheckBox) findViewById(R.id.repeatsBox);
+		notify = (CheckBox) findViewById(R.id.notifyBox);
+		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+		weekly = (RadioButton) findViewById(R.id.radioWeekly);
+		monthly = (RadioButton) findViewById(R.id.radioMonthly);
 	}
 
 }

@@ -4,53 +4,58 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     tools:context=".MainActivity$EventFragment" >
-	<!--  
+
+    <!--
         <com.tyczj.extendedcalendarview.ExtendedCalendarView
             android:id="@+id/calendarView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" 
             android:layout_weight="16"/>
-	-->
-        <LinearLayout
-            android:id="@+id/eventHeader"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="33" >
+    -->
 
-            <TextView
-                android:id="@+id/displayStartText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/text_display_start"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+    <LinearLayout
+        android:id="@+id/eventHeader"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="25" >
 
-            <TextView
-                android:id="@+id/displayEndText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="@string/text_display_end"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+        <TextView
+            android:id="@+id/displayStartText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/text_display_start"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
-            <TextView
-                android:id="@+id/displayHoursText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="3.4"
-                android:text="@string/text_display_hours"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/displayEndText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="@string/text_display_end"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
+        <TextView
+            android:id="@+id/displayHoursText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.4"
+            android:text="@string/text_display_hours"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+		android:layout_weight="1" >
+        
         <LinearLayout
             android:id="@+id/eventContainer"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical" >
-
         </LinearLayout>
-
         
+    </ScrollView>
 
 </LinearLayout>

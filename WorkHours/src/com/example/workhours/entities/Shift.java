@@ -152,6 +152,23 @@ public class Shift implements Serializable{
 	public String toSQLFormat(){
 		return Long.toString(to);
 	}
+	
+	/**
+	 * 
+	 * @param date is the date which you want to parse
+	 * @param format as hh:mm:ss
+	 * Use with care
+	 */
+	public int getDateSpecialFormat(long date, String format){
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(date);
+		
+		String hour = sdf.format(cal.getTime());
+		return Integer.parseInt(hour);
+	}
+	
+	
 	/*
 	public long getFromMilliseconds(){
 		Calendar date = Calendar.getInstance();
