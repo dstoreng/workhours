@@ -1,8 +1,17 @@
 package com.example.workhours;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.List;
+import com.example.workhours.entities.Shift;
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ActionBar.LayoutParams;
+import android.content.Context;
+import com.example.workhours.entities.SharedPrefs;
 import com.example.workhours.entities.Shift;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
@@ -89,7 +98,35 @@ public class MainActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+		case (R.id.action_profile):
+			Log.d("item selected", R.id.action_profile + "");
+			Intent profile = new Intent(this, ProfileActivity.class);
+			startActivity(profile);
+			break;
+		case R.id.action_log_out:
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.clear();
+			editor.commit();
+		
+			Session session = Session.getActiveSession();
+			if(session != null)
+				session.closeAndClearTokenInformation();
+		
+			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
+			startActivity(intent);
+			break;
+		
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+	
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		
 		public SectionsPagerAdapter(MainActivity m, FragmentManager fm) {
@@ -287,33 +324,6 @@ public class MainActivity extends FragmentActivity {
 	        hourText.append(" -- " + totalHours);
 	    }
 
-		
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		if(R.id.action_log_out == item.getItemId()) {
-			
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.clear();
-			editor.commit();
-			
-			Session session = Session.getActiveSession();
-			if(session != null)
-				session.closeAndClearTokenInformation();
-			
-			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
-			startActivity(intent);
-			
-			return true;
-			
-		}else {
-			
-			return super.onOptionsItemSelected(item);
-		}
-		
 		
 	}
 

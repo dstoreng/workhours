@@ -8,6 +8,7 @@
     <string name="title_section3">Section 3</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_shift_fragment">ShiftFragment</string>
+    <string name="action_profile">Profile</string>
 
     <!-- ********************************************************** -->
     <!-- **********    TextBlock    Variables                ****** -->
@@ -20,6 +21,14 @@
     <string name="text_display_end">End</string>
     <string name="text_display_hours">Hours</string>
 
+    <string name="profile_name_label">Username</string>
+    <string name="profile_email_label">Email</string>
+    <string name="employer_email_label">Employer email</string>
+    <string name="hourly_wage_label">Hourly wage</string>
+    <string name="tax_label">Tax</string>
+   
+    <string name="profile_title">Profile</string>
+
     <!-- ********************************************************** -->
     <!-- **********     Button 	   Variables                 ****** -->
     <!-- ********************************************************** -->
@@ -28,6 +37,10 @@
     <string name="button_cancel_change">Cancel</string>
     <string name="button_save_change">Save</string>
     <string name="button_select_date">Select date</string>
+
+    <string name="button_change_details">Change details</string>
+    <string name="button_save_details">Save details</string>
+    <string name="button_cancel_details">Cancel</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Checkbox   Variables                 ****** -->

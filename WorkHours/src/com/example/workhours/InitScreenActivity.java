@@ -29,12 +29,14 @@ public class InitScreenActivity extends Activity {
 	
 		/*Debug purposes*/
 		dao = new UserDAOImpl(this);
+
 		dao.open();
 		List<User> users = dao.getUsers();
 		for(User u : users) {
 			
 			Log.d("USER", u.toString());
 		}
+
 		
 		dao.dropUser();
 		/*
