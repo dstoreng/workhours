@@ -1,22 +1,11 @@
 package com.example.workhours;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.List;
-import com.example.workhours.entities.Shift;
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.ActionBar.LayoutParams;
-import android.content.Context;
-import com.example.workhours.entities.SharedPrefs;
 import com.example.workhours.entities.Shift;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
-import com.example.workhours.entities.CalendarDAO;
-import com.example.workhours.entities.CalendarDAOImpl;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -249,7 +238,8 @@ public class MainActivity extends FragmentActivity {
 				txtView = new TextView(getActivity());
 				fillLayout(list.get(i).getFromFormatted() + spacing +
 						list.get(i).getToFormatted() + spacing + 
-						list.get(i).getHours(), list.get(i), txtView, llayout, rootView.getContext());			
+						list.get(i).getHours() +
+						list.get(i).getUId(), list.get(i), txtView, llayout, rootView.getContext());			
 			}
 		}
 		

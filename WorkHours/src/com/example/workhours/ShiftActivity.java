@@ -7,8 +7,6 @@ import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.CalendarDAO;
 import com.example.workhours.entities.CalendarDAOImpl;
 import com.example.workhours.entities.Shift;
-
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
@@ -30,10 +28,8 @@ public class ShiftActivity extends Activity {
 	private RadioGroup radioGroup;
 	private RadioButton weekly, monthly;
 	private CalendarDAO caldao;
-	private ShiftDAO shiftDao;
 	private ShiftDAO shiftdao;
 	private Shift calEvent;
-	private long changeDate;
 	private boolean showVisible;
 	
 	@Override
