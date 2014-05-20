@@ -48,8 +48,8 @@ public class ShiftDAOImpl implements ShiftDAO {
 		
 		values.put(ShiftOpenHelper.COLUMN_SHIFT_ID, shift.getId());
 		values.put(ShiftOpenHelper.COLUMN_USER_ID, shift.getUId());
-		values.put(ShiftOpenHelper.COLUMN_T_FROM, shift.getFrom());
-		values.put(ShiftOpenHelper.COLUMN_T_TO, shift.getTo());
+		values.put(ShiftOpenHelper.COLUMN_T_FROM, shift.getFromFormatted());
+		values.put(ShiftOpenHelper.COLUMN_T_TO, shift.getToFormatted());
 		values.put(ShiftOpenHelper.COLUMN_NOTIFY, shift.isNotify());
 		values.put(ShiftOpenHelper.COLUMN_REPEAT, shift.isRepeat());
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
@@ -124,8 +124,8 @@ public class ShiftDAOImpl implements ShiftDAO {
 		ContentValues values = new ContentValues();
 		values.put(ShiftOpenHelper.COLUMN_SHIFT_ID, shift.getId());
 		values.put(ShiftOpenHelper.COLUMN_USER_ID, shift.getUId());
-		values.put(ShiftOpenHelper.COLUMN_T_FROM, shift.getFrom());
-		values.put(ShiftOpenHelper.COLUMN_T_TO, shift.getTo());
+		values.put(ShiftOpenHelper.COLUMN_T_FROM, shift.getFromFormatted());
+		values.put(ShiftOpenHelper.COLUMN_T_TO, shift.getToFormatted());
 		values.put(ShiftOpenHelper.COLUMN_NOTIFY, shift.isNotify());
 		values.put(ShiftOpenHelper.COLUMN_REPEAT, shift.isRepeat());
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
@@ -152,8 +152,8 @@ public class ShiftDAOImpl implements ShiftDAO {
 		
 		shift.setId(cursor.getInt(0));
 		shift.setUId(cursor.getString(1));
-		shift.setFrom(Long.parseLong(cursor.getString(2)));
-		shift.setTo(Long.parseLong(cursor.getString(3)));
+		shift.parseFrom(cursor.getString(2));
+		shift.parseTo(cursor.getString(3));
 		shift.setNotify((cursor.getInt(4) == 1) ? true : false);
 		shift.setRepeat((cursor.getInt(5) == 1) ? true : false);
 		/*

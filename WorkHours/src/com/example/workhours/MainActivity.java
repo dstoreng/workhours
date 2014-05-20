@@ -3,6 +3,7 @@ package com.example.workhours;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import com.example.workhours.entities.Shift;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
@@ -208,8 +209,8 @@ public class MainActivity extends FragmentActivity {
 		private ShiftDAO shiftDao;
 		private TextView txtView;
 		private View rootView;
-		private LinearLayout llayout;
-		private int txtSize = 16;
+		private LinearLayout mainLayout, secLayout;
+		private int txtSize = 19;
 		private int color = Color.BLACK;
 		private boolean clickable = true;
 		private String spacing = "				";	
@@ -220,7 +221,8 @@ public class MainActivity extends FragmentActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){	
 	
 			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
-			llayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
+			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
+			secLayout = (LinearLayout) rootView.findViewById(R.id.hoursContainer);
 			
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
@@ -234,27 +236,38 @@ public class MainActivity extends FragmentActivity {
 		
 		public void refreshView(){
 			int NUM = list.size();
+			int colorTeal = Color.parseColor("#33B5E5");
+			int colorWhite = Color.parseColor("#FFFFFF");
+			int color;
 			for(int i = 0; i < NUM; i++){
+				if(i%2 == 0)
+					color = colorTeal;
+				else
+					color = colorWhite;
 				txtView = new TextView(getActivity());
-				fillLayout(list.get(i).getFromFormatted() + spacing +
-						list.get(i).getToFormatted() + spacing + 
-						list.get(i).getHours() +
-						list.get(i).getUId(), list.get(i), txtView, llayout, rootView.getContext());			
+				fillLayout(true, list.get(i).getFromFormatted() + spacing +
+						list.get(i).getToFormatted() + spacing,
+						list.get(i), txtView, mainLayout, rootView.getContext(), color);			
+			}
+			for(int i = 0; i < NUM; i++){
+				if(i%2 == 0)
+					color = colorTeal;
+				else
+					color = colorWhite;
+				txtView = new TextView(getActivity());
+				fillLayout(false, list.get(i).getHours() + "",
+						list.get(i), txtView, secLayout, rootView.getContext(), color);
 			}
 		}
 		
-		public void fillLayout(String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx){
+		public void fillLayout(boolean mainView, String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx, int color){
 			view = new TextView(getActivity());
 			view.setId(tmpShift.getId());
+			view.setBackgroundColor(color);
 			view.setText(data);
-			
-			Log.d("FILL LAYOUT", data);
-			Log.d("FILL LAYOUT ID", tmpShift.getId() + "");
-			
 			view.setTextSize(txtSize);
-			view.setTextColor(color);
+			view.setTextColor(Color.BLACK);
 			view.setClickable(clickable);
-			
 			view.setOnClickListener(new View.OnClickListener() {
 
 				@Override
@@ -284,7 +297,8 @@ public class MainActivity extends FragmentActivity {
 		public void onResume(){
 			super.onResume();
 			
-			llayout.removeAllViews();
+			mainLayout.removeAllViews();
+			secLayout.removeAllViews();
 			
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();

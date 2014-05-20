@@ -4,16 +4,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity$AddShiftFragment" >
 
-    <Button
-        android:id="@+id/shiftOk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/shiftTo"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/shiftTo"
-        android:onClick="saveShift"
-        android:text="@string/button_save_shift" />
-
     <TimePicker
         android:id="@+id/shiftFrom"
         android:layout_width="wrap_content"
@@ -96,5 +86,27 @@
                 android:text="@string/radio_weekly" />
         </RadioGroup>
     </LinearLayout>
+    
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/changeOk"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".33"
+            android:onClick="Save_Click"
+            android:text="@string/button_save_change" />
+
+        <Button
+            android:id="@+id/changeCancel"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".33"
+            android:onClick="Cancel_Click"
+            android:text="@string/button_cancel_change" />
+    </LinearLayout>
 </RelativeLayout>

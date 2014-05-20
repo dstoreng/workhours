@@ -1,6 +1,8 @@
 package com.example.workhours;
 
-import java.util.Calendar;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,11 +20,10 @@ import com.example.workhours.entities.Shift;
 public class ChangeShiftActivity extends Activity {
 
 	private final String OBJECT_ID = "OBJECT_ID";
-	private int day, month, year, fromHour, fromMin, toHour, toMin, shiftId;
+	private int fromHour, fromMin, toHour, toMin, shiftId;
 	private Shift shift;
 	private ShiftDAO shiftDao;
-	private long date;
-	private Calendar dateFrom, dateTo;
+	private DateTime date;
 
 	private RadioButton weekly, monthly;
 	private RadioGroup radioGroup;
@@ -44,22 +45,20 @@ public class ChangeShiftActivity extends Activity {
 
 		shiftDao.open();
 		shift = shiftDao.getShift(shiftId);
-		Log.d("RECIEVE OBJECT IS WEEKLY", shift.isRepeatWeekly() + "");
-		Log.d("RECIEVE OBJECT IS MONTHLY", shift.isRepeatMonthly() + "");
 		shiftDao.close();
 
 		if (shift != null) {
 			date = shift.getFrom();
 
 			// Hour from
-			int hf = shift.getDateSpecialFormat(shift.getFrom(), "hh");
-			int mf = shift.getDateSpecialFormat(shift.getFrom(), "mm");
+			int hf = shift.getFrom().getHourOfDay();
+			int mf = shift.getFrom().getMinuteOfHour();
 			from.setCurrentHour(hf);
 			from.setCurrentMinute(mf);
 
 			// Hour to
-			int ht = shift.getDateSpecialFormat(shift.getTo(), "hh");
-			int mt = shift.getDateSpecialFormat(shift.getTo(), "mm");
+			int ht = shift.getTo().getHourOfDay();
+			int mt = shift.getTo().getMinuteOfHour();
 			Log.d("Trying to set to", ht + ":" + mt);
 			to.setCurrentHour(ht);
 			to.setCurrentMinute(mt);
@@ -87,42 +86,30 @@ public class ChangeShiftActivity extends Activity {
 		return true;
 	}
 
-	public void saveShift(View v) {
-		Calendar dateObject = Calendar.getInstance();
-		dateObject.setTimeInMillis(date);
-
-		// time from
+	public void Save_Click(View v) {
+		// time from/to
 		fromHour = from.getCurrentHour();
 		fromMin = from.getCurrentMinute();
-
-		// time to
 		toHour = to.getCurrentHour();
 		toMin = to.getCurrentMinute();
-
-		/*
-		 * Calendar uses static variables, set object properties one at a time.
-		 */
-		dateFrom = dateObject;
-		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
-		dateFrom.set(Calendar.MINUTE, fromMin);
-		dateFrom.set(Calendar.SECOND, 0);
-		dateFrom.set(Calendar.MILLISECOND, 0);
-		// Set event from property
-		shift.setFrom(dateFrom.getTimeInMillis());
-
-		dateTo = dateObject;
-		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
-		dateTo.set(Calendar.MINUTE, toMin);
-		dateTo.set(Calendar.SECOND, 0);
-		dateTo.set(Calendar.MILLISECOND, 0);
-
-		// Ensure that the times are "even" before comparing further
-		if (dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()) {
-			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
-			dateTo.set(year, month, day + 1, toHour, toMin);
+		
+		DateTime f = date.withHourOfDay(fromHour).withMinuteOfHour(fromMin);
+		DateTime t = date.withHourOfDay(toHour).withMinuteOfHour(toMin);
+		Period p = new Period(f, t);
+		
+		if(p.getHours() < 0){
+			t = date.
+				withDayOfMonth(f.getDayOfMonth()+1).
+				withHourOfDay(toHour).
+				withMinuteOfHour(toMin);
+			
+			//dette kan fjernes
+			p = new Period(f, t);
+			Log.d("ORDNET TIMER DD:HH", p.getDays() + " " + p.getHours());
 		}
-		// Set event to property
-		shift.setTo(dateTo.getTimeInMillis());
+
+		shift.setFrom(f);
+		shift.setTo(t);
 
 		// Get notification and repeat info
 		shift.setNotify(notify.isChecked());
@@ -152,17 +139,19 @@ public class ChangeShiftActivity extends Activity {
 
 	public void Repeat_Click(View v) {
 		if (!showVisible) {
-			radioGroup.setVisibility(v.VISIBLE);
+			radioGroup.setVisibility(View.VISIBLE);
 			showVisible = true;
 		} else {
-			radioGroup.setVisibility(v.INVISIBLE);
+			radioGroup.setVisibility(View.INVISIBLE);
 			showVisible = false;
 		}
 	}
 
 	public void getHandles() {
 		from = (TimePicker) findViewById(R.id.shiftFrom);
+			from.setIs24HourView(true);
 		to = (TimePicker) findViewById(R.id.shiftTo);
+			to.setIs24HourView(true);
 		repeat = (CheckBox) findViewById(R.id.repeatsBox);
 		notify = (CheckBox) findViewById(R.id.notifyBox);
 		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);

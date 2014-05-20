@@ -1,51 +1,40 @@
 package com.example.workhours.entities;
+
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-public class Shift implements Serializable{
+public class Shift implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private String dateFormat = "dd.MM.yy - hh:mm";
+	private String dateFormat = "dd/MM/yy - HH:mm";
 
 	private int id;
 	private String uId;
 
-	private long from;
-	private long to;
+	private Period period;
+	private DateTime from;
+	private DateTime to;
 	private boolean notify;
 	private boolean repeat;
 	private boolean repeatWeekly;
 	private boolean repeatMonthly;
-	
-	public Shift(int id, String uId, long from, long to, boolean repeats, boolean notify, boolean repeatWeekly, boolean repeatMonthly){
-		this.id = id;
-		this.uId = uId;
-		this.from = from;
-		this.to = to;
-		this.notify = notify;
-		this.repeat = repeats;
-		this.repeatWeekly = repeatWeekly;
-		this.repeatMonthly = repeatMonthly;
-	}
-	
+
 	/**
 	 * True for new instance, false for DATABASE use
 	 */
 	public Shift(boolean isNewInstance) {
-		if(isNewInstance){
+		if (isNewInstance) {
 			Calendar c = Calendar.getInstance();
 			Long time = c.getTimeInMillis();
 			this.id = time.intValue();
 		}
 	}
 
-	private long findHours(){
-		return TimeUnit.MILLISECONDS.toHours(Math.abs(to-from));
-	}
-	
 	public boolean isNotify() {
 		return notify;
 	}
@@ -53,50 +42,50 @@ public class Shift implements Serializable{
 	public boolean isRepeat() {
 		return repeat;
 	}
-	
+
 	public boolean isRepeatWeekly() {
 		return repeatWeekly;
 	}
-	
+
 	public boolean isRepeatMonthly() {
 		return repeatMonthly;
 	}
-	
-	public long getFrom() {
+
+	public DateTime getFrom() {
 		return from;
 	}
 
-	public long getTo() {
+	public DateTime getTo() {
 		return to;
-	}
-
-	public long getHours() {
-		return findHours();
 	}
 
 	public int getId() {
 		return id;
 	}
-	
+
 	public String getUId() {
 		return uId;
 	}
 	
-	public void setId(int id){
-		this.id = id;
+	public int getHours(){
+		period = new Period(from, to);
+		return period.getHours();
 	}
-	
-	public void setUId(String uId){
-		this.uId = uId;
+
+	public void setTo(DateTime to) {
+		this.to = to;
 	}
-	
-	public void setFrom(long from) {
-		
+
+	public void setFrom(DateTime from) {
 		this.from = from;
 	}
 
-	public void setTo(long to) {
-		this.to = to;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public void setUId(String uId) {
+		this.uId = uId;
 	}
 
 	public void setNotify(boolean notify) {
@@ -106,80 +95,47 @@ public class Shift implements Serializable{
 	public void setRepeat(boolean repeat) {
 		this.repeat = repeat;
 	}
-	
-	public void setRepeatWeekly(boolean value){
+
+	public void setRepeatWeekly(boolean value) {
 		this.repeatWeekly = value;
 	}
-	
-	public void setRepeatMonthly(boolean value){
+
+	public void setRepeatMonthly(boolean value) {
 		this.repeatMonthly = value;
 	}
 	
 	/**
-	 * 
-	 * Returns FROM date in a human readable format
+	 * Return from in a pre-specified format
+	 * 		dd/MM/yy - HH:mm
 	 */
 	public String getFromFormatted(){
-		return getDateString(from);
+		return from.toString(dateFormat);
 	}
 	
 	/**
-	 * 
-	 * Returns TO date in a human readable format
+	 * Return to in a pre-specified format
+	 * 		dd/MM/yy - HH:mm
 	 */
 	public String getToFormatted(){
-		return getDateString(to);
-	}
-	
-	private String getDateString(long date){
-		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(date);
-		
-		return sdf.format(cal.getTime());
+		return to.toString(dateFormat);
 	}
 	
 	/**
-	 * Return FROM date in string format
+	 *	Parses string into DateTime
+	 *	Format must be dd/MM/yy - HH:mm
 	 */
-	public String fromSQLFormat(){
-		return Long.toString(from);
+	public void parseFrom(String val){
+		DateTimeFormatter format = DateTimeFormat.forPattern(dateFormat);
+		from = format.parseDateTime(val);
 	}
 	
 	/**
-	 * Return TO date in string format
+	 *	Parses string into DateTime
+	 *	Format must be dd/MM/yy - HH:mm
 	 */
-	public String toSQLFormat(){
-		return Long.toString(to);
+	public void parseTo(String val){
+		DateTimeFormatter format = DateTimeFormat.forPattern(dateFormat);
+		to = format.parseDateTime(val);
 	}
-	
-	/**
-	 * 
-	 * @param date is the date which you want to parse
-	 * @param format as hh:mm:ss
-	 * Use with care
-	 */
-	public int getDateSpecialFormat(long date, String format){
-		SimpleDateFormat sdf = new SimpleDateFormat(format);
-		Calendar cal = Calendar.getInstance();
-		cal.setTimeInMillis(date);
-		
-		String hour = sdf.format(cal.getTime());
-		return Integer.parseInt(hour);
-	}
-	
-	
-	/*
-	public long getFromMilliseconds(){
-		Calendar date = Calendar.getInstance();
-		date.set(from.get, from.getMonth(), from.getDay(), from.getHours(), from.getMinutes());
-		return date.getTimeInMillis();
-	}
-	
-	public long getToMilliseconds(){
-		Calendar date = Calendar.getInstance();
-		date.set(to.getYear(), to.getMonth(), to.getDay(), to.getHours(), to.getMinutes());
-		return date.getTimeInMillis();
-	}
-*/
+
 }

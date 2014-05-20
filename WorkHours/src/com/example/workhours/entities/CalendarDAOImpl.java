@@ -64,15 +64,9 @@ public class CalendarDAOImpl implements CalendarDAO {
 			id = cursor.getString(3);
 			uid = cursor.getString(4);
 			
-			tmp = new Shift(Integer.parseInt(id), 
-							uid,
-							Long.parseLong(start),
-							Long.parseLong(end),
-							true, false, false, false);
-			
-			tmp.setFrom(Long.parseLong(start));
-			tmp.setTo(Long.parseLong(end));
-			
+			tmp = new Shift(false);
+			tmp.parseFrom(start);
+			tmp.parseTo(end);			
 			li.add(tmp);
 			Log.d("CALENDARPROVIDER", "Start: "+start+ " End: "+end+ "Description: "+desc);		
 		}
@@ -89,8 +83,8 @@ public class CalendarDAOImpl implements CalendarDAO {
 		/*
 		 * TODO Needs some work
 		 */
-		values.put(Events.DTSTART, shift.getFrom());
-		values.put(Events.DTEND, shift.getTo());
+		values.put(Events.DTSTART, shift.getFromFormatted());
+		values.put(Events.DTEND, shift.getToFormatted());
 		values.put(Events.TITLE, "Working hours");
 		values.put(Events.DESCRIPTION, "Working hours application..");
 		if(shift.isNotify())
@@ -106,6 +100,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 	}
 	
 	public void addExtendedCalendarEvent(Shift shift){
+	/*
 		Calendar cal = Calendar.getInstance();
 	    TimeZone tz = TimeZone.getDefault();
 		ContentValues values = new ContentValues();
@@ -129,6 +124,7 @@ public class CalendarDAOImpl implements CalendarDAO {
 	    values.put(CalendarProvider.END_DAY, endDay);
 
 	    Uri uri = cr.insert(CalendarProvider.CONTENT_URI, values);
+	    */
 	}
 	
 }
