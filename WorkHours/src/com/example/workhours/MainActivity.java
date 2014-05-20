@@ -240,7 +240,7 @@ public class MainActivity extends FragmentActivity {
 					Log.d("OBJECT LISTENER", objId + "");
 									
 					/*
-					 * Send Shift id to the ChangeActivity class
+					 * Send Shift id to the Shift activity class
 					 */
 					Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
 					intent.putExtra("OBJECT_ID", objId);

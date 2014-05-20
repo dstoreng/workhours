@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/radio_weekly" />
+                android:text="@string/radio_monthly" />
 
             <RadioButton
                 android:id="@+id/radioWeekly"

@@ -30,8 +30,10 @@ public class ShiftActivity extends Activity {
 	private RadioGroup radioGroup;
 	private RadioButton weekly, monthly;
 	private CalendarDAO caldao;
+	private ShiftDAO shiftDao;
 	private ShiftDAO shiftdao;
 	private Shift calEvent;
+	private long changeDate;
 	private boolean showVisible;
 	
 	@Override
@@ -62,9 +64,8 @@ public class ShiftActivity extends Activity {
 	}
 
 	public void retrieveData() {
-		// Retrieve data from fragment
+		// Retrieve date data from fragment
 		Intent i = getIntent();
-		// Date first
 		long longDate = (Long) i.getSerializableExtra("DATE");
 		Calendar dateObject = Calendar.getInstance();
 		dateObject.setTimeInMillis(longDate);	
@@ -111,12 +112,8 @@ public class ShiftActivity extends Activity {
 		calEvent.setUId(uid);
 		calEvent.setNotify(notify.isChecked());
 		calEvent.setRepeat(repeat.isChecked());
-		
-		//repeat = true
-		if(showVisible){
-			calEvent.setRepeatWeekly(weekly.isChecked());
-			calEvent.setRepeatMonthly(monthly.isChecked());
-		}
+		calEvent.setRepeatWeekly(weekly.isChecked());
+		calEvent.setRepeatMonthly(monthly.isChecked());
 
 	}
 
