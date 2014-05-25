@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.example.workhours.entities.Shift;
+import com.example.workhours.util.EmailService;
+
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
@@ -200,8 +202,20 @@ public class MainActivity extends FragmentActivity {
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
-			});			
+			});	
+			
+			Button email = (Button) getView().findViewById(R.id.sendEmailButton);
+			email.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v){
+					Intent i = new Intent(getActivity(), EmailService.class);
+					v.getContext().
+					startService(i);
+				}
+			});
 	    }
+		
+		
 	}
 	
 	public static class EventFragment extends Fragment{

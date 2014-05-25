@@ -83,6 +83,10 @@
         </activity>
         <service android:name="com.example.workhours.util.ScheduleHandler" >
    		 </service>
+   		 <service android:name="com.example.workhours.util.ConfirmService" >
+   		 </service>
+   		 <service android:name="com.example.workhours.util.EmailService" >
+   		 </service>
     </application>
 
 </manifest>
