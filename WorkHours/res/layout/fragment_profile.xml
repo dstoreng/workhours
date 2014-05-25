@@ -14,7 +14,8 @@
     <EditText
         android:id="@+id/change_employer_email"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress" />
 
     <TextView
         android:id="@+id/hourly_wage_label"
@@ -27,6 +28,7 @@
         android:id="@+id/change_hourly_wage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView

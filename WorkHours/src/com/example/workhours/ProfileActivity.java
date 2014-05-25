@@ -1,12 +1,16 @@
 package com.example.workhours;
 
+import java.util.List;
+
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
 import com.example.workhours.entities.User;
 import com.example.workhours.fragments.ProfileFragment;
 import com.example.workhours.util.InputValidator;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -38,8 +42,19 @@ public class ProfileActivity extends FragmentActivity {
 
 		dao = new UserDAOImpl(this);
 		dao.open();
+		
+		// Mja
+		List<User> users = dao.getUsers();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String existingAccount = prefs.getString("email", null);
+		
+		for(User u : users){
+			if(u.getEmail() == existingAccount)
+				user = u;
+		}
 		//user = dao.getUser();
-		fillForm();
+		if(user != null)
+			fillForm();
 
 	}
 
