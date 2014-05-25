@@ -17,6 +17,7 @@ public class ShiftOpenHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_REPEAT       = "isRepeat";
 	public static final String COLUMN_M_REPEAT     = "weeklyRepeat";
 	public static final String COLUMN_W_REPEAT     = "monthlyRepeat";
+	public static final String COLUMN_WORKED       = "isWorked";
 	
 	public static final String DATABASE_NAME = "shift.db";
 	public static final int DATABASE_VERSION = 2;
@@ -31,7 +32,8 @@ public class ShiftOpenHelper extends SQLiteOpenHelper {
 			+ COLUMN_NOTIFY   + " INTEGER, "
 			+ COLUMN_REPEAT   + " INTEGER, "
 			+ COLUMN_W_REPEAT + " INTEGER, "
-			+ COLUMN_M_REPEAT + " INTEGER"
+			+ COLUMN_M_REPEAT + " INTEGER,"
+			+ COLUMN_WORKED   + " INTEGER"
 			+ ");";
 	
 	public ShiftOpenHelper(Context context) {
