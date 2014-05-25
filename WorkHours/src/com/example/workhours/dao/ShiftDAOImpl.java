@@ -27,7 +27,8 @@ public class ShiftDAOImpl implements ShiftDAO {
 			ShiftOpenHelper.COLUMN_NOTIFY,
 			ShiftOpenHelper.COLUMN_REPEAT,
 			ShiftOpenHelper.COLUMN_W_REPEAT,
-			ShiftOpenHelper.COLUMN_M_REPEAT
+			ShiftOpenHelper.COLUMN_M_REPEAT,
+			ShiftOpenHelper.COLUMN_WORKED
 		};
 	
 	public ShiftDAOImpl(Context context) {
@@ -54,6 +55,7 @@ public class ShiftDAOImpl implements ShiftDAO {
 		values.put(ShiftOpenHelper.COLUMN_REPEAT, shift.isRepeat());
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
 		values.put(ShiftOpenHelper.COLUMN_M_REPEAT, shift.isRepeatMonthly());
+		values.put(ShiftOpenHelper.COLUMN_WORKED, shift.isWorked());
 		
 		database.insert(ShiftOpenHelper.TABLE_SHIFT, null, values);
 	}
@@ -130,6 +132,7 @@ public class ShiftDAOImpl implements ShiftDAO {
 		values.put(ShiftOpenHelper.COLUMN_REPEAT, shift.isRepeat());
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
 		values.put(ShiftOpenHelper.COLUMN_M_REPEAT, shift.isRepeatMonthly());
+		values.put(ShiftOpenHelper.COLUMN_WORKED, shift.isWorked());
 		
 		database.update(
 						ShiftOpenHelper.TABLE_SHIFT,
@@ -148,7 +151,6 @@ public class ShiftDAOImpl implements ShiftDAO {
 	private Shift cursorToShift(Cursor cursor) {
 		
 		Shift shift = new Shift(false);
-		boolean notify, repeat;
 		
 		shift.setId(cursor.getInt(0));
 		shift.setUId(cursor.getString(1));
@@ -156,22 +158,9 @@ public class ShiftDAOImpl implements ShiftDAO {
 		shift.parseTo(cursor.getString(3));
 		shift.setNotify((cursor.getInt(4) == 1) ? true : false);
 		shift.setRepeat((cursor.getInt(5) == 1) ? true : false);
-		/*
-		if(cursor.getInt(4) == 0)
-			notify = false;
-		else 
-			notify = true;
-			
-		shift.setNotify(notify);
-		
-		if(cursor.getInt(5) == 0)
-			repeat = false;
-		else
-			repeat = true;
-		*/
 		shift.setRepeatWeekly((cursor.getInt(6) == 1) ? true : false);
 		shift.setRepeatMonthly((cursor.getInt(7) == 1) ? true : false);
-		
+		shift.setWorked((cursor.getInt(8) == 1) ? true : false);
 		return shift;
 	}
 

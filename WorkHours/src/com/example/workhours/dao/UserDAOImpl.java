@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.workhours.entities.User;
-import com.example.workhours.util.PasswordHash;
 import com.example.workhours.util.UserOpenHelper;
 
 public class UserDAOImpl implements UserDAO {
@@ -124,6 +123,33 @@ public class UserDAOImpl implements UserDAO {
 								UserOpenHelper.TABLE_USER,
 								allColumns, 
 								" email ='" + email + "' AND passw_hash ='" + pass + "'", 
+								null, 
+								null, 
+								null, 
+								null
+								);
+		if (cursor != null)
+	        cursor.moveToFirst();			
+		
+		
+		user = cursorToUser(cursor);
+		
+		if(cursor != null && !cursor.isClosed())
+		    cursor.close();
+		
+		return user;
+	}
+
+	@Override
+	public User getUser(String email) {
+		
+		User user = new User();
+		
+		Cursor cursor; 
+		cursor = database.query(
+								UserOpenHelper.TABLE_USER,
+								allColumns, 
+								" email ='" + email, 
 								null, 
 								null, 
 								null, 

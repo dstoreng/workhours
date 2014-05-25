@@ -11,6 +11,7 @@ public interface UserDAO {
 	public void dropUser();
 	public List<User> getUsers();
 	public User getUser(String email, String passhash);
+	public User getUser(String email);
 	public void open();
 	public void close();
 
