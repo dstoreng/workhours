@@ -237,7 +237,7 @@ public class MainActivity extends FragmentActivity {
 		public void refreshView(){
 			int NUM = list.size();
 			int colorTeal = Color.parseColor("#33B5E5");
-			int colorWhite = Color.parseColor("#FFFFFF");
+			int colorWhite = Color.parseColor("#111111");
 			int color;
 			for(int i = 0; i < NUM; i++){
 				if(i%2 == 0)
@@ -266,7 +266,7 @@ public class MainActivity extends FragmentActivity {
 			view.setBackgroundColor(color);
 			view.setText(data);
 			view.setTextSize(txtSize);
-			view.setTextColor(Color.BLACK);
+			view.setTextColor(Color.WHITE);
 			view.setClickable(clickable);
 			view.setOnClickListener(new View.OnClickListener() {
 
