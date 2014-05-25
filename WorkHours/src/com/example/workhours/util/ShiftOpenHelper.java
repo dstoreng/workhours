@@ -20,7 +20,7 @@ public class ShiftOpenHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_WORKED       = "isWorked";
 	
 	public static final String DATABASE_NAME = "shift.db";
-	public static final int DATABASE_VERSION = 2;
+	public static final int DATABASE_VERSION = 3;
 	
 	public static final String DATABASE_CREATE = "create table "
 
@@ -55,7 +55,4 @@ public class ShiftOpenHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHIFT);
 	    onCreate(db);
 	}
-
-	
-
 }
