@@ -219,11 +219,12 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public static class EventFragment extends Fragment{
-		private List<Shift> list;
+		private List<Shift> list, tmpList;
 		private ShiftDAO shiftDao;
-		private TextView txtView;
+		private TextView txtView, hourText;
 		private View rootView;
 		private LinearLayout mainLayout, secLayout;
+		private double scheduledHours;
 		private int txtSize = 19;
 		private int color = Color.BLACK;
 		private boolean clickable = true;
@@ -233,16 +234,25 @@ public class MainActivity extends FragmentActivity {
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){	
-	
 			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
 			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
-			secLayout = (LinearLayout) rootView.findViewById(R.id.hoursContainer);
+			hourText = (TextView)rootView.findViewById(R.id.displayHours);
 			
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
-			list = shiftDao.getShifts();
+			tmpList = shiftDao.getShifts();
 			shiftDao.close();
 			
+			list = new ArrayList<Shift>();
+			scheduledHours = 0;
+			//Get all shifts that are not confirmed == scheduled
+			for(Shift t : tmpList){
+				if(!t.isWorked()){
+					list.add(t);
+					scheduledHours += t.getHours();
+				}
+			}		
+			//Update layout with the shifts
 			refreshView();
 			
 			return rootView;
@@ -263,6 +273,8 @@ public class MainActivity extends FragmentActivity {
 						list.get(i).getToFormatted() + spacing,
 						list.get(i), txtView, mainLayout, rootView.getContext(), color);			
 			}
+			
+			hourText.setText("Scheduled Hours: " +scheduledHours);
 		}
 		
 		public void fillLayout(boolean mainView, String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx, int color){
@@ -300,15 +312,21 @@ public class MainActivity extends FragmentActivity {
 			super.onResume();
 			
 			mainLayout.removeAllViews();
-			secLayout.removeAllViews();
 			
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
-			
-			list = shiftDao.getShifts();
-			
+			tmpList = shiftDao.getShifts();
 			shiftDao.close();
-			Log.d("Fetched SHIFTS.", list.size()+"");
+			
+			list = new ArrayList<Shift>();
+			scheduledHours = 0;
+			//Get all shifts that are not confirmed == scheduled
+			for(Shift t : tmpList){
+				if(!t.isWorked()){
+					list.add(t);
+					scheduledHours += t.getHours();
+				}
+			}
 			refreshView();
 		}
 
