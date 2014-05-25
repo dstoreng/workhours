@@ -1,32 +1,50 @@
 package com.example.workhours;
 
 import java.util.Calendar;
-
-import com.example.workhours.entities.CalendarDAO;
-import com.example.workhours.entities.CalendarDAOImpl;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
+import com.example.workhours.util.Notifier;
+import com.example.workhours.util.ScheduleHandler;
 
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TimePicker;
 
 public class ShiftActivity extends Activity {
-	private int day, month, year, fromHour, fromMin, toHour, toMin;
-	private Calendar dateFrom, dateTo;
+	private int fromHour, fromMin, toHour, toMin;
 	private TimePicker from, to;
 	private CheckBox notify, repeat;
-	private CalendarDAO dao;
+	private RadioGroup radioGroup;
+	private RadioButton weekly, monthly;
+	private ShiftDAO shiftdao;
 	private Shift calEvent;
+	private boolean showVisible;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_shift);
+		
+		getHandles();
 	}
 
 	@Override
@@ -36,71 +54,93 @@ public class ShiftActivity extends Activity {
 		return true;
 	}
 
-	public void saveShift(View v) {
+	public void Save_Click(View v) {
+		showVisible = false;
 		getHandles();
 		retrieveData();
-
-		dao.addCalendarEvent(calEvent);
-
-		Intent intent = new Intent(this, MainActivity.class);	
-		long hh = calEvent.getHours();
-		String hoursString = Long.toString(hh);
 		
-		intent.putExtra("HOURS", hoursString);
-		startActivity(intent);
+		shiftdao.open();
+		shiftdao.addShift(calEvent);
+		shiftdao.close();
+		
+		finish();
+	}
+	
+	public void Cancel_Click(View v){
+		finish();
 	}
 
 	public void retrieveData() {
-		// Retrieve data from fragment
+		// Retrieve date from fragment, and make a calendarobject to represent it
 		Intent i = getIntent();
-		// Date first
 		long longDate = (Long) i.getSerializableExtra("DATE");
 		Calendar dateObject = Calendar.getInstance();
-		dateObject.setTimeInMillis(longDate);	
-
-		calEvent = new Shift();
+		dateObject.setTimeInMillis(longDate);
 		
-		// Time from
+		// Time from/to chosen in view
 		fromHour = from.getCurrentHour();
 		fromMin = from.getCurrentMinute();
-
-		// time to
 		toHour = to.getCurrentHour();
 		toMin = to.getCurrentMinute();
-
-		dateFrom = dateObject;
-		dateFrom.set(Calendar.HOUR_OF_DAY, fromHour);
-		dateFrom.set(Calendar.MINUTE, fromMin);
-		calEvent.setFrom(dateFrom.getTimeInMillis());
 		
-		dateTo = dateObject;
-		dateTo.set(Calendar.HOUR_OF_DAY, toHour);
-		dateTo.set(Calendar.MINUTE, toMin);
-		calEvent.setTo(dateTo.getTimeInMillis());
+		// Use Joda Time to build Date Object from the info
+		DateTime f = new DateTime(longDate).withHourOfDay(fromHour).withMinuteOfHour(fromMin);
+		DateTime t = new DateTime(longDate).withHourOfDay(toHour).withMinuteOfHour(toMin);
+		Period p = new Period(f, t);
 		
-		//Ensure that the times are "even" before comparing further
-		dateFrom.set(Calendar.SECOND, 0);
-		dateFrom.set(Calendar.MILLISECOND, 0);
-		dateTo.set(Calendar.SECOND, 0);
-		dateTo.set(Calendar.MILLISECOND, 0);
-		
-		if(dateFrom.getTimeInMillis() > dateTo.getTimeInMillis()){
-			Log.d("DateFROM is after dateTO", "Adding a day to dateTO");
-			dateTo.set(year, month, day+1, toHour, toMin);
+		// If end is after start, add 1 day
+		if(p.getHours() < 0){
+			t = new DateTime(longDate).
+					withDayOfMonth(f.getDayOfMonth()+1).
+					withHourOfDay(toHour).
+					withMinuteOfHour(toMin);
 		}
+		// Start to build the event object
+		calEvent = new Shift(true);
+		calEvent.setFrom(f);
+		calEvent.setTo(t);
 		
+		//Now handle some other info, get email from shared prefs first.
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String uid = prefs.getString("email", null);
 		
-		Log.d("Date from.:,.-'¨'-.,", Long.toString(calEvent.getFrom()));
-		Log.d("Date to.:,.-'¨'-.,", Long.toString(calEvent.getTo()));
-		//calEvent = new Shift(dateFrom, dateTo, repeat.isChecked(), notify.isChecked());
+		//Get notification and repeat info
+		calEvent.setUId(uid);
+		calEvent.setRepeat(repeat.isChecked());
+		calEvent.setRepeatWeekly(weekly.isChecked());
+		calEvent.setRepeatMonthly(monthly.isChecked());
+		calEvent.setNotify(false);
+		
+		// If notification is set we need to build a notification at the specified DateTime
+		if(notify.isChecked()){
+			calEvent.setNotify(true);
+			
+			Notifier n = new Notifier(this, this, calEvent);
+			n.schedule();
+		}
 	}
 
 	public void getHandles() {
 		from = (TimePicker) findViewById(R.id.shiftFrom);
+			from.setIs24HourView(true);
 		to = (TimePicker) findViewById(R.id.shiftTo);
+			to.setIs24HourView(true);
 		repeat = (CheckBox) findViewById(R.id.repeatsBox);
 		notify = (CheckBox) findViewById(R.id.notifyBox);
-		dao = new CalendarDAOImpl(getContentResolver());
+		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+		weekly = (RadioButton) findViewById(R.id.radioWeekly);
+		monthly = (RadioButton) findViewById(R.id.radioMonthly);
+		shiftdao = new ShiftDAOImpl(getApplicationContext());
+	}
+	
+	public void Repeat_Click(View v){
+		if(!showVisible){
+			radioGroup.setVisibility(View.VISIBLE);
+			showVisible = true;
+		}else{
+			radioGroup.setVisibility(View.INVISIBLE);
+			showVisible = false;
+		}
 	}
 
 }

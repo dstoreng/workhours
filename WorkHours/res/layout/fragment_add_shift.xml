@@ -3,14 +3,6 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/displayHoursText"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="10"
-        android:text="@string/text_display_hours"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
     <CalendarView
         android:id="@+id/calendarMain"
         android:layout_width="fill_parent"

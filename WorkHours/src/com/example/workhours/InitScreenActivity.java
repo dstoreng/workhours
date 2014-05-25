@@ -29,12 +29,14 @@ public class InitScreenActivity extends Activity {
 	
 		/*Debug purposes*/
 		dao = new UserDAOImpl(this);
+
 		dao.open();
 		List<User> users = dao.getUsers();
 		for(User u : users) {
 			
 			Log.d("USER", u.toString());
 		}
+
 		
 		dao.dropUser();
 		/*
@@ -52,7 +54,7 @@ public class InitScreenActivity extends Activity {
 		 * The user is navigated to the main page 
 		 * */
 		SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String existingAccount = preferences2.getString("user", null);
+		String existingAccount = preferences2.getString("email", null);
 		
 		if(existingAccount != null){
 			

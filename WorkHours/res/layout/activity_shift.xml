@@ -4,62 +4,109 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity$AddShiftFragment" >
 
-   	<Button
-   	    android:id="@+id/shiftOk"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_alignLeft="@+id/shiftTo"
-   	    android:layout_alignParentBottom="true"
-   	    android:layout_alignRight="@+id/shiftTo"
-   	    android:text="@string/button_save_shift" 
-   	    android:onClick="saveShift"/>
+    <TimePicker
+        android:id="@+id/shiftFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textShiftFrom"
+        android:layout_centerHorizontal="true" />
 
-   	<TimePicker
-   	    android:id="@+id/shiftFrom"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_below="@+id/textShiftFrom"
-   	    android:layout_centerHorizontal="true" />
+    <TextView
+        android:id="@+id/textShiftFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/description_shift_from"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-   	<TextView
-   	    android:id="@+id/textShiftFrom"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_alignParentTop="true"
-   	    android:layout_centerHorizontal="true"
-   	    android:text="@string/description_shift_from"
-   	    android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TextView
+        android:id="@+id/textShiftTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shiftFrom"
+        android:layout_centerHorizontal="true"
+        android:text="@string/description_shift_to"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
-   	<TextView
-   	    android:id="@+id/textShiftTo"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_below="@+id/shiftFrom"
-   	    android:layout_centerHorizontal="true"
-   	    android:text="@string/description_shift_to"
-   	    android:textAppearance="?android:attr/textAppearanceLarge" />
+    <TimePicker
+        android:id="@+id/shiftTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textShiftTo"
+        android:layout_centerHorizontal="true" />
 
-   	<TimePicker
-   	    android:id="@+id/shiftTo"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_below="@+id/textShiftTo"
-   	    android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/shiftTo"
+        android:orientation="horizontal" >
 
-   	<CheckBox
-   	    android:id="@+id/repeatsBox"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_alignLeft="@+id/shiftTo"
-   	    android:layout_below="@+id/shiftTo"
-   	    android:text="@string/box_repeats" />
+        <LinearLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
-   	<CheckBox
-   	    android:id="@+id/notifyBox"
-   	    android:layout_width="wrap_content"
-   	    android:layout_height="wrap_content"
-   	    android:layout_alignLeft="@+id/repeatsBox"
-   	    android:layout_below="@+id/repeatsBox"
-   	    android:text="@string/box_notify" />
+            <CheckBox
+                android:id="@+id/repeatsBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="14dp"
+                android:onClick="Repeat_Click"
+                android:text="@string/box_repeats" />
 
+            <CheckBox
+                android:id="@+id/notifyBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:text="@string/box_notify" />
+        </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="invisible" >
+
+            <RadioButton
+                android:id="@+id/radioMonthly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/radio_monthly" />
+
+            <RadioButton
+                android:id="@+id/radioWeekly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_weekly" />
+        </RadioGroup>
+    </LinearLayout>
+    
+	<LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/changeOk"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".33"
+            android:onClick="Save_Click"
+            android:text="@string/button_save_change" />
+
+        <Button
+            android:id="@+id/changeCancel"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight=".33"
+            android:onClick="Cancel_Click"
+            android:text="@string/button_cancel_change" />
+    </LinearLayout>
 </RelativeLayout>

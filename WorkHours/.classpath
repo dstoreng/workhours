@@ -9,6 +9,9 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="C:/Users/Joach_000/Desktop/ecv/extendedcalendarview.jar"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.3.jar"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.3-javadoc.jar"/>
+	<classpathentry kind="lib" path="libs/joda-time-2.3-sources.jar"/>
+	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

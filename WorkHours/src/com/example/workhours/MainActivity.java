@@ -1,8 +1,12 @@
 package com.example.workhours;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import com.example.workhours.entities.Shift;
 import android.app.ActionBar.LayoutParams;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -25,15 +29,14 @@ import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
-import com.example.workhours.entities.SharedPrefs;
 import com.facebook.Session;
 
 public class MainActivity extends FragmentActivity {
-	
+	public double amountOfHours;
 	private UserDAO dao;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -49,7 +52,7 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
+				this, getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -70,19 +73,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onResume(){
 		super.onResume();
 		
-		Intent shiftData = getIntent();
 		dao.open();
-		
-		try{
-			String intentHours = (String) shiftData.getSerializableExtra("HOURS");
-			SharedPrefs prefs = new SharedPrefs(this);
-			prefs.addHours(Long.parseLong(intentHours));
-			Log.d("HOURS!!", intentHours);
-			Toast.makeText(getApplicationContext(), "Hours: " + intentHours, Toast.LENGTH_LONG).show();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
 	}
 	
 	@Override
@@ -97,10 +88,38 @@ public class MainActivity extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		switch(item.getItemId()){
+		case (R.id.action_profile):
+			Log.d("item selected", R.id.action_profile + "");
+			Intent profile = new Intent(this, ProfileActivity.class);
+			startActivity(profile);
+			break;
+		case R.id.action_log_out:
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences.Editor editor = preferences.edit();
+			editor.clear();
+			editor.commit();
+		
+			Session session = Session.getActiveSession();
+			if(session != null)
+				session.closeAndClearTokenInformation();
+		
+			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
+			startActivity(intent);
+			break;
+		
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+	
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		public SectionsPagerAdapter(FragmentManager fm) {
+		
+		public SectionsPagerAdapter(MainActivity m, FragmentManager fm) {
 			super(fm);
 		}
 
@@ -119,13 +138,7 @@ public class MainActivity extends FragmentActivity {
 					break;
 				}
 				return fragment;	
-				
-				/*
-				 	fragment = new DummySectionFragment();
-					Bundle args = new Bundle();
-					args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-					fragment.setArguments(args);
-				 */
+
 		}
 
 		@Override
@@ -148,26 +161,6 @@ public class MainActivity extends FragmentActivity {
 			return null;
 		}
 	}
-
-	public static class DummySectionFragment extends Fragment {
-
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public DummySectionFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_dummy,
-					container, false);
-			TextView dummyTextView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			dummyTextView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
-			return rootView;
-		}
-	}
 	
 	public static class ShiftFragment extends Fragment{
 		private long date;
@@ -185,14 +178,7 @@ public class MainActivity extends FragmentActivity {
 	    public void onActivityCreated(Bundle savedInstanceState)
 	    {
 	        super.onActivityCreated(savedInstanceState);
-	        
-	        
-	        TextView hourText = (TextView) getView().findViewById(R.id.displayHoursText);
-	        SharedPrefs prefs = new SharedPrefs(getActivity());
-	        double scheduledHours = prefs.getHours();
-	        Log.d("HOURS SCHEDULED", Double.toString(scheduledHours));
-	        hourText.append(" -- " + scheduledHours);
-	        
+	        	        
 	        //View rootView = getView().findViewById(R.layout.fragment_add_shift);
 			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
 			date = calendar.getDate();
@@ -210,7 +196,8 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), ShiftActivity.class);
-					intent.putExtra("DATE", date);	
+					intent.putExtra("DATE", date);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
 			});			
@@ -218,66 +205,111 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	public static class EventFragment extends Fragment{
-//		private List<Shift> list;
-	//	private TextView view;
-		
-		private int txtSize = 16;
+		private List<Shift> list;
+		private ShiftDAO shiftDao;
+		private TextView txtView;
+		private View rootView;
+		private LinearLayout mainLayout, secLayout;
+		private int txtSize = 19;
 		private int color = Color.BLACK;
 		private boolean clickable = true;
-		
+		private String spacing = "				";	
 		public EventFragment(){
 		}
 		
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){	
+	
+			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
+			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
+			secLayout = (LinearLayout) rootView.findViewById(R.id.hoursContainer);
 			
-			View rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
-			LinearLayout layoutFrom = (LinearLayout) rootView.findViewById(R.id.containerFrom);
-			LinearLayout layoutTo = (LinearLayout) rootView.findViewById(R.id.containerTo);
-			LinearLayout layoutHours = (LinearLayout) rootView.findViewById(R.id.containerHours);
+			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao.open();
+			list = shiftDao.getShifts();
+			shiftDao.close();
 			
-			TextView from, to, hours;		
-			
-			
-			final int NUM = 50;
-			for(int i = 0; i < NUM; i++){
-				from = new TextView(getActivity());
-				fillLayout("from", from, layoutFrom);			
-			}
-			for(int i = 0; i < NUM; i++){
-				to = new TextView(getActivity());
-				fillLayout("to", to, layoutTo);
-			}
-			for(int i = 0; i < NUM; i++){
-				hours = new TextView(getActivity());
-				fillLayout("hours", hours, layoutHours);
-			}
+			refreshView();
 			
 			return rootView;
 		}
 		
-		public void fillLayout(String data, TextView view, LinearLayout layout){
+		public void refreshView(){
+			int NUM = list.size();
+			int colorTeal = Color.parseColor("#33B5E5");
+			int colorWhite = Color.parseColor("#111111");
+			int color;
+			for(int i = 0; i < NUM; i++){
+				if(i%2 == 0)
+					color = colorTeal;
+				else
+					color = colorWhite;
+				txtView = new TextView(getActivity());
+				fillLayout(true, list.get(i).getFromFormatted() + spacing +
+						list.get(i).getToFormatted() + spacing,
+						list.get(i), txtView, mainLayout, rootView.getContext(), color);			
+			}
+			for(int i = 0; i < NUM; i++){
+				if(i%2 == 0)
+					color = colorTeal;
+				else
+					color = colorWhite;
+				txtView = new TextView(getActivity());
+				fillLayout(false, list.get(i).getHours() + "",
+						list.get(i), txtView, secLayout, rootView.getContext(), color);
+			}
+		}
+		
+		public void fillLayout(boolean mainView, String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx, int color){
 			view = new TextView(getActivity());
+			view.setId(tmpShift.getId());
+			view.setBackgroundColor(color);
 			view.setText(data);
 			view.setTextSize(txtSize);
-			view.setTextColor(color);
+			view.setTextColor(Color.WHITE);
 			view.setClickable(clickable);
-			
 			view.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
+					TextView obj = (TextView) v;
+					String objString = obj.getText().toString();
+					int objId = obj.getId();
+					
+					Log.d("OBJECT LISTENER", objString);
+					Log.d("OBJECT LISTENER", objId + "");
+									
 					/*
-					 * TODO Change activity
+					 * Send Shift id to the Shift activity class
 					 */
-					Intent intent = new Intent(getActivity(), MainActivity.class);	
-					startActivity(intent);					
+					Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
+					intent.putExtra("OBJECT_ID", objId);
+					intent.putExtra("OBJECT_STRING", objString);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+					startActivity(intent);
 				}
 			});
-			
-			layout.addView(view, LayoutParams.MATCH_PARENT);
+			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			layout.addView(view, lp);		
 		}
 		
+		@Override
+		public void onResume(){
+			super.onResume();
+			
+			mainLayout.removeAllViews();
+			secLayout.removeAllViews();
+			
+			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao.open();
+			
+			list = shiftDao.getShifts();
+			
+			shiftDao.close();
+			Log.d("Fetched SHIFTS.", list.size()+"");
+			refreshView();
+		}
+
 	}
 	
 	public static class DebtFragment extends Fragment{
@@ -286,36 +318,31 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState){
-			
+		
 			return inflater.inflate(R.layout.fragment_add_debt, container, false);
 		}
 		
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		if(R.id.action_log_out == item.getItemId()) {
+		@Override
+	    public void onActivityCreated(Bundle savedInstanceState)
+	    {
+	        super.onActivityCreated(savedInstanceState);
+
+			TextView hourText = (TextView) getView().findViewById(R.id.displayHours);
 			
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.clear();
-			editor.commit();
+			// get all shifts to calculate hours scheduled
+			ShiftDAO dao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			dao.open();
+			List<Shift> list = new ArrayList<Shift>();
+			list = dao.getShifts();
+			double totalHours = 0;
 			
-			Session session = Session.getActiveSession();
-			if(session != null)
-				session.closeAndClearTokenInformation();
+			for(Shift s : list){
+				totalHours += s.getHours();
+			}
 			
-			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
-			startActivity(intent);
-			
-			return true;
-			
-		}else {
-			
-			return super.onOptionsItemSelected(item);
-		}
-		
+	        hourText.append(" -- " + totalHours);
+	    }
+
 		
 	}
 

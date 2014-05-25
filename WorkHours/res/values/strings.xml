@@ -8,6 +8,7 @@
     <string name="title_section3">Section 3</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_shift_fragment">ShiftFragment</string>
+    <string name="action_profile">Profile</string>
 
     <!-- ********************************************************** -->
     <!-- **********    TextBlock    Variables                ****** -->
@@ -16,26 +17,40 @@
     <string name="description_shift_from">Shift start:</string>
     <string name="description_shift_to">Shift end:</string>
     <string name="title_activity_shift">New Shift</string>
-
     <string name="text_display_start">Start</string>
     <string name="text_display_end">End</string>
     <string name="text_display_hours">Hours</string>
-    
+
+    <string name="profile_name_label">Username</string>
+    <string name="profile_email_label">Email</string>
+    <string name="employer_email_label">Employer email</string>
+    <string name="hourly_wage_label">Hourly wage</string>
+    <string name="tax_label">Tax</string>
    
+    <string name="profile_title">Profile</string>
+
     <!-- ********************************************************** -->
     <!-- **********     Button 	   Variables                 ****** -->
     <!-- ********************************************************** -->
 
     <string name="button_save_shift">Save shift</string>
+    <string name="button_cancel_change">Cancel</string>
+    <string name="button_save_change">Save</string>
     <string name="button_select_date">Select date</string>
+
+    <string name="button_change_details">Change details</string>
+    <string name="button_save_details">Save details</string>
+    <string name="button_cancel_details">Cancel</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Checkbox   Variables                 ****** -->
     <!-- ********************************************************** -->
 
-    <string name="box_repeats">Repeating event</string>
+    <string name="box_repeats">Repeating</string>
     <string name="box_notify">Notify</string>
-
+    <string name="radio_weekly">Weekly</string>
+    <string name="radio_monthly">Monthly</string>
+    
     <!-- ********************************************************** -->
     <!-- **********     ???????    Variables                 ****** -->
     <!-- ********************************************************** -->
@@ -48,5 +63,6 @@
     <string name="title_activity_login_options">LoginOptionsActivity</string>
     <string name="title_activity_sign_up_options">SignUpOptionsActivity</string>
     <string name="title_activity_sign_up_email">SignUpEmailActivity</string>
+    <string name="title_activity_change_shift">ChangeShiftActivity</string>
 
 </resources>

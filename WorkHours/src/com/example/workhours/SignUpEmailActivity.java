@@ -69,6 +69,9 @@ public class SignUpEmailActivity extends Activity {
 			//Stores username in shared preferences 
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 			SharedPreferences.Editor editor = preferences.edit(); 
+	
+			editor.putString("email", user.getEmail());
+			editor.commit();
 			
 			/**
 			 * Check if email account already exists 
