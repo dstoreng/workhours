@@ -4,8 +4,12 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -16,6 +20,8 @@ import android.widget.TimePicker;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
+import com.example.workhours.util.Notifier;
+import com.example.workhours.util.ScheduleHandler;
 
 public class ChangeShiftActivity extends Activity {
 
@@ -24,6 +30,8 @@ public class ChangeShiftActivity extends Activity {
 	private Shift shift;
 	private ShiftDAO shiftDao;
 	private DateTime date;
+	private AlarmManager mgr;
+	private PendingIntent pi;
 
 	private RadioButton weekly, monthly;
 	private RadioGroup radioGroup;
@@ -46,6 +54,12 @@ public class ChangeShiftActivity extends Activity {
 		shiftDao.open();
 		shift = shiftDao.getShift(shiftId);
 		shiftDao.close();
+		
+		// Notify equals notification, cancel it.
+		if(shift.isNotify()){
+			Notifier n = new Notifier(this, this, shift);
+			n.cancel();
+		}
 
 		if (shift != null) {
 			date = shift.getFrom();
@@ -59,7 +73,6 @@ public class ChangeShiftActivity extends Activity {
 			// Hour to
 			int ht = shift.getTo().getHourOfDay();
 			int mt = shift.getTo().getMinuteOfHour();
-			Log.d("Trying to set to", ht + ":" + mt);
 			to.setCurrentHour(ht);
 			to.setCurrentMinute(mt);
 
@@ -102,17 +115,21 @@ public class ChangeShiftActivity extends Activity {
 				withDayOfMonth(f.getDayOfMonth()+1).
 				withHourOfDay(toHour).
 				withMinuteOfHour(toMin);
-			
-			//dette kan fjernes
-			p = new Period(f, t);
-			Log.d("ORDNET TIMER DD:HH", p.getDays() + " " + p.getHours());
 		}
 
 		shift.setFrom(f);
 		shift.setTo(t);
 
 		// Get notification and repeat info
-		shift.setNotify(notify.isChecked());
+		boolean notif = notify.isChecked();
+		if(notif){
+			shift.setNotify(true);
+			
+			Notifier n = new Notifier(this, this, shift);
+			n.schedule();
+		}else{
+			shift.setNotify(false);
+		}
 		shift.setRepeat(repeat.isChecked());
 
 		// repeat = true

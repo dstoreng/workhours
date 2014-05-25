@@ -15,10 +15,11 @@ public class Shift implements Serializable {
 
 	private int id;
 	private String uId;
-
+	
 	private Period period;
 	private DateTime from;
 	private DateTime to;
+	private boolean worked;
 	private boolean notify;
 	private boolean repeat;
 	private boolean repeatWeekly;
@@ -33,6 +34,10 @@ public class Shift implements Serializable {
 			Long time = c.getTimeInMillis();
 			this.id = time.intValue();
 		}
+	}
+	
+	public boolean isWorked(){
+		return worked;
 	}
 
 	public boolean isNotify() {
@@ -70,6 +75,10 @@ public class Shift implements Serializable {
 	public int getHours(){
 		period = new Period(from, to);
 		return period.getHours();
+	}
+	
+	public void setWorked(boolean worked){
+		this.worked = worked;
 	}
 
 	public void setTo(DateTime to) {
@@ -136,6 +145,13 @@ public class Shift implements Serializable {
 	public void parseTo(String val){
 		DateTimeFormatter format = DateTimeFormat.forPattern(dateFormat);
 		to = format.parseDateTime(val);
+	}
+	
+	/**
+	 * @returns time in milliseconds until shift is DONE.
+	 */
+	public long getMillisDone(int offset){
+		return (to.getMillis() - DateTime.now().getMillis()) + offset;
 	}
 
 }
