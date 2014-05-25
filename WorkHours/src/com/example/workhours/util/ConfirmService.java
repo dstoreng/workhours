@@ -1,6 +1,7 @@
 package com.example.workhours.util;
 
 import android.app.IntentService;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.util.Log;
 
@@ -34,8 +35,10 @@ public class ConfirmService extends IntentService{
 			
 			dao.close();
 			
-			Log.d("SUCCESFULLY CONFIRMED A SHIFT", s.toString());
-		}	
+			// Remove notification
+			NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			nm.cancel(shiftId);
+		}
 	}
 
 }

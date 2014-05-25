@@ -263,15 +263,6 @@ public class MainActivity extends FragmentActivity {
 						list.get(i).getToFormatted() + spacing,
 						list.get(i), txtView, mainLayout, rootView.getContext(), color);			
 			}
-			for(int i = 0; i < NUM; i++){
-				if(i%2 == 0)
-					color = colorTeal;
-				else
-					color = colorWhite;
-				txtView = new TextView(getActivity());
-				fillLayout(false, list.get(i).getHours() + "",
-						list.get(i), txtView, secLayout, rootView.getContext(), color);
-			}
 		}
 		
 		public void fillLayout(boolean mainView, String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx, int color){
@@ -289,9 +280,6 @@ public class MainActivity extends FragmentActivity {
 					TextView obj = (TextView) v;
 					String objString = obj.getText().toString();
 					int objId = obj.getId();
-					
-					Log.d("OBJECT LISTENER", objString);
-					Log.d("OBJECT LISTENER", objId + "");
 									
 					/*
 					 * Send Shift id to the Shift activity class

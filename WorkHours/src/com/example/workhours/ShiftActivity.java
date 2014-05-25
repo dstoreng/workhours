@@ -110,6 +110,7 @@ public class ShiftActivity extends Activity {
 		calEvent.setRepeatWeekly(weekly.isChecked());
 		calEvent.setRepeatMonthly(monthly.isChecked());
 		calEvent.setNotify(false);
+		calEvent.setWorked(false);
 		
 		// If notification is set we need to build a notification at the specified DateTime
 		if(notify.isChecked()){

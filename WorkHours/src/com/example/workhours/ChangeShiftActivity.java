@@ -120,7 +120,7 @@ public class ChangeShiftActivity extends Activity {
 		shift.setFrom(f);
 		shift.setTo(t);
 
-		// Get notification and repeat info
+		// Schedule notification
 		boolean notif = notify.isChecked();
 		if(notif){
 			shift.setNotify(true);
@@ -143,8 +143,6 @@ public class ChangeShiftActivity extends Activity {
 		 */
 		shiftDao.open();
 		shiftDao.updateShift(shift.getId(), shift);
-		Log.d("Repeat weekly", shift.isRepeatWeekly() + "");
-		Log.d("Repeat monthly", shift.isRepeatMonthly()+"");
 		shiftDao.close();
 
 		finish();
