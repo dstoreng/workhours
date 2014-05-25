@@ -35,7 +35,9 @@ public class EmailService extends IntentService{
 		sDao.close();
 		
 		uDao.open();
-		User u = uDao.getUser(uid);
+		//User u = uDao.getUser(uid);
+		User u = new User("Daniel S.", "dan_tm_storeng@hotmail.com", "asdf");
+		u.setEmployerEmail("danielstoreng@gmail.com");
 		uDao.close();
 		
 		Intent i = new Intent(Intent.ACTION_SEND);
