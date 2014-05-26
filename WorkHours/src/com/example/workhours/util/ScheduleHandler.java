@@ -12,13 +12,13 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ScheduleHandler extends IntentService {
 
 	private final String TITLE = "Workhours - Confirm Shift";
-	private final String CONTENT = "Awaiting confirmation of scheduled hours.";
+	private final String CONTENT = "Did you work from ";
 	private ShiftDAO dao;
-	private Shift s;
 	
 	public ScheduleHandler() {
 		super("Shift handler");
@@ -26,26 +26,33 @@ public class ScheduleHandler extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		dao = new ShiftDAOImpl(getApplicationContext());
-		int shiftId = intent.getIntExtra("SHIFT_ID", 0);
-		dao.open();
-		s = dao.getShift(shiftId);
-		dao.close();
 		
+		int shiftId = intent.getIntExtra("SHIFT_ID", 0);
+		Log.d("Received schedule for SHIFT_ID: ", + shiftId + "");
+		
+		dao = new ShiftDAOImpl(getApplicationContext());
+		
+		dao.open();
+		Shift s = dao.getShift(shiftId);
+		dao.close();
+			
+		//Build the notification
 		NotificationCompat.Builder nb = new NotificationCompat.Builder(this)
 			.setSmallIcon(R.drawable.ic_action_share)
 			.setContentTitle(TITLE)
-			.setContentText(CONTENT + s.getFromFormatted() + " - " + s.getToFormatted());
+			.setContentText(CONTENT + s.getFromFormatted() + " to " + s.getToFormatted());
 		
+		//Build action change
 		Intent change = new Intent(this, ChangeShiftActivity.class);
-		change.putExtra("OBJECT_ID", shiftId);
+		change.putExtra("SHIFT_ID", shiftId);
 		change.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		
+		//Build action confirm
 		Intent save = new Intent(this, ConfirmService.class);
-		save.putExtra("OBJECT_ID", shiftId);
+		save.putExtra("SHIFT_ID", shiftId);
 		
 		PendingIntent piChange = PendingIntent.getActivity(this, 0, change, PendingIntent.FLAG_CANCEL_CURRENT);
-		PendingIntent piSave = PendingIntent.getActivity(this, 0, save, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent piSave = PendingIntent.getService(this, 0, save, PendingIntent.FLAG_CANCEL_CURRENT);
 		
 		nb.setAutoCancel(true);
 		nb.addAction(R.drawable.action_save, "Confirm", piSave);

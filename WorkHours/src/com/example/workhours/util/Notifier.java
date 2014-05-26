@@ -6,21 +6,22 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.example.workhours.entities.Shift;
 
 public class Notifier {
 	private AlarmManager mgr;
 	private PendingIntent pi;
-	private Intent intent;
-	private Shift s;
+	private Intent i;
 	
-	public Notifier(Activity a, Context c, Shift s){
-		this.s = s;
+	public Notifier(Activity a, Context c, Shift shift){
 		mgr = (AlarmManager) a.getSystemService(Context.ALARM_SERVICE);
-		intent = new Intent(c, ScheduleHandler.class);
-		intent.putExtra("SHIFT_ID", s.getId());
-		pi = PendingIntent.getService(c, 0, intent, 0);
+		i = new Intent(c, ScheduleHandler.class);
+		i.putExtra("SHIFT_ID", shift.getId());
+		pi = PendingIntent.getService(c, 0, i, 0);
+		
+		Log.d("Notifier created for SHIFT_ID", "ID = " + shift.getId());
 	}
 	
 	/**

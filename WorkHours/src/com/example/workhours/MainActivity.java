@@ -208,13 +208,16 @@ public class MainActivity extends FragmentActivity {
 			email.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
+					// Get user email so that we can retrieve user settings in email manager
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
+							getActivity().getApplicationContext());
 					Intent i = new Intent(getActivity(), EmailService.class);
+					i.putExtra("USER_EMAIL", prefs.getString("email", ""));
 					v.getContext().
 					startService(i);
 				}
 			});
-	    }
-		
+	    }	
 		
 	}
 	
@@ -290,15 +293,13 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void onClick(View v) {
 					TextView obj = (TextView) v;
-					String objString = obj.getText().toString();
 					int objId = obj.getId();
 									
 					/*
 					 * Send Shift id to the Shift activity class
 					 */
 					Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
-					intent.putExtra("OBJECT_ID", objId);
-					intent.putExtra("OBJECT_STRING", objString);
+					intent.putExtra("SHIFT_ID", objId);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
@@ -347,20 +348,7 @@ public class MainActivity extends FragmentActivity {
 	    {
 	        super.onActivityCreated(savedInstanceState);
 
-			TextView hourText = (TextView) getView().findViewById(R.id.displayHours);
 			
-			// get all shifts to calculate hours scheduled
-			ShiftDAO dao = new ShiftDAOImpl(getActivity().getApplicationContext());
-			dao.open();
-			List<Shift> list = new ArrayList<Shift>();
-			list = dao.getShifts();
-			double totalHours = 0;
-			
-			for(Shift s : list){
-				totalHours += s.getHours();
-			}
-			
-	        hourText.append(" -- " + totalHours);
 	    }
 
 		

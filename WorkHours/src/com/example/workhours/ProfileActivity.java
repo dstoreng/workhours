@@ -112,6 +112,7 @@ public class ProfileActivity extends FragmentActivity {
 		} else {
 			
 			user.setEmployerEmail(emp_email);
+			dao.updateUser(user);
 			updatedDetails = true;
 		}
 

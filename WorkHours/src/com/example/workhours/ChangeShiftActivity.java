@@ -24,8 +24,6 @@ import com.example.workhours.util.Notifier;
 import com.example.workhours.util.ScheduleHandler;
 
 public class ChangeShiftActivity extends Activity {
-
-	private final String OBJECT_ID = "OBJECT_ID";
 	private int fromHour, fromMin, toHour, toMin, shiftId;
 	private Shift shift;
 	private ShiftDAO shiftDao;
@@ -49,11 +47,12 @@ public class ChangeShiftActivity extends Activity {
 		getHandles();
 
 		Intent sender = getIntent();
-		shiftId = (Integer) sender.getSerializableExtra(OBJECT_ID);
-
+		shiftId = (Integer) sender.getSerializableExtra("SHIFT_ID");
+		Log.d("Change shift", "ID = " + shiftId);
 		shiftDao.open();
 		shift = shiftDao.getShift(shiftId);
 		shiftDao.close();
+		Log.d("Change shift", " retrieved shift from DB, ID = " + shift.getId());
 		
 		// Notify equals notification, cancel it.
 		if(shift.isNotify()){
@@ -144,6 +143,8 @@ public class ChangeShiftActivity extends Activity {
 		shiftDao.open();
 		shiftDao.updateShift(shift.getId(), shift);
 		shiftDao.close();
+		
+		shift = null;
 
 		finish();
 	}

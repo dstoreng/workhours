@@ -1,6 +1,7 @@
 package com.example.workhours.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -107,6 +108,7 @@ public class ShiftDAOImpl implements ShiftDAO {
 		if(cursor != null && !cursor.isClosed())
 		    cursor.close();
 		
+		Collections.sort(shifts);
 		return shifts;
 	}
 

@@ -89,12 +89,9 @@ public class ShiftActivity extends Activity {
 		Period p = new Period(f, t);
 		
 		// If end is after start, add 1 day
-		if(p.getHours() < 0){
-			t = new DateTime(longDate).
-					withDayOfMonth(f.getDayOfMonth()+1).
-					withHourOfDay(toHour).
-					withMinuteOfHour(toMin);
-		}
+		if(p.getHours() < 0)
+			t = t.plusDays(1);
+			
 		// Start to build the event object
 		calEvent = new Shift(true);
 		calEvent.setFrom(f);

@@ -74,7 +74,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
 		
 		database.update(
-						ShiftOpenHelper.TABLE_SHIFT,
+				UserOpenHelper.TABLE_USER,
 						values,
 						" email ='" + user.getEmail() + "'",
 						null

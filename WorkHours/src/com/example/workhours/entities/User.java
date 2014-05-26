@@ -89,6 +89,10 @@ public class User {
 		return name + ";" + email + ";" + passHash + ";" + employerEmail + ";" + hourlyWage + ";" + tax;
 	}
 	
+	public boolean isValidEmployerEmail(){
+		return ((employerEmail.trim().equals("")) || (employerEmail == null)) ? false : true;
+	}
+	
 	
 
 }

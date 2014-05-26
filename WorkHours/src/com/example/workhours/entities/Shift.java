@@ -8,7 +8,7 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-public class Shift implements Serializable {
+public class Shift implements Serializable, Comparable<Shift> {
 
 	private static final long serialVersionUID = 1L;
 	private String dateFormat = "dd/MM/yy - HH:mm";
@@ -154,4 +154,7 @@ public class Shift implements Serializable {
 		return (to.getMillis() - DateTime.now().getMillis()) + offset;
 	}
 
+	public int compareTo(Shift s){
+		return this.getFrom().compareTo(s.getFrom());
+	}
 }
