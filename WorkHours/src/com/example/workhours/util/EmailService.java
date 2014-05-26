@@ -2,14 +2,14 @@ package com.example.workhours.util;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 import android.text.Html;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.workhours.MainActivity;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
@@ -33,38 +33,50 @@ public class EmailService extends IntentService {
 		sDao = new ShiftDAOImpl(getApplicationContext());
 		uDao = new UserDAOImpl(getApplicationContext());
 
-		sDao.open();
-		shifts = sDao.getShifts();
-		sDao.close();
-
 		uDao.open();
 		User u = uDao.getUser(uid);
 		uDao.close();
 		
 		if (u.isValidEmployerEmail()) {
-			Intent i = new Intent(Intent.ACTION_SEND);
-			// i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			i.setType("message/rfc822");
-			i.putExtra(Intent.EXTRA_EMAIL,
-					new String[] { u.getEmployerEmail() });
-			i.putExtra(Intent.EXTRA_SUBJECT, "WORKHOURS - " + u.getName());
-
+			sDao.open();
+			shifts = sDao.getShifts();
+			sDao.close();
+			
+			/*
+			 * Get a pointer to the previous month
+			 */
+			DateTime dt = new DateTime();
+			dt = dt.minusMonths(1);
+			int month = dt.getMonthOfYear();
+			int year = dt.getYear();
+			
 			StringBuilder content = new StringBuilder();
 			for (Shift s : shifts) {
-				if (s.isWorked()) {
+				//Find confirmed shifts from last month and add to the HTML string builder
+				if (s.isWorked() && (s.getFrom().getYear() == year) && 
+						(s.getFrom().getMonthOfYear() == month))
+				{
 					content.append("<p>" + s.getFromFormatted() + " - "
 							+ s.getToFormatted() + "</p>");
 				}
 			}
+			//Build the intent
+			Intent i = new Intent(Intent.ACTION_SEND);
+			i.setType("message/rfc822");
+			i.putExtra(Intent.EXTRA_EMAIL, new String[] { u.getEmployerEmail() });
+			i.putExtra(Intent.EXTRA_SUBJECT, "WORKHOURS - " + u.getName());
 			i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content.toString()));
 
 			try {
 				startActivity(Intent.createChooser(i, "Send email...")
 						.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
 			} catch (android.content.ActivityNotFoundException ex) {
-				Toast.makeText(getApplicationContext(),
-						"There are no email clients installed.",
-						Toast.LENGTH_SHORT).show();
+				handler.post(new Runnable() {
+					  @Override
+					   public void run() {
+					      Toast.makeText(getApplicationContext(), "Please install an email client to use this feature.", Toast.LENGTH_SHORT).show();
+					   }
+				});
 			}
 		}else{
 			handler.post(new Runnable() {

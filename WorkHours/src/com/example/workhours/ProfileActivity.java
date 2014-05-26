@@ -121,6 +121,7 @@ public class ProfileActivity extends FragmentActivity {
 			hour_wage = Double.parseDouble(hourly_wage_value.getText()
 					.toString());
 			user.setHourlyWage(hour_wage);
+			dao.updateUser(user);
 			updatedDetails = true;
 
 		} catch (Exception e) {

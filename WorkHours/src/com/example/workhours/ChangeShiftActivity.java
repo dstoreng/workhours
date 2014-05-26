@@ -4,12 +4,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -21,15 +17,12 @@ import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.util.Notifier;
-import com.example.workhours.util.ScheduleHandler;
 
 public class ChangeShiftActivity extends Activity {
 	private int fromHour, fromMin, toHour, toMin, shiftId;
 	private Shift shift;
 	private ShiftDAO shiftDao;
 	private DateTime date;
-	private AlarmManager mgr;
-	private PendingIntent pi;
 
 	private RadioButton weekly, monthly;
 	private RadioGroup radioGroup;
@@ -109,12 +102,8 @@ public class ChangeShiftActivity extends Activity {
 		DateTime t = date.withHourOfDay(toHour).withMinuteOfHour(toMin);
 		Period p = new Period(f, t);
 		
-		if(p.getHours() < 0){
-			t = date.
-				withDayOfMonth(f.getDayOfMonth()+1).
-				withHourOfDay(toHour).
-				withMinuteOfHour(toMin);
-		}
+		if(p.getHours() < 0)
+			t = t.plusDays(1);
 
 		shift.setFrom(f);
 		shift.setTo(t);

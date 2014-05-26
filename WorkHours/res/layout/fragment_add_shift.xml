@@ -6,27 +6,62 @@
     <CalendarView
         android:id="@+id/calendarMain"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="6" />
+        android:layout_height="0dip"
+        android:layout_weight="5" />
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="6" >
+        android:layout_height="0dip"
+        android:layout_weight="5" >
 
-        <Button
-            android:id="@+id/selectDateButton"
+        <LinearLayout
+            android:id="@+id/contentBoxMain"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/button_select_date" />
-    </LinearLayout>
+            android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/sendEmailButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="sendEmail"
-        android:text="email" />
+            <Button
+                android:id="@+id/selectDateButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/button_select_date" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/textSalaryLast"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/salaryViewLast"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/textSalaryNext"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/salaryViewNext"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/sendEmailButton"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:onClick="sendEmail"
+                android:text="email" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

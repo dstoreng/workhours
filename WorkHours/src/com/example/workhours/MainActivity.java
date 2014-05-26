@@ -1,10 +1,15 @@
 package com.example.workhours;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+
+import com.example.workhours.entities.Calculations;
 import com.example.workhours.entities.Shift;
+import com.example.workhours.entities.User;
 import com.example.workhours.util.EmailService;
 
 import android.app.ActionBar.LayoutParams;
@@ -26,6 +31,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
@@ -166,6 +172,9 @@ public class MainActivity extends FragmentActivity {
 	
 	public static class ShiftFragment extends Fragment{
 		private long date;
+		private ShiftDAO sdao;
+		private UserDAO udao;
+		private TextView salaryLastMonth, salaryNextMonth;
 		
 		public ShiftFragment(){}
 				
@@ -180,12 +189,11 @@ public class MainActivity extends FragmentActivity {
 	    public void onActivityCreated(Bundle savedInstanceState)
 	    {
 	        super.onActivityCreated(savedInstanceState);
-	        	        
+	        
 	        //View rootView = getView().findViewById(R.layout.fragment_add_shift);
 			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
 			date = calendar.getDate();
-			calendar.setOnDateChangeListener(new OnDateChangeListener(){
-				
+			calendar.setOnDateChangeListener(new OnDateChangeListener(){		
 				@Override
 				public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
 					date = view.getDate();
@@ -193,8 +201,7 @@ public class MainActivity extends FragmentActivity {
 			});
 			
 			Button btn = (Button) getView().findViewById(R.id.selectDateButton);
-			btn.setOnClickListener(new OnClickListener() {
-				
+			btn.setOnClickListener(new OnClickListener() {			
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(getActivity(), ShiftActivity.class);
@@ -217,7 +224,41 @@ public class MainActivity extends FragmentActivity {
 					startService(i);
 				}
 			});
-	    }	
+	    }
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
+			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
+			
+			sdao = new ShiftDAOImpl(getActivity());
+			udao = new UserDAOImpl(getActivity());
+			
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			String uid = prefs.getString("email", null);
+			
+			//Get shifts
+			sdao.open();
+			List<Shift> shifts = sdao.getShifts();
+			sdao.close();
+			
+			//Get user
+			udao.open();
+			User usr = udao.getUser(uid);
+			udao.close();
+			
+			/*
+			 * Calculate the salary using a help class
+			 */
+			Calculations cl = new Calculations(usr, shifts);
+			double lmonth = cl.getPrevMonthSalary();
+			double nmonth = cl.getNextMonthSalary();
+			
+			salaryLastMonth.setText(Double.toString(lmonth));
+			salaryNextMonth.setText(Double.toString(nmonth));
+			
+		}
 		
 	}
 	
@@ -226,10 +267,9 @@ public class MainActivity extends FragmentActivity {
 		private ShiftDAO shiftDao;
 		private TextView txtView, hourText;
 		private View rootView;
-		private LinearLayout mainLayout, secLayout;
+		private LinearLayout mainLayout;
 		private double scheduledHours;
 		private int txtSize = 19;
-		private int color = Color.BLACK;
 		private boolean clickable = true;
 		private String spacing = "				";	
 		public EventFragment(){
@@ -241,6 +281,7 @@ public class MainActivity extends FragmentActivity {
 			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
 			hourText = (TextView)rootView.findViewById(R.id.displayHours);
 			
+			/*
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
 			tmpList = shiftDao.getShifts();
@@ -250,13 +291,13 @@ public class MainActivity extends FragmentActivity {
 			scheduledHours = 0;
 			//Get all shifts that are not confirmed == scheduled
 			for(Shift t : tmpList){
-				if(!t.isWorked()){
+				if( (!t.isWorked()) && (t.getFrom().isAfter(DateTime.now())) ){
 					list.add(t);
 					scheduledHours += t.getHours();
 				}
 			}		
 			//Update layout with the shifts
-			refreshView();
+			refreshView();*/
 			
 			return rootView;
 		}
@@ -323,7 +364,7 @@ public class MainActivity extends FragmentActivity {
 			scheduledHours = 0;
 			//Get all shifts that are not confirmed == scheduled
 			for(Shift t : tmpList){
-				if(!t.isWorked()){
+				if( (!t.isWorked()) && (t.getFrom().isAfter(DateTime.now())) ){
 					list.add(t);
 					scheduledHours += t.getHours();
 				}

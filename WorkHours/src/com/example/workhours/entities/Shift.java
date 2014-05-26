@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 import org.joda.time.DateTime;
+import org.joda.time.DurationFieldType;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -75,6 +77,17 @@ public class Shift implements Serializable, Comparable<Shift> {
 	public int getHours(){
 		period = new Period(from, to);
 		return period.getHours();
+	}
+	
+	/**
+	 * Returns the ENTIRE TIMESPAN in MINUTES
+	 */
+	public int getMinutes(){
+		PeriodType type = PeriodType.forFields(new DurationFieldType[] {
+                DurationFieldType.minutes()
+            });
+		Period p = new Period(from, to, type);
+		return p.getMinutes();
 	}
 	
 	public void setWorked(boolean worked){
