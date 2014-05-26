@@ -55,7 +55,4 @@ public class ShiftOpenHelper extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_SHIFT);
 	    onCreate(db);
 	}
-
-	
-
 }

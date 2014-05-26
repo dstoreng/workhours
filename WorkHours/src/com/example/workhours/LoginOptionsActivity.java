@@ -174,7 +174,7 @@ public class LoginOptionsActivity extends Activity {
 	 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	 			SharedPreferences.Editor editor = preferences.edit();
 	 			
-	 			editor.putString("user", user.getUsername());
+	 			editor.putString("email", (String) user.getProperty("email"));
 				editor.commit();
 	             
 	             intent = new Intent(getBaseContext(), MainActivity.class);

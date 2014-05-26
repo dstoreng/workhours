@@ -38,7 +38,7 @@ public class InitScreenActivity extends Activity {
 		}
 
 		
-		dao.dropUser();
+	//	dao.dropUser();
 		/*
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		SharedPreferences.Editor editor = preferences.edit(); 

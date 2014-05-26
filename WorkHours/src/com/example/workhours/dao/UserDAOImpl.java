@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.workhours.entities.User;
+import com.example.workhours.util.ShiftOpenHelper;
 import com.example.workhours.util.UserOpenHelper;
 
 public class UserDAOImpl implements UserDAO {
@@ -64,6 +65,20 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void updateUser(User user) {
 		
+		ContentValues values = new ContentValues();
+		values.put(UserOpenHelper.COLUMN_NAME, user.getName());
+		values.put(UserOpenHelper.COLUMN_EMAIL, user.getEmail());
+		values.put(UserOpenHelper.COLUMN_PASS, user.getPassHash());
+		values.put(UserOpenHelper.COLUMN_EMPL, user.getEmployerEmail());
+		values.put(UserOpenHelper.COLUMN_WAGE, user.getHourlyWage());
+		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
+		
+		database.update(
+						ShiftOpenHelper.TABLE_SHIFT,
+						values,
+						" email ='" + user.getEmail() + "'",
+						null
+						);
 
 	}
 
@@ -149,7 +164,7 @@ public class UserDAOImpl implements UserDAO {
 		cursor = database.query(
 								UserOpenHelper.TABLE_USER,
 								allColumns, 
-								" email ='" + email, 
+								" email ='" + email + "'", 
 								null, 
 								null, 
 								null, 

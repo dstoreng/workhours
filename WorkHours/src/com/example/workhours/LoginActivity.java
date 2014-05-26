@@ -10,8 +10,10 @@ import com.example.workhours.util.InputValidator;
 import com.example.workhours.util.PasswordHash;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -63,6 +65,14 @@ public class LoginActivity extends Activity {
 				
 				dao.open();
 				user = dao.getUser(email, PasswordHash.hash(password));
+				
+				//Stores username in shared preferences 
+				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+				SharedPreferences.Editor editor = preferences.edit(); 
+		
+				editor.putString("email", user.getEmail());
+				editor.commit();
+				
 				intent = new Intent(v.getContext(), MainActivity.class);
 				
 			} catch(Exception e) {
@@ -76,16 +86,6 @@ public class LoginActivity extends Activity {
 				
 				startActivity(intent);	
 			}
-			
-			/*
-			if(user != null)
-				intent = new Intent(v.getContext(), MainActivity.class);
-			
-			else
-				intent = new Intent(v.getContext(), LoginActivity.class);
-			
-			startActivity(intent);
-			*/
 		}
 	}
 	
