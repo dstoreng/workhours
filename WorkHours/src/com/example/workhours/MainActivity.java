@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 import com.example.workhours.entities.Calculations;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.entities.User;
+import com.example.workhours.fragments.DatePickerFragment;
 import com.example.workhours.util.EmailService;
 
 import android.app.ActionBar.LayoutParams;
@@ -19,6 +20,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -215,13 +217,8 @@ public class MainActivity extends FragmentActivity {
 			email.setOnClickListener(new OnClickListener(){
 				@Override
 				public void onClick(View v){
-					// Get user email so that we can retrieve user settings in email manager
-					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(
-							getActivity().getApplicationContext());
-					Intent i = new Intent(getActivity(), EmailService.class);
-					i.putExtra("USER_EMAIL", prefs.getString("email", ""));
-					v.getContext().
-					startService(i);
+					DialogFragment dateDialog = new DatePickerFragment();
+					dateDialog.show(getActivity().getSupportFragmentManager(), "Choose");
 				}
 			});
 	    }

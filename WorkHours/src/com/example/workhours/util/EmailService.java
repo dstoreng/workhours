@@ -47,8 +47,9 @@ public class EmailService extends IntentService {
 			 */
 			DateTime dt = new DateTime();
 			dt = dt.minusMonths(1);
-			int month = dt.getMonthOfYear();
-			int year = dt.getYear();
+			int month = intent.getIntExtra("MONTH",0);
+			int year = intent.getIntExtra("YEAR",0);
+			month = (month==0) ? dt.getMonthOfYear() : (month+=1); 
 			
 			StringBuilder content = new StringBuilder();
 			for (Shift s : shifts) {
