@@ -1,17 +1,15 @@
 package com.example.workhours;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
-
 import org.joda.time.DateTime;
-
 import com.example.workhours.entities.Calculations;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.entities.User;
+import com.example.workhours.fragments.ConfirmDialog;
 import com.example.workhours.fragments.DatePickerFragment;
-import com.example.workhours.util.EmailService;
+import com.example.workhours.util.ConfirmService;
 
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
@@ -33,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
@@ -56,98 +53,97 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		Log.d("Entered", "MainActivity");
-		
+
 		setContentView(R.layout.activity_main);
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				this, getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(this,
+				getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		dao = new UserDAOImpl(this);
 		dao.open();
 		/*
-		User user = dao.getUser();
-		
-		if(user != null)
-			Log.d("User account successfully created", user.toString());
-		else
-			Log.d("User creation failed", "OMG");
-			*/
+		 * User user = dao.getUser();
+		 * 
+		 * if(user != null) Log.d("User account successfully created",
+		 * user.toString()); else Log.d("User creation failed", "OMG");
+		 */
 	}
-	
-	
+
 	@Override
-	protected void onResume(){
+	protected void onResume() {
 		super.onResume();
-		
+
 		dao.open();
 	}
-	
+
 	@Override
-	  protected void onPause() {
-	    dao.close();
-	    super.onPause();
-	  }
-	
+	protected void onPause() {
+		dao.close();
+		super.onPause();
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		switch(item.getItemId()){
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
 		case (R.id.action_profile):
 			Log.d("item selected", R.id.action_profile + "");
 			Intent profile = new Intent(this, ProfileActivity.class);
 			startActivity(profile);
 			break;
 		case R.id.action_log_out:
-			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			SharedPreferences preferences = PreferenceManager
+					.getDefaultSharedPreferences(getApplicationContext());
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.clear();
 			editor.commit();
-		
+
 			Session session = Session.getActiveSession();
-			if(session != null)
+			if (session != null)
 				session.closeAndClearTokenInformation();
-		
-			Intent intent = new Intent(getBaseContext(), InitScreenActivity.class);
+
+			Intent intent = new Intent(getBaseContext(),
+					InitScreenActivity.class);
 			startActivity(intent);
 			break;
-		
+
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
-	
+
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-		
+
 		public SectionsPagerAdapter(MainActivity m, FragmentManager fm) {
 			super(fm);
 		}
 
 		@Override
 		public Fragment getItem(int position) {
-				Fragment fragment = null;
-				switch(position){
-				case 0:
-					fragment = new ShiftFragment();
-					break;
-				case 1:
-					fragment = new EventFragment();	
-					break;
-				case 2:
-					fragment = new DebtFragment();
-					break;
-				}
-				return fragment;	
+			Fragment fragment = null;
+			switch (position) {
+			case 0:
+				fragment = new ShiftFragment();
+				break;
+			case 1:
+				fragment = new EventFragment();
+				break;
+			case 2:
+				fragment = new AllEventsFragment();
+				break;
+			}
+			return fragment;
 
 		}
 
@@ -171,95 +167,105 @@ public class MainActivity extends FragmentActivity {
 			return null;
 		}
 	}
-	
-	public static class ShiftFragment extends Fragment{
+
+	public static class ShiftFragment extends Fragment {
 		private long date;
 		private ShiftDAO sdao;
 		private UserDAO udao;
 		private TextView salaryLastMonth, salaryNextMonth;
-		
-		public ShiftFragment(){}
-				
+
+		public ShiftFragment() {
+		}
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState){
+				Bundle savedInstanceState) {
 
-			return inflater.inflate(R.layout.fragment_add_shift, container, false);
+			return inflater.inflate(R.layout.fragment_add_shift, container,
+					false);
 		}
-		
+
 		@Override
-	    public void onActivityCreated(Bundle savedInstanceState)
-	    {
-	        super.onActivityCreated(savedInstanceState);
-	        
-	        //View rootView = getView().findViewById(R.layout.fragment_add_shift);
-			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+
+			// View rootView =
+			// getView().findViewById(R.layout.fragment_add_shift);
+			CalendarView calendar = (CalendarView) getView().findViewById(
+					R.id.calendarMain);
 			date = calendar.getDate();
-			calendar.setOnDateChangeListener(new OnDateChangeListener(){		
+			calendar.setOnDateChangeListener(new OnDateChangeListener() {
 				@Override
-				public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+				public void onSelectedDayChange(CalendarView view, int year,
+						int month, int dayOfMonth) {
 					date = view.getDate();
 				}
 			});
-			
+
 			Button btn = (Button) getView().findViewById(R.id.selectDateButton);
-			btn.setOnClickListener(new OnClickListener() {			
+			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(getActivity(), ShiftActivity.class);
+					Intent intent = new Intent(getActivity(),
+							ShiftActivity.class);
 					intent.putExtra("DATE", date);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
-			});	
-			
-			Button email = (Button) getView().findViewById(R.id.sendEmailButton);
-			email.setOnClickListener(new OnClickListener(){
+			});
+
+			Button email = (Button) getView()
+					.findViewById(R.id.sendEmailButton);
+			email.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onClick(View v){
+				public void onClick(View v) {
 					DialogFragment dateDialog = new DatePickerFragment();
-					dateDialog.show(getActivity().getSupportFragmentManager(), "Choose");
+					dateDialog.show(getActivity().getSupportFragmentManager(),
+							"Choose");
 				}
 			});
-	    }
-		
+		}
+
 		@Override
-		public void onResume(){
+		public void onResume() {
 			super.onResume();
-			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
-			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
-			
+			salaryLastMonth = (TextView) getView().findViewById(
+					R.id.salaryViewLast);
+			salaryNextMonth = (TextView) getView().findViewById(
+					R.id.salaryViewNext);
+
 			sdao = new ShiftDAOImpl(getActivity());
 			udao = new UserDAOImpl(getActivity());
-			
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+			SharedPreferences prefs = PreferenceManager
+					.getDefaultSharedPreferences(getActivity());
 			String uid = prefs.getString("email", null);
-			
-			//Get shifts
+
+			// Get shifts
 			sdao.open();
 			List<Shift> shifts = sdao.getShifts();
 			sdao.close();
-			
-			//Get user
+
+			// Get user
 			udao.open();
 			User usr = udao.getUser(uid);
 			udao.close();
-			
+
 			/*
 			 * Calculate the salary using a help class
 			 */
 			Calculations cl = new Calculations(usr, shifts);
 			double lmonth = cl.getPrevMonthSalary();
 			double nmonth = cl.getNextMonthSalary();
-			
+
 			salaryLastMonth.setText(Double.toString(lmonth));
 			salaryNextMonth.setText(Double.toString(nmonth));
-			
+
 		}
-		
+
 	}
-	
-	public static class EventFragment extends Fragment{
+
+	public static class EventFragment extends Fragment {
 		private List<Shift> list, tmpList;
 		private ShiftDAO shiftDao;
 		private TextView txtView, hourText;
@@ -268,57 +274,44 @@ public class MainActivity extends FragmentActivity {
 		private double scheduledHours;
 		private int txtSize = 19;
 		private boolean clickable = true;
-		private String spacing = "				";	
-		public EventFragment(){
+		private String spacing = "				";
+
+		public EventFragment() {
 		}
-		
+
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){	
-			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
-			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
-			hourText = (TextView)rootView.findViewById(R.id.displayHours);
-			
-			/*
-			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
-			shiftDao.open();
-			tmpList = shiftDao.getShifts();
-			shiftDao.close();
-			
-			list = new ArrayList<Shift>();
-			scheduledHours = 0;
-			//Get all shifts that are not confirmed == scheduled
-			for(Shift t : tmpList){
-				if( (!t.isWorked()) && (t.getFrom().isAfter(DateTime.now())) ){
-					list.add(t);
-					scheduledHours += t.getHours();
-				}
-			}		
-			//Update layout with the shifts
-			refreshView();*/
-			
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			rootView = inflater.inflate(R.layout.fragment_view_events,
+					container, false);
+			mainLayout = (LinearLayout) rootView
+					.findViewById(R.id.eventContainer);
+			hourText = (TextView) rootView.findViewById(R.id.displayHours);
+
 			return rootView;
 		}
-		
-		public void refreshView(){
+
+		public void refreshView() {
 			int NUM = list.size();
 			int colorTeal = Color.parseColor("#33B5E5");
-			int colorWhite = Color.parseColor("#111111");
+			int colorBlack = Color.parseColor("#111111");
 			int color;
-			for(int i = 0; i < NUM; i++){
-				if(i%2 == 0)
+			for (int i = 0; i < NUM; i++) {
+				if (i % 2 == 0)
 					color = colorTeal;
 				else
-					color = colorWhite;
+					color = colorBlack;
 				txtView = new TextView(getActivity());
-				fillLayout(true, list.get(i).getFromFormatted() + spacing +
-						list.get(i).getToFormatted() + spacing,
-						list.get(i), txtView, mainLayout, rootView.getContext(), color);			
+				fillLayout(true, list.get(i).getFromFormatted() + spacing
+						+ list.get(i).getToFormatted() + spacing, list.get(i),
+						txtView, mainLayout, rootView.getContext(), color);
 			}
-			
-			hourText.setText("Scheduled Hours: " +scheduledHours);
+
+			hourText.setText("Scheduled Hours: " + scheduledHours);
 		}
-		
-		public void fillLayout(boolean mainView, String data, Shift tmpShift, TextView view, LinearLayout layout, Context contx, int color){
+
+		public void fillLayout(boolean mainView, String data, Shift tmpShift,
+				TextView view, LinearLayout layout, Context contx, int color) {
 			view = new TextView(getActivity());
 			view.setId(tmpShift.getId());
 			view.setBackgroundColor(color);
@@ -332,36 +325,38 @@ public class MainActivity extends FragmentActivity {
 				public void onClick(View v) {
 					TextView obj = (TextView) v;
 					int objId = obj.getId();
-									
+
 					/*
 					 * Send Shift id to the Shift activity class
 					 */
-					Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
+					Intent intent = new Intent(getActivity(),
+							ChangeShiftActivity.class);
 					intent.putExtra("SHIFT_ID", objId);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
 			});
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-			layout.addView(view, lp);		
+			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			layout.addView(view, lp);
 		}
-		
+
 		@Override
-		public void onResume(){
+		public void onResume() {
 			super.onResume();
-			
+
 			mainLayout.removeAllViews();
-			
+
 			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
 			shiftDao.open();
 			tmpList = shiftDao.getShifts();
 			shiftDao.close();
-			
+
 			list = new ArrayList<Shift>();
 			scheduledHours = 0;
-			//Get all shifts that are not confirmed == scheduled
-			for(Shift t : tmpList){
-				if( (!t.isWorked()) && (t.getFrom().isAfter(DateTime.now())) ){
+			// Get all shifts that are not confirmed == scheduled
+			for (Shift t : tmpList) {
+				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
 					list.add(t);
 					scheduledHours += t.getHours();
 				}
@@ -370,26 +365,87 @@ public class MainActivity extends FragmentActivity {
 		}
 
 	}
-	
-	public static class DebtFragment extends Fragment{
-		public DebtFragment(){}
-		
+
+	public static class AllEventsFragment extends Fragment {
+		private List<Shift> list;
+		private ShiftDAO shiftDao;
+		private TextView txtView, hourText;
+		private View rootView;
+		private LinearLayout mainLayout;
+		private double scheduledHours;
+		private int txtSize = 19;
+		private boolean clickable = true;
+		private String spacing = "				";
+
+		public AllEventsFragment() {
+		}
+
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState){
-		
-			return inflater.inflate(R.layout.fragment_add_debt, container, false);
+				Bundle savedInstanceState) {
+			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
+			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
+
+			return rootView;
+		}
+
+		@Override
+		public void onResume() {
+			super.onResume();
+
+			mainLayout.removeAllViews();
+
+			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao.open();
+			list = shiftDao.getShifts();
+			shiftDao.close();
+
+			refreshView();
 		}
 		
-		@Override
-	    public void onActivityCreated(Bundle savedInstanceState)
-	    {
-	        super.onActivityCreated(savedInstanceState);
+		public void refreshView() {
+			int NUM = list.size();
+			int colorTeal = Color.parseColor("#33B5E5");
+			int colorBlack = Color.parseColor("#111111");
+			int color;
+			for (int i = 0; i < NUM; i++) {
+				if (i % 2 == 0)
+					color = colorTeal;
+				else
+					color = colorBlack;
+				
+				txtView = new TextView(getActivity());
+				fillLayout(true, list.get(i).getFromFormatted() + spacing
+						+ list.get(i).getToFormatted() + spacing + list.get(i).isWorked(), list.get(i),
+						txtView, mainLayout, rootView.getContext(), color);
+			}
+		}
 
+		public void fillLayout(boolean mainView, String data, Shift s,
+				TextView view, LinearLayout layout, Context contx, int color) {
+			view = new TextView(getActivity());
+			view.setId(s.getId());
+			view.setBackgroundColor(color);
+			view.setText(data);
+			view.setTextSize(txtSize);
+			view.setTextColor(Color.WHITE);
+			view.setClickable(clickable);
+			final int ID = s.getId();
+			view.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					/*
+					 * Send Shift id to the ConfirmService
+					 */
+					DialogFragment dia = ConfirmDialog.newInstance(ID);
+					dia.show(getFragmentManager(), "Confirm");
+				}
+			});
 			
-	    }
-
-		
+			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT);
+			layout.addView(view, lp);
+		}
 	}
-
 }
