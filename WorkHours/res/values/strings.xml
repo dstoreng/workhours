@@ -13,8 +13,9 @@
     <!-- ********************************************************** -->
     <!-- **********    TextBlock    Variables                ****** -->
     <!-- ********************************************************** -->
-	<string name="textSalaryLast">Salary last month:</string>
-	<string name="textSalaryNext">Salary next month:</string>
+	<string name="textSalaryLast">Salary last month</string>
+	<string name="textSalaryNext">Salary next month</string>
+	<string name="textScheduledHours">Scheduled hours</string>
     <string name="description_shift_from">Shift start:</string>
     <string name="description_shift_to">Shift end:</string>
     <string name="title_activity_shift">New Shift</string>

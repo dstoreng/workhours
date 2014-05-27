@@ -169,7 +169,7 @@ public class MainActivity extends FragmentActivity {
 		private long date;
 		private ShiftDAO sdao;
 		private UserDAO udao;
-		private TextView salaryLastMonth, salaryNextMonth;
+		private TextView salaryLastMonth, salaryNextMonth, scheduledHours;
 
 		public ShiftFragment() {}
 
@@ -210,8 +210,7 @@ public class MainActivity extends FragmentActivity {
 				}
 			});
 
-			Button email = (Button) getView()
-					.findViewById(R.id.sendEmailButton);
+			Button email = (Button) getView().findViewById(R.id.sendEmailButton);
 			email.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -225,10 +224,9 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onResume() {
 			super.onResume();
-			salaryLastMonth = (TextView) getView().findViewById(
-					R.id.salaryViewLast);
-			salaryNextMonth = (TextView) getView().findViewById(
-					R.id.salaryViewNext);
+			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
+			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
+			scheduledHours = (TextView) getView().findViewById(R.id.scheduledHours);
 
 			sdao = new ShiftDAOImpl(getActivity());
 			udao = new UserDAOImpl(getActivity());
@@ -253,9 +251,11 @@ public class MainActivity extends FragmentActivity {
 			Calculations cl = new Calculations(usr, shifts);
 			double lmonth = cl.getPrevMonthSalary();
 			double nmonth = cl.getNextMonthSalary();
+			String shours = cl.getScheduledHours();
 
 			salaryLastMonth.setText(Double.toString(lmonth));
 			salaryNextMonth.setText(Double.toString(nmonth));
+			scheduledHours.setText(shours);
 
 		}
 

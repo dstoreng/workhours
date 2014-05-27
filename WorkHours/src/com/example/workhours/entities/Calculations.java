@@ -47,7 +47,6 @@ public class Calculations {
 	 */
 	public double getNextMonthSalary(){
 		DateTime time = new DateTime();
-		Log.d("Prev month - Next MONTH", time.toString());
 		int year = time.getYear();
 		int month = time.getMonthOfYear();
 		
@@ -69,6 +68,18 @@ public class Calculations {
 		int minutes = total & 60;
 		
 		return (hours + (minutes / 60)) * salary;
+	}
+	
+	public String getScheduledHours(){
+		int total = 0;
+		for(Shift s : shifts){
+			if ((!s.isWorked()) && (s.getFrom().isAfter(DateTime.now()))) {
+				total += s.getMinutes();
+			}
+		}	
+		int hours = total / 60;
+		int minutes = total & 60;
+		return hours + "." + minutes;
 	}
 
 }
