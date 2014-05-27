@@ -369,10 +369,9 @@ public class MainActivity extends FragmentActivity {
 	public static class AllEventsFragment extends Fragment {
 		private List<Shift> list;
 		private ShiftDAO shiftDao;
-		private TextView txtView, hourText;
+		private TextView txtView;
 		private View rootView;
 		private LinearLayout mainLayout;
-		private double scheduledHours;
 		private int txtSize = 19;
 		private boolean clickable = true;
 		private String spacing = "				";

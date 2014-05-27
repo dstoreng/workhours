@@ -14,6 +14,7 @@ public class ConfirmService extends IntentService {
 	ShiftDAO dao;
 	Shift s;
 	int shiftId;
+	boolean confirmed;
 
 	public ConfirmService() {
 		super("Confirm shift");
@@ -25,14 +26,14 @@ public class ConfirmService extends IntentService {
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		shiftId = intent.getIntExtra("SHIFT_ID", 0);
-
+		confirmed = intent.getBooleanExtra("IS_WORKED", true);
 		if (shiftId != 0) {
 
 			dao = new ShiftDAOImpl(getApplicationContext());
 			dao.open();
 
 			s = dao.getShift(shiftId);
-			s.setWorked(true);
+			s.setWorked(confirmed);
 			dao.updateShift(shiftId, s);
 
 			dao.close();
