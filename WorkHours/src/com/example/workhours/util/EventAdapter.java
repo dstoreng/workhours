@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.workhours.R;
@@ -18,12 +19,14 @@ public class EventAdapter extends ArrayAdapter<Shift> {
 	private final Context context;
 	private final List<Shift> list;
 	private int layoutId;
+	private boolean showImage;
 
-	public EventAdapter(Context context, int layoutId, List<Shift> list) {
+	public EventAdapter(Context context, int layoutId, List<Shift> list, boolean showImage) {
 		super(context, layoutId, list);
 		this.layoutId = layoutId;
 		this.context = context;
 		this.list = list;
+		this.showImage = showImage;
 	}
 
 	@Override
@@ -46,8 +49,13 @@ public class EventAdapter extends ArrayAdapter<Shift> {
 	        TextView hours = (TextView) convertView.findViewById(R.id.tvHours);
 	        hours.setText(Integer.toString(s.getHours()));
 	        
-	        TextView conf = (TextView) convertView.findViewById(R.id.tvConfirmed);
-	        conf.setText(Boolean.toString(s.isWorked()));
+	        if(showImage){
+		        ImageView conf = (ImageView) convertView.findViewById(R.id.tvConfirmed);
+		        if(s.isWorked())
+		        	conf.setImageResource(R.drawable.status_ok);
+		        else
+		        	conf.setImageResource(R.drawable.status_notnok);
+	        }
 	        
         }catch(Exception e){
         	Log.d("Noe feiler", "");
