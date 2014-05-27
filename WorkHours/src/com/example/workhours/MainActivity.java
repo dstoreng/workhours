@@ -376,8 +376,6 @@ public class MainActivity extends FragmentActivity {
 	public static class AllEventsFragment extends ListFragment {
 		private List<Shift> list;
 		private ShiftDAO shiftDao;
-		private View rootView;
-		private ListView listView;
 		private EventAdapter adapter;
 
 		public AllEventsFragment() {
@@ -387,7 +385,6 @@ public class MainActivity extends FragmentActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 		{
 			View v = inflater.inflate(R.layout.list_view, container, false);
-		    listView = (ListView) v.findViewById(android.R.id.list);
 		    return v;
 		}
 		
@@ -417,13 +414,11 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onPause(){
 			super.onPause();
-			
-			adapter = null;
+			adapter.notifyDataSetChanged();
 		}
 		
 		public void onResume(){
 			super.onResume();
-			
 			shiftDao = new ShiftDAOImpl(getActivity());
 			shiftDao.open();
 			list = shiftDao.getShifts();

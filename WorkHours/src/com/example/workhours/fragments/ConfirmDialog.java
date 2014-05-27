@@ -18,8 +18,9 @@ import android.view.View;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-public class ConfirmDialog extends DialogFragment {
+public class ConfirmDialog extends DialogFragment{
 	private int sId;
+	private int toggle;
 
 	public static ConfirmDialog newInstance(int num) {
 		ConfirmDialog d = new ConfirmDialog();
@@ -34,24 +35,19 @@ public class ConfirmDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-		LayoutInflater inf = getActivity().getLayoutInflater();
-		final Context c = getActivity();
-		final View v = inf.inflate(R.layout.confirm_layout, null);
 		sId = getArguments().getInt("num");
-
-		Log.d("DIALOG ID", sId + "");
+		final Context c = getActivity();
+		final ToggleButton toggleButton = new ToggleButton(c);
+		
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(c);
+		builder.setView(toggleButton);
 		builder.setMessage("Confirm shift")
-				.setView(inf.inflate(R.layout.confirm_layout, null))
 				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-
 					public void onClick(DialogInterface dialog, int id) {
-						ToggleButton toggle = (ToggleButton) v
-								.findViewById(R.id.toggleConfirm);
-						final boolean confirm = toggle.isChecked();
+						boolean confirm = toggleButton.isChecked();
 
+						Log.d("DIALOG CHOISE", confirm + "");
 						Intent intent = new Intent(c, ConfirmService.class);
 						intent.putExtra("SHIFT_ID", sId);
 						intent.putExtra("IS_WORKED", confirm);

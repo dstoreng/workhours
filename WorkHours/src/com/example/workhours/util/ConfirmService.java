@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Handler;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.workhours.R;
 import com.example.workhours.dao.ShiftDAO;
@@ -29,6 +30,14 @@ public class ConfirmService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 		shiftId = intent.getIntExtra("SHIFT_ID", 0);
 		confirmed = intent.getBooleanExtra("IS_WORKED", true);
+		
+		handler.post(new Runnable() {
+			  @Override
+			   public void run() {
+			      Toast.makeText(getApplicationContext(), confirmed + "", Toast.LENGTH_SHORT).show();
+			   }
+		});
+		
 		if (shiftId != 0) {
 
 			dao = new ShiftDAOImpl(getApplicationContext());
@@ -37,7 +46,13 @@ public class ConfirmService extends IntentService {
 			s = dao.getShift(shiftId);
 			s.setWorked(confirmed);
 			dao.updateShift(shiftId, s);
-
+			
+			handler.post(new Runnable() {
+				  @Override
+				   public void run() {
+				      Toast.makeText(getApplicationContext(), s.toString(), Toast.LENGTH_SHORT).show();
+				   }
+			});
 			dao.close();
 			
 			// Remove notification
