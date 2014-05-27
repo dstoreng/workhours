@@ -1,4 +1,4 @@
-package com.example.workhours.util;
+package com.example.workhours.entities;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.example.workhours.entities.Shift;
+import com.example.workhours.util.ScheduleHandler;
 
 public class Notifier {
 	private AlarmManager mgr;

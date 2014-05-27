@@ -40,34 +40,22 @@ import com.example.workhours.dao.UserDAOImpl;
 import com.facebook.Session;
 
 public class MainActivity extends FragmentActivity {
-	public double amountOfHours;
 	private UserDAO dao;
-
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	CalendarView calendar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Log.d("Entered", "MainActivity");
-
 		setContentView(R.layout.activity_main);
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(this,
-				getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		dao = new UserDAOImpl(this);
 		dao.open();
-		/*
-		 * User user = dao.getUser();
-		 * 
-		 * if(user != null) Log.d("User account successfully created",
-		 * user.toString()); else Log.d("User creation failed", "OMG");
-		 */
 	}
 
 	@Override
@@ -141,7 +129,6 @@ public class MainActivity extends FragmentActivity {
 				break;
 			}
 			return fragment;
-
 		}
 
 		@Override
@@ -165,6 +152,11 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	/*
+	 * This fragment displays a calendar
+	 * The user can add new events or email existing 
+	 * It also displays useful info (salary, schedule)
+	 */
 	public static class ShiftFragment extends Fragment {
 		private long date;
 		private ShiftDAO sdao;
@@ -174,21 +166,15 @@ public class MainActivity extends FragmentActivity {
 		public ShiftFragment() {}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-
-			return inflater.inflate(R.layout.fragment_add_shift, container,
-					false);
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
+			return inflater.inflate(R.layout.fragment_add_shift, container, false);
 		}
-
+		
 		@Override
-		public void onActivityCreated(Bundle savedInstanceState) {
+		public void onActivityCreated(Bundle savedInstanceState){
 			super.onActivityCreated(savedInstanceState);
-
-			// View rootView =
-			// getView().findViewById(R.layout.fragment_add_shift);
-			CalendarView calendar = (CalendarView) getView().findViewById(
-					R.id.calendarMain);
+			
+			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
 			date = calendar.getDate();
 			calendar.setOnDateChangeListener(new OnDateChangeListener() {
 				@Override
@@ -224,6 +210,7 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onResume() {
 			super.onResume();
+			
 			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
 			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
 			scheduledHours = (TextView) getView().findViewById(R.id.scheduledHours);
@@ -231,8 +218,7 @@ public class MainActivity extends FragmentActivity {
 			sdao = new ShiftDAOImpl(getActivity());
 			udao = new UserDAOImpl(getActivity());
 
-			SharedPreferences prefs = PreferenceManager
-					.getDefaultSharedPreferences(getActivity());
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 			String uid = prefs.getString("email", null);
 
 			// Get shifts
@@ -256,9 +242,7 @@ public class MainActivity extends FragmentActivity {
 			salaryLastMonth.setText(Double.toString(lmonth));
 			salaryNextMonth.setText(Double.toString(nmonth));
 			scheduledHours.setText(shours);
-
 		}
-
 	}
 	
 	/*
@@ -269,36 +253,19 @@ public class MainActivity extends FragmentActivity {
 		private EventAdapter adapter;
 		private List<Shift> list, tmpList;
 		private ShiftDAO shiftDao;
-		private View rootView;
+		private ListView rootView;
 		
 		public EventFragment() {}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-			rootView = inflater.inflate(R.layout.list_view, container, false);
+			super.onCreateView(inflater, container, savedInstanceState);
+			
+			//Set the listview which we will fill with layouts
+			rootView = (ListView)inflater.inflate(R.layout.list_view, container, false);
+			refreshContent();
+			
 			return rootView;
-		}
-		
-		@Override
-		public void onActivityCreated(Bundle savedInstanceState) {
-			super.onActivityCreated(savedInstanceState);
-
-			shiftDao = new ShiftDAOImpl(getActivity());
-			shiftDao.open();
-			tmpList = shiftDao.getShifts();
-			shiftDao.close();
-			
-			list = new ArrayList<Shift>();
-			// Get all shifts that are not confirmed == scheduled
-			for (Shift t : tmpList) {
-				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
-					list.add(t);
-					//scheduledHours += t.getHours();
-				}
-			}
-			
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
-			setListAdapter(adapter);
 		}
 
 		@Override
@@ -306,17 +273,13 @@ public class MainActivity extends FragmentActivity {
 			TextView textViewItem = ((TextView) v.findViewById(R.id.tvFrom));
 			String sId = textViewItem.getTag().toString();
 
-			Intent intent = new Intent(getActivity(),
-					ChangeShiftActivity.class);
+			Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
 			intent.putExtra("SHIFT_ID", Integer.parseInt(sId));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 			startActivity(intent);
 		}
-
-		@Override
-		public void onResume() {
-			super.onResume();
-
+		
+		public void refreshContent(){
 			shiftDao = new ShiftDAOImpl(getActivity());
 			shiftDao.open();
 			tmpList = shiftDao.getShifts();
@@ -327,14 +290,11 @@ public class MainActivity extends FragmentActivity {
 			for (Shift t : tmpList) {
 				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
 					list.add(t);
-					//scheduledHours += t.getHours();
 				}
-			}
-			
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
-			setListAdapter(adapter);
+			}		
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list, false);
+			rootView.setAdapter(adapter);
 		}
-
 	}
 	
 	/*
@@ -345,6 +305,7 @@ public class MainActivity extends FragmentActivity {
 		private List<Shift> list;
 		private ShiftDAO shiftDao;
 		private EventAdapter adapter;
+		private ListView v;
 
 		public AllEventsFragment() {
 		}
@@ -352,21 +313,13 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
 		{
-			View v = inflater.inflate(R.layout.list_view, container, false);
-		    return v;
-		}
-		
-		@Override
-		public void onActivityCreated(Bundle savedInstanceState) {
-			super.onActivityCreated(savedInstanceState);
-
-			shiftDao = new ShiftDAOImpl(getActivity());
-			shiftDao.open();
-			list = shiftDao.getShifts();
-			shiftDao.close();
+			super.onCreateView(inflater, container, savedInstanceState);
 			
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
-			setListAdapter(adapter);
+			//Set the listview which we will fill with layouts
+			v = (ListView) inflater.inflate(R.layout.list_view, container, false);
+			refreshContent();
+			
+		    return v;
 		}
 
 		@Override
@@ -377,23 +330,18 @@ public class MainActivity extends FragmentActivity {
 			
 			DialogFragment dia = ConfirmDialog.newInstance(ssId);
 			dia.show(getFragmentManager(), "Confirm");
+			
+			refreshContent();
 		}
 		
-		@Override
-		public void onPause(){
-			super.onPause();
-			adapter.notifyDataSetChanged();
-		}
-		
-		public void onResume(){
-			super.onResume();
+		public void refreshContent(){
 			shiftDao = new ShiftDAOImpl(getActivity());
 			shiftDao.open();
 			list = shiftDao.getShifts();
 			shiftDao.close();
 			
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
-			setListAdapter(adapter);
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list, true);
+			v.setAdapter(adapter);
 		}
 	}
 	

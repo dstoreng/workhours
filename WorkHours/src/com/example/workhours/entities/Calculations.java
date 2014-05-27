@@ -16,7 +16,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns previous months salary, only hours confirmed are included
+	 * Returns previous month salary, only hours confirmed are included
 	 */
 	public double getPrevMonthSalary(){
 		DateTime time = new DateTime();
@@ -31,8 +31,8 @@ public class Calculations {
 			if( (s.getFrom().getYear() == year) && 
 					(s.getFrom().getMonthOfYear() == month))
 			{
-				total += s.getMinutes();
-				Log.d("TOTAL - Prev MONTH", total + "");
+				if(s.isWorked())
+					total += s.getMinutes();
 			}
 		}
 		
@@ -43,7 +43,7 @@ public class Calculations {
 	}
 	
 	/**
-	 * Returns this months salary
+	 * Returns this month salary, all hours are included
 	 */
 	public double getNextMonthSalary(){
 		DateTime time = new DateTime();
@@ -59,8 +59,6 @@ public class Calculations {
 			{
 				
 				total += s.getMinutes();
-				Log.d("SHift info", s.getFromFormatted() + " " + s.getToFormatted()+ " Hours: " + s.getHours()+ " Min: " + s.getMinutes() );
-				Log.d("TOTAL - next MONTH", total + "");
 			}
 		}
 		

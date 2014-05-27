@@ -21,40 +21,41 @@
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:id="@+id/confirmed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/tvTo"
-        android:layout_centerHorizontal="true"
-        android:text="@string/tvConfirmed"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-    <TextView
+    <ImageView
         android:id="@+id/tvConfirmed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/confirmed"
-        android:layout_below="@+id/confirmed"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="img" />
 
     <TextView
         android:id="@+id/hours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/confirmed"
-        android:layout_alignBottom="@+id/confirmed"
-        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@+id/tvFrom"
+        android:layout_alignBottom="@+id/tvFrom"
+        android:layout_centerHorizontal="true"
         android:text="@string/tvHours"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+<!--
+    <TextView
+        android:id="@+id/confirmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/tvFrom"
+        android:text="@string/tvConfirmed"
         android:textAppearance="?android:attr/textAppearanceSmall" />
+-->
 
     <TextView
         android:id="@+id/tvHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/hours"
-        android:layout_below="@+id/hours"
+        android:layout_alignBaseline="@+id/tvTo"
+        android:layout_alignBottom="@+id/tvTo"
+        android:layout_centerHorizontal="true"
         android:text="Small Text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

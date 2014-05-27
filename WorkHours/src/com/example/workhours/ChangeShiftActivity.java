@@ -15,8 +15,8 @@ import android.widget.RadioGroup;
 import android.widget.TimePicker;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
+import com.example.workhours.entities.Notifier;
 import com.example.workhours.entities.Shift;
-import com.example.workhours.util.Notifier;
 
 public class ChangeShiftActivity extends Activity {
 	private int fromHour, fromMin, toHour, toMin, shiftId;

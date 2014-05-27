@@ -5,8 +5,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
+import com.example.workhours.entities.Notifier;
 import com.example.workhours.entities.Shift;
-import com.example.workhours.util.Notifier;
 
 import android.os.Bundle;
 import android.preference.PreferenceManager;
