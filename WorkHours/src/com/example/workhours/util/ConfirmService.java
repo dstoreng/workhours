@@ -4,7 +4,9 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Handler;
+import android.view.ViewGroup;
 
+import com.example.workhours.R;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
@@ -37,7 +39,7 @@ public class ConfirmService extends IntentService {
 			dao.updateShift(shiftId, s);
 
 			dao.close();
-
+			
 			// Remove notification
 			NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			nm.cancel(shiftId);

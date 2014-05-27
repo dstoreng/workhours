@@ -10,6 +10,7 @@ import com.example.workhours.entities.User;
 import com.example.workhours.fragments.ConfirmDialog;
 import com.example.workhours.fragments.DatePickerFragment;
 import com.example.workhours.util.ConfirmService;
+import com.example.workhours.util.EventAdapter;
 
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,11 +33,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
@@ -366,85 +373,65 @@ public class MainActivity extends FragmentActivity {
 
 	}
 
-	public static class AllEventsFragment extends Fragment {
+	public static class AllEventsFragment extends ListFragment {
 		private List<Shift> list;
 		private ShiftDAO shiftDao;
-		private TextView txtView;
 		private View rootView;
-		private LinearLayout mainLayout;
-		private int txtSize = 19;
-		private boolean clickable = true;
-		private String spacing = "				";
+		private ListView listView;
+		private EventAdapter adapter;
 
 		public AllEventsFragment() {
 		}
-
+			
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			rootView = inflater.inflate(R.layout.fragment_view_events, container, false);
-			mainLayout = (LinearLayout) rootView.findViewById(R.id.eventContainer);
-
-			return rootView;
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
+		{
+			View v = inflater.inflate(R.layout.list_view, container, false);
+		    listView = (ListView) v.findViewById(android.R.id.list);
+		    return v;
 		}
-
+		
 		@Override
-		public void onResume() {
-			super.onResume();
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
 
-			mainLayout.removeAllViews();
-
-			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao = new ShiftDAOImpl(getActivity());
 			shiftDao.open();
 			list = shiftDao.getShifts();
 			shiftDao.close();
+			
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
+			setListAdapter(adapter);
+		}
 
-			refreshView();
+		@Override
+		public void onListItemClick(ListView l, View v, int position, long id) {
+			TextView textViewItem = ((TextView) v.findViewById(R.id.tvFrom));
+			String sId = textViewItem.getTag().toString();
+			int ssId = Integer.parseInt(sId);
+			
+			DialogFragment dia = ConfirmDialog.newInstance(ssId);
+			dia.show(getFragmentManager(), "Confirm");
 		}
 		
-		public void refreshView() {
-			int NUM = list.size();
-			int colorTeal = Color.parseColor("#33B5E5");
-			int colorBlack = Color.parseColor("#111111");
-			int color;
-			for (int i = 0; i < NUM; i++) {
-				if (i % 2 == 0)
-					color = colorTeal;
-				else
-					color = colorBlack;
-				
-				txtView = new TextView(getActivity());
-				fillLayout(true, list.get(i).getFromFormatted() + spacing
-						+ list.get(i).getToFormatted() + spacing + list.get(i).isWorked(), list.get(i),
-						txtView, mainLayout, rootView.getContext(), color);
-			}
-		}
-
-		public void fillLayout(boolean mainView, String data, Shift s,
-				TextView view, LinearLayout layout, Context contx, int color) {
-			view = new TextView(getActivity());
-			view.setId(s.getId());
-			view.setBackgroundColor(color);
-			view.setText(data);
-			view.setTextSize(txtSize);
-			view.setTextColor(Color.WHITE);
-			view.setClickable(clickable);
-			final int ID = s.getId();
-			view.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					/*
-					 * Send Shift id to the ConfirmService
-					 */
-					DialogFragment dia = ConfirmDialog.newInstance(ID);
-					dia.show(getFragmentManager(), "Confirm");
-				}
-			});
+		@Override
+		public void onPause(){
+			super.onPause();
 			
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT);
-			layout.addView(view, lp);
+			adapter = null;
 		}
+		
+		public void onResume(){
+			super.onResume();
+			
+			shiftDao = new ShiftDAOImpl(getActivity());
+			shiftDao.open();
+			list = shiftDao.getShifts();
+			shiftDao.close();
+			
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
+			setListAdapter(adapter);
+		}
+
 	}
 }

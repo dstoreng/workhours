@@ -29,6 +29,8 @@
     <string name="tax_label">Tax</string>
    
     <string name="profile_title">Profile</string>
+    <string name="tvConfirmed">Confirmed</string>
+    <string name="tvHours">Hours</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Button 	   Variables                 ****** -->

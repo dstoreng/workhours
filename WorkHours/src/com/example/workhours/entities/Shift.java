@@ -170,4 +170,9 @@ public class Shift implements Serializable, Comparable<Shift> {
 	public int compareTo(Shift s){
 		return this.getFrom().compareTo(s.getFrom());
 	}
+	
+	@Override
+	public String toString(){
+		return getFromFormatted() + " 	-	" + getToFormatted() + "	-	" + isWorked();
+	}
 }
