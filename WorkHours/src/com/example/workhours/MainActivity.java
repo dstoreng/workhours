@@ -9,14 +9,9 @@ import com.example.workhours.entities.Shift;
 import com.example.workhours.entities.User;
 import com.example.workhours.fragments.ConfirmDialog;
 import com.example.workhours.fragments.DatePickerFragment;
-import com.example.workhours.util.ConfirmService;
 import com.example.workhours.util.EventAdapter;
-
-import android.app.ActionBar.LayoutParams;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -33,16 +28,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
@@ -181,8 +171,7 @@ public class MainActivity extends FragmentActivity {
 		private UserDAO udao;
 		private TextView salaryLastMonth, salaryNextMonth;
 
-		public ShiftFragment() {
-		}
+		public ShiftFragment() {}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -271,108 +260,87 @@ public class MainActivity extends FragmentActivity {
 		}
 
 	}
-
-	public static class EventFragment extends Fragment {
+	
+	/*
+	 * This fragment displays all upcoming shifts that are not confirmed
+	 * aka schedule
+	 */
+	public static class EventFragment extends ListFragment {
+		private EventAdapter adapter;
 		private List<Shift> list, tmpList;
 		private ShiftDAO shiftDao;
-		private TextView txtView, hourText;
 		private View rootView;
-		private LinearLayout mainLayout;
-		private double scheduledHours;
-		private int txtSize = 19;
-		private boolean clickable = true;
-		private String spacing = "				";
+		
+		public EventFragment() {}
 
-		public EventFragment() {
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+			rootView = inflater.inflate(R.layout.list_view, container, false);
+			return rootView;
+		}
+		
+		@Override
+		public void onActivityCreated(Bundle savedInstanceState) {
+			super.onActivityCreated(savedInstanceState);
+
+			shiftDao = new ShiftDAOImpl(getActivity());
+			shiftDao.open();
+			tmpList = shiftDao.getShifts();
+			shiftDao.close();
+			
+			list = new ArrayList<Shift>();
+			// Get all shifts that are not confirmed == scheduled
+			for (Shift t : tmpList) {
+				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
+					list.add(t);
+					//scheduledHours += t.getHours();
+				}
+			}
+			
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
+			setListAdapter(adapter);
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			rootView = inflater.inflate(R.layout.fragment_view_events,
-					container, false);
-			mainLayout = (LinearLayout) rootView
-					.findViewById(R.id.eventContainer);
-			hourText = (TextView) rootView.findViewById(R.id.displayHours);
+		public void onListItemClick(ListView l, View v, int position, long id) {
+			TextView textViewItem = ((TextView) v.findViewById(R.id.tvFrom));
+			String sId = textViewItem.getTag().toString();
 
-			return rootView;
-		}
-
-		public void refreshView() {
-			int NUM = list.size();
-			int colorTeal = Color.parseColor("#33B5E5");
-			int colorBlack = Color.parseColor("#111111");
-			int color;
-			for (int i = 0; i < NUM; i++) {
-				if (i % 2 == 0)
-					color = colorTeal;
-				else
-					color = colorBlack;
-				txtView = new TextView(getActivity());
-				fillLayout(true, list.get(i).getFromFormatted() + spacing
-						+ list.get(i).getToFormatted() + spacing, list.get(i),
-						txtView, mainLayout, rootView.getContext(), color);
-			}
-
-			hourText.setText("Scheduled Hours: " + scheduledHours);
-		}
-
-		public void fillLayout(boolean mainView, String data, Shift tmpShift,
-				TextView view, LinearLayout layout, Context contx, int color) {
-			view = new TextView(getActivity());
-			view.setId(tmpShift.getId());
-			view.setBackgroundColor(color);
-			view.setText(data);
-			view.setTextSize(txtSize);
-			view.setTextColor(Color.WHITE);
-			view.setClickable(clickable);
-			view.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					TextView obj = (TextView) v;
-					int objId = obj.getId();
-
-					/*
-					 * Send Shift id to the Shift activity class
-					 */
-					Intent intent = new Intent(getActivity(),
-							ChangeShiftActivity.class);
-					intent.putExtra("SHIFT_ID", objId);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-					startActivity(intent);
-				}
-			});
-			LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT);
-			layout.addView(view, lp);
+			Intent intent = new Intent(getActivity(),
+					ChangeShiftActivity.class);
+			intent.putExtra("SHIFT_ID", Integer.parseInt(sId));
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			startActivity(intent);
 		}
 
 		@Override
 		public void onResume() {
 			super.onResume();
 
-			mainLayout.removeAllViews();
-
-			shiftDao = new ShiftDAOImpl(getActivity().getApplicationContext());
+			shiftDao = new ShiftDAOImpl(getActivity());
 			shiftDao.open();
 			tmpList = shiftDao.getShifts();
 			shiftDao.close();
-
+			
 			list = new ArrayList<Shift>();
-			scheduledHours = 0;
 			// Get all shifts that are not confirmed == scheduled
 			for (Shift t : tmpList) {
 				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
 					list.add(t);
-					scheduledHours += t.getHours();
+					//scheduledHours += t.getHours();
 				}
 			}
-			refreshView();
+			
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
+			setListAdapter(adapter);
 		}
 
 	}
-
+	
+	/*
+	 * This fragment displays all shifts to the user
+	 * It is possible to click an item to change the isWorked status.
+	 */
 	public static class AllEventsFragment extends ListFragment {
 		private List<Shift> list;
 		private ShiftDAO shiftDao;
@@ -427,6 +395,6 @@ public class MainActivity extends FragmentActivity {
 			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list);
 			setListAdapter(adapter);
 		}
-
 	}
+	
 }
