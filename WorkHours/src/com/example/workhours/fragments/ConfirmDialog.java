@@ -63,8 +63,7 @@ public class ConfirmDialog extends DialogFragment{
 						
 						if(tmp != null){
 							DateTime dateEnd = tmp.getTo();
-							DateTime now = 
-							if(date )
+							DateTime now;
 						}
 						Intent intent = new Intent(c, ConfirmService.class);
 						intent.putExtra("SHIFT_ID", sId);
