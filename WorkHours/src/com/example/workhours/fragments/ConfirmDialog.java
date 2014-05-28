@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.widget.ToggleButton;
 
 public class ConfirmDialog extends DialogFragment{
@@ -63,12 +64,15 @@ public class ConfirmDialog extends DialogFragment{
 						
 						if(tmp != null){
 							DateTime dateEnd = tmp.getTo();
-							DateTime now;
-						}
-						Intent intent = new Intent(c, ConfirmService.class);
-						intent.putExtra("SHIFT_ID", sId);
-						intent.putExtra("IS_WORKED", confirm);
-						c.startService(intent);
+							DateTime now = DateTime.now();
+							if(now.isAfter(dateEnd)){
+								Log.d("inne i if","");
+								Intent intent = new Intent(c, ConfirmService.class);
+								intent.putExtra("SHIFT_ID", sId);
+								intent.putExtra("IS_WORKED", confirm);
+								c.startService(intent);
+							}
+						}						
 					}
 				})
 				.setNegativeButton("Cancel",

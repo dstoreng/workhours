@@ -2,6 +2,7 @@ package com.example.workhours.entities;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Random;
 
 import org.joda.time.DateTime;
 import org.joda.time.DurationFieldType;
@@ -26,15 +27,17 @@ public class Shift implements Serializable, Comparable<Shift> {
 	private boolean repeat;
 	private boolean repeatWeekly;
 	private boolean repeatMonthly;
+	private int repeatCount;
 
 	/**
 	 * True for new instance, false for DATABASE use
 	 */
 	public Shift(boolean isNewInstance) {
 		if (isNewInstance) {
+			Random r = new Random();
 			Calendar c = Calendar.getInstance();
 			Long time = c.getTimeInMillis();
-			this.id = time.intValue();
+			this.id = r.nextInt();
 		}
 	}
 	
@@ -77,6 +80,10 @@ public class Shift implements Serializable, Comparable<Shift> {
 	public int getHours(){
 		period = new Period(from, to);
 		return period.getHours();
+	}
+	
+	public int getRepeatCount(){
+		return repeatCount;
 	}
 	
 	/**
@@ -126,6 +133,10 @@ public class Shift implements Serializable, Comparable<Shift> {
 		this.repeatMonthly = value;
 	}
 	
+	public void setRepeatCount(int value){
+		this.repeatCount = value;
+	}
+	
 	/**
 	 * Return from in a pre-specified format
 	 * 		dd/MM/yy - HH:mm
@@ -163,8 +174,9 @@ public class Shift implements Serializable, Comparable<Shift> {
 	/**
 	 * @returns time in milliseconds until shift is DONE.
 	 */
-	public long getMillisDone(int offset){
-		return (to.getMillis() - DateTime.now().getMillis()) + offset;
+	public long getMillisDone(){
+		DateTime now = new DateTime();
+		return (to.getMillis() - now.getMillis());
 	}
 
 	public int compareTo(Shift s){
