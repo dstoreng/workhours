@@ -14,14 +14,16 @@ public class Notifier {
 	private AlarmManager mgr;
 	private PendingIntent pi;
 	private Intent i;
+	private Shift s;
 	
 	public Notifier(Activity a, Context c, Shift shift){
 		mgr = (AlarmManager) a.getSystemService(Context.ALARM_SERVICE);
 		i = new Intent(c, ScheduleHandler.class);
-		i.putExtra("SHIFT_ID", shift.getId());
-		pi = PendingIntent.getService(c, 0, i, 0);
+		s = shift;
+		i.putExtra("SHIFT_ID", s.getId());
+		pi = PendingIntent.getService(c, s.getId(), i, 0);
 		
-		Log.d("Notifier created for SHIFT_ID", "ID = " + shift.getId());
+		Log.d("Notifier created for SHIFT_ID", "ID = " + s.getId());
 	}
 	
 	/**
@@ -29,7 +31,7 @@ public class Notifier {
 	 * s.getMillisDone(-10000)
 	 */
 	public void schedule(){
-		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5000, pi);
+		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + s.getMillisDone() , pi);
 	}
 	
 	/**
