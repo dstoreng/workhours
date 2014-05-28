@@ -1,5 +1,12 @@
 package com.example.workhours.fragments;
 
+import java.util.List;
+
+import org.joda.time.DateTime;
+
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
+import com.example.workhours.entities.Shift;
 import com.example.workhours.util.ConfirmService;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -42,7 +49,22 @@ public class ConfirmDialog extends DialogFragment{
 					public void onClick(DialogInterface dialog, int id) 
 					{
 						boolean confirm = toggleButton.isChecked();
+
+						ShiftDAO dao = new ShiftDAOImpl(c);
+						dao.open();
+						List<Shift> shiftsWorked = dao.getShifts();
+						dao.close();
+						Shift tmp = null;
+						for(Shift s: shiftsWorked){
+							if(s.getId() == sId){
+								tmp = s;
+							}
+						}
 						
+						if(tmp != null){
+							DateTime dateEnd = tmp.getTo();
+							DateTime now;
+						}
 						Intent intent = new Intent(c, ConfirmService.class);
 						intent.putExtra("SHIFT_ID", sId);
 						intent.putExtra("IS_WORKED", confirm);
