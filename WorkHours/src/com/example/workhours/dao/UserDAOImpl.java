@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.workhours.entities.User;
-import com.example.workhours.util.ShiftOpenHelper;
 import com.example.workhours.util.UserOpenHelper;
 
 public class UserDAOImpl implements UserDAO {
@@ -26,7 +25,8 @@ public class UserDAOImpl implements UserDAO {
 			UserOpenHelper.COLUMN_PASS,
 			UserOpenHelper.COLUMN_EMPL,
 			UserOpenHelper.COLUMN_WAGE,
-			UserOpenHelper.COLUMN_TAX
+			UserOpenHelper.COLUMN_TAX,
+			UserOpenHelper.COLUMN_SCH_DUE
 		};
 	
 	public UserDAOImpl(Context context) {
@@ -58,6 +58,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_EMPL, user.getEmployerEmail());
 		values.put(UserOpenHelper.COLUMN_WAGE, user.getHourlyWage());
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
+		values.put(UserOpenHelper.COLUMN_SCH_DUE, user.getScheduleDue());
 		
 		database.insert(UserOpenHelper.TABLE_USER, null, values);
 	}
@@ -72,6 +73,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_EMPL, user.getEmployerEmail());
 		values.put(UserOpenHelper.COLUMN_WAGE, user.getHourlyWage());
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
+		values.put(UserOpenHelper.COLUMN_SCH_DUE, user.getScheduleDue());
 		
 		database.update(
 				UserOpenHelper.TABLE_USER,
@@ -122,6 +124,7 @@ public class UserDAOImpl implements UserDAO {
 		user.setEmployerEmail(cursor.getString(3));
 		user.setHourlyWage(cursor.getDouble(4));
 		user.setTax(cursor.getDouble(5));
+		user.setDueDate(cursor.getInt(6));
 		
 		return user;
 	}
