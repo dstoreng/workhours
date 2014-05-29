@@ -47,7 +47,7 @@ public class EventAdapter extends ArrayAdapter<Shift> {
 	        to.setText(s.getToFormatted());
 	        
 	        TextView hours = (TextView) convertView.findViewById(R.id.tvHours);
-	        hours.setText(Integer.toString(s.getHours()));
+	        hours.setText(Integer.toString(s.getHours()) + " ID: "  +Integer.toString(s.getId()));
 	        
 	        if(showImage){
 		        ImageView conf = (ImageView) convertView.findViewById(R.id.tvConfirmed);
