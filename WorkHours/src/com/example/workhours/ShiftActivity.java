@@ -31,9 +31,8 @@ import com.example.workhours.entities.Shift;
 public class ShiftActivity extends Activity {
 	private int fromHour, fromMin, toHour, toMin;
 	private TimePicker from, to;
-	private CheckBox notify, repeat;
-	private RadioGroup radioGroup;
-	private RadioButton weekly, monthly;
+	private CheckBox repeat;
+	private RadioButton weekly;
 	private LinearLayout repeatLayout;
 	private EditText repeatCount;
 	private ShiftDAO shiftdao;
@@ -67,8 +66,13 @@ public class ShiftActivity extends Activity {
 		for(Shift t : list)
 		{
 			shiftdao.addShift(t);
-			notifier = new Notifier(this, this, t);
-			notifier.schedule();
+			
+			//Schedule notification if shifts hasnt already happened
+			if(t.getTo().isAfter(DateTime.now()))
+			{
+				notifier = new Notifier(this, this, t);
+				notifier.schedule();
+			}
 		}
 		shiftdao.close();
 		
@@ -175,10 +179,7 @@ public class ShiftActivity extends Activity {
 		to = (TimePicker) findViewById(R.id.shiftTo);
 		to.setIs24HourView(true);
 		repeat = (CheckBox) findViewById(R.id.repeatsBox);
-		notify = (CheckBox) findViewById(R.id.notifyBox);
-		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 		weekly = (RadioButton) findViewById(R.id.radioWeekly);
-		monthly = (RadioButton) findViewById(R.id.radioMonthly);
 		shiftdao = new ShiftDAOImpl(getApplicationContext());
 		repeatLayout = (LinearLayout) findViewById(R.id.repeatLayout);
 		repeatCount = (EditText) findViewById(R.id.repeatCount);
