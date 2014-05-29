@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.ToggleButton;
 
@@ -53,26 +54,18 @@ public class ConfirmDialog extends DialogFragment{
 
 						ShiftDAO dao = new ShiftDAOImpl(c);
 						dao.open();
-						List<Shift> shiftsWorked = dao.getShifts();
+						Shift tmp = dao.getShift(sId);
 						dao.close();
-						Shift tmp = null;
-						for(Shift s: shiftsWorked){
-							if(s.getId() == sId){
-								tmp = s;
-							}
+									
+						DateTime dateEnd = tmp.getTo();
+						DateTime now = DateTime.now();
+						if(now.isAfter(dateEnd)){
+							Intent intent = new Intent(c, ConfirmService.class);
+							intent.putExtra("SHIFT_ID", sId);
+							intent.putExtra("IS_WORKED", confirm);
+							c.startService(intent);
 						}
-						
-						if(tmp != null){
-							DateTime dateEnd = tmp.getTo();
-							DateTime now = DateTime.now();
-							if(now.isAfter(dateEnd)){
-								Log.d("inne i if","");
-								Intent intent = new Intent(c, ConfirmService.class);
-								intent.putExtra("SHIFT_ID", sId);
-								intent.putExtra("IS_WORKED", confirm);
-								c.startService(intent);
-							}
-						}						
+												
 					}
 				})
 				.setNegativeButton("Cancel",

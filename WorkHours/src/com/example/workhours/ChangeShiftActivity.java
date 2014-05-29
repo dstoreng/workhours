@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -99,16 +100,20 @@ public class ChangeShiftActivity extends Activity {
 		shiftDao.updateShift(shift.getId(), shift);
 		shiftDao.close();
 		
-		/*
-		 * Update notification manager
-		 */
+		
+		//Update notification manager
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		nm.cancel(shift.getId());	
 		Notifier n = new Notifier(this, this, shift);
 		n.schedule();
 		
+		/*
+		 * Broadcast event to views that needs to be updated
+		 */
+		Intent update1 = new Intent("activity_listener");
+		LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(update1);
+		
 		shift = null;
-
 		finish();
 	}
 

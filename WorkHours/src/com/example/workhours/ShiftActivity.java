@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -70,7 +71,10 @@ public class ShiftActivity extends Activity {
 			notifier.schedule();
 		}
 		shiftdao.close();
-
+		
+		Intent update1 = new Intent("activity_listener");
+		LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(update1);
+		
 		finish();
 	}
 

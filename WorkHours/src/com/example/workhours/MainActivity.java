@@ -3,6 +3,9 @@ package com.example.workhours;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.joda.time.DateTime;
 import com.example.workhours.entities.Calculations;
 import com.example.workhours.entities.Shift;
@@ -10,7 +13,11 @@ import com.example.workhours.entities.User;
 import com.example.workhours.fragments.ConfirmDialog;
 import com.example.workhours.fragments.DatePickerFragment;
 import com.example.workhours.util.EventAdapter;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -20,6 +27,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +36,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +50,6 @@ import com.example.workhours.dao.UserDAOImpl;
 import com.facebook.Session;
 
 public class MainActivity extends FragmentActivity {
-	private UserDAO dao;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 
@@ -53,23 +62,42 @@ public class MainActivity extends FragmentActivity {
 		mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
-		dao = new UserDAOImpl(this);
-		dao.open();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		dao.open();
+		
+		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver,
+				new IntentFilter("activity_listener"));
 	}
 
 	@Override
 	protected void onPause() {
-		dao.close();
+		LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+
 		super.onPause();
 	}
+	
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+		  @Override
+		  public void onReceive(Context context, Intent intent) {
+			  new Timer().schedule(new TimerTask() {          
+				    @Override
+				    public void run() {
+				    	Intent schedule = new Intent("schedule");
+						LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(schedule);	   
+				    }
+				}, 1000);
+				new Timer().schedule(new TimerTask() {          
+				    @Override
+				    public void run() {
+				    	Intent allEvents = new Intent("all_events");
+						LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(allEvents);	   
+				    }
+				}, 500);		
+		  }
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -250,23 +278,24 @@ public class MainActivity extends FragmentActivity {
 	 * aka schedule
 	 */
 	public static class EventFragment extends ListFragment {
-		private EventAdapter adapter;
-		private List<Shift> list, tmpList;
 		private ShiftDAO shiftDao;
 		private ListView rootView;
+		private EventAdapter adapter;
 		
-		public EventFragment() {}
+		public EventFragment() {
+		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-			super.onCreateView(inflater, container, savedInstanceState);
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {	
+			rootView = (ListView) inflater.inflate(R.layout.list_view, container, false);
 			
-			//Set the listview which we will fill with layouts
-			rootView = (ListView)inflater.inflate(R.layout.list_view, container, false);
-			refreshContent();
+			shiftDao = new ShiftDAOImpl(getActivity());
+			//adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), false);
+			//rootView.setAdapter(adapter);
 			
 			return rootView;
 		}
+
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
@@ -279,22 +308,50 @@ public class MainActivity extends FragmentActivity {
 			startActivity(intent);
 		}
 		
-		public void refreshContent(){
-			shiftDao = new ShiftDAOImpl(getActivity());
+		public List<Shift> getDBlolContent(){	
 			shiftDao.open();
-			tmpList = shiftDao.getShifts();
+			List<Shift> piah = shiftDao.getSchedule();
 			shiftDao.close();
-			
-			list = new ArrayList<Shift>();
-			// Get all shifts that are not confirmed == scheduled
-			for (Shift t : tmpList) {
-				if ((!t.isWorked()) && (t.getFrom().isAfter(DateTime.now()))) {
-					list.add(t);
-				}
-			}		
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list, false);
-			rootView.setAdapter(adapter);
+	
+			return piah;
 		}
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+		
+			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver,new IntentFilter("schedule"));	
+			refresh();
+		}
+		
+		@Override
+		public void onPause() {
+			Log.d("Schedule", "onPause");
+			LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateReceiver);
+			super.onPause();
+		}
+		
+		public void refresh(){
+			Log.d("Schedule","refresh");
+			if(adapter != null)
+				adapter.clear();
+			
+			List<Shift> li = new ArrayList<Shift>();
+			for(Shift s : getDBlolContent()){
+				if(s.getFrom().isAfter(DateTime.now()))
+					li.add(s);
+			}
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, li, false);
+			rootView.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+		}
+		
+		private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+			  @Override
+			  public void onReceive(Context context, Intent intent) {
+				  refresh();
+			  }
+		};
 	}
 	
 	/*
@@ -302,24 +359,22 @@ public class MainActivity extends FragmentActivity {
 	 * It is possible to click an item to change the isWorked status.
 	 */
 	public static class AllEventsFragment extends ListFragment {
-		private List<Shift> list;
-		private ShiftDAO shiftDao;
+		private ShiftDAO shiftDaoPiah;
 		private EventAdapter adapter;
-		private ListView v;
-
+		private ListView rootView;
+		
 		public AllEventsFragment() {
 		}
-			
+
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
-		{
-			super.onCreateView(inflater, container, savedInstanceState);
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {	
+			rootView = (ListView) inflater.inflate(R.layout.list_view, container, false);
 			
-			//Set the listview which we will fill with layouts
-			v = (ListView) inflater.inflate(R.layout.list_view, container, false);
-			refreshContent();
+			shiftDaoPiah = new ShiftDAOImpl(getActivity());
+			//adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), true);
+			//rootView.setAdapter(adapter);
 			
-		    return v;
+			return rootView;
 		}
 
 		@Override
@@ -330,19 +385,49 @@ public class MainActivity extends FragmentActivity {
 			
 			DialogFragment dia = ConfirmDialog.newInstance(ssId);
 			dia.show(getFragmentManager(), "Confirm");
-			
-			refreshContent();
 		}
 		
-		public void refreshContent(){
-			shiftDao = new ShiftDAOImpl(getActivity());
-			shiftDao.open();
-			list = shiftDao.getShifts();
-			shiftDao.close();
+		public List<Shift> getDBContent(){	
+			shiftDaoPiah.open();
+			List<Shift> piah = shiftDaoPiah.getShifts();
+			shiftDaoPiah.close();
 			
-			adapter = new EventAdapter(getActivity(), R.layout.event_layout, list, true);
-			v.setAdapter(adapter);
+			Log.d("All Events","found "+ piah.size() + " shifts");
+			
+			return piah;
 		}
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+		
+			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver,new IntentFilter("all_events"));	
+			refresh();
+		}
+		
+		@Override
+		public void onPause() {
+			Log.d("All Events", "onPause");
+			LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateReceiver);
+			super.onPause();
+		}
+		
+		public void refresh(){
+			Log.d("All Events","refresh");
+			if(adapter != null)
+				adapter.clear();
+			adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), true);
+			rootView.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+		}
+		
+		private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+			  @Override
+			  public void onReceive(Context context, Intent intent) {
+				  refresh();
+				  rootView.invalidate();
+			  }
+		};
 	}
 	
 }

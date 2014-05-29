@@ -14,6 +14,7 @@ public interface ShiftDAO {
 	 * @return ArrayList
 	 */
 	public List<Shift> getShifts();
+	public List<Shift> getSchedule();
 	public void deleteShift(Integer sID);
 	public void updateShift(Integer sID, Shift shift);
 	public void open();

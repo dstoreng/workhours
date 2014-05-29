@@ -1,5 +1,7 @@
 package com.example.workhours.entities;
 
+import java.util.concurrent.TimeUnit;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -23,7 +25,7 @@ public class Notifier {
 		i.putExtra("SHIFT_ID", s.getId());
 		pi = PendingIntent.getService(c, s.getId(), i, 0);
 		
-		Log.d("Notifier created for SHIFT_ID", "ID = " + s.getId());
+		Log.d("Notifier created for SHIFT_ID", "ID = " + s.getId() + " time=" + String.format("%d sec", TimeUnit.MILLISECONDS.toSeconds(s.getMillisDone())));
 	}
 	
 	/**

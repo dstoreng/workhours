@@ -175,7 +175,7 @@ public class Shift implements Serializable, Comparable<Shift> {
 	 * @returns time in milliseconds until shift is DONE.
 	 */
 	public long getMillisDone(){
-		DateTime now = new DateTime();
+		DateTime now = DateTime.now();
 		return (to.getMillis() - now.getMillis());
 	}
 

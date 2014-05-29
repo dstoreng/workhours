@@ -3,6 +3,8 @@ package com.example.workhours.util;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.entities.Shift;
@@ -40,6 +42,10 @@ public class ConfirmService extends IntentService {
 			// Remove attached notification
 			NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 			nm.cancel(shiftId);
+			
+			//Broadcast event to views that needs to be updated
+			Intent update = new Intent("activity_listener");
+			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(update);
 		}
 	}
 
