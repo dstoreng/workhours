@@ -135,7 +135,7 @@ public class ShiftDAOImpl implements ShiftDAO {
 		while(!cursor.isAfterLast()) {
 			
 			shift = cursorToShift(cursor);
-			if(shift.getFrom().isAfter(DateTime.now()))
+			if(shift.getTo().isAfter(DateTime.now()))
 				elems.add(shift);
 			cursor.moveToNext();
 		}
