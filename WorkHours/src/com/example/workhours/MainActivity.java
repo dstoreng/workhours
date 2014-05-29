@@ -236,13 +236,33 @@ public class MainActivity extends FragmentActivity {
 			/*
 			 * Calculate the salary using a help class
 			 */
+			
+			/**
+			 * If user has monthly payments 
+			 * */
 			Calculations cl = new Calculations(usr, shifts);
-			double lmonth = cl.getPrevMonthSalary();
-			double nmonth = cl.getNextMonthSalary();
-			String shours = cl.getScheduledHours();
+			double last = 0, next = 0;
+			String shours = "";
+			
+			if(usr.getPerPay().equals("monthly")) {
+				
+				 last = cl.getPrevMonthSalary();
+				 next = cl.getNextMonthSalary();
+				 shours = cl.getScheduledHours();
+				 
+				 /**
+					 * If user has weekly payments 
+					 * */
+				 
+			} else if (usr.getPerPay().equals("weekly")) {
+				
+				last = cl.getPrevWeeksSalary();
+				next = cl.getNextWeeksSalary();
+				shours = cl.getScheduledHours();
+			}
 
-			salaryLastMonth.setText(Double.toString(lmonth));
-			salaryNextMonth.setText(Double.toString(nmonth));
+			salaryLastMonth.setText(Double.toString(last));
+			salaryNextMonth.setText(Double.toString(next));
 			scheduledHours.setText(shours);
 		}
 	}

@@ -16,9 +16,10 @@ public class UserOpenHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_WAGE   = "hourly_wage";
 	public static final String COLUMN_TAX    = "tax";
 	public static final String COLUMN_SCH_DUE= "schedule_due";
+	public static final String COLUMN_PER_PAY= "per_pay";
 	
 	public static final String DATABASE_NAME = "user.db";
-	public static final int DATABASE_VERSION = 7;
+	public static final int DATABASE_VERSION = 8;
 	
 	public static final String DATABASE_CREATE = "create table "
 
@@ -29,7 +30,8 @@ public class UserOpenHelper extends SQLiteOpenHelper {
 			+ COLUMN_EMPL    + " text, "
 			+ COLUMN_WAGE    + " real, "
 			+ COLUMN_TAX     + " real, "
-			+ COLUMN_SCH_DUE + " integer"
+			+ COLUMN_SCH_DUE + " integer,"
+			+ COLUMN_PER_PAY + " text"
 			+ ");";
 	
     public UserOpenHelper(Context context) {

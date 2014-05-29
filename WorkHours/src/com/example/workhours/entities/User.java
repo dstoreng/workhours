@@ -11,16 +11,17 @@ public class User {
 	private double hourlyWage;
 	private double tax;
 	private int dueDate;
+	private String perPay;
 	 
 	
 	public User() {}
 	
 	public User(String name, String email, String password) {
 		
-		this(name, email, password, "", 0.0, 0.0, 0);
+		this(name, email, password, "", 0.0, 0.0, 0, "");
 	}
 	
-	public User(String name, String email, String password, String empEmail, double hWage, double tax, int due) {
+	public User(String name, String email, String password, String empEmail, double hWage, double tax, int due, String perPay) {
 		
 		this.name     = name;
 		this.email    = email;
@@ -29,6 +30,7 @@ public class User {
 		this.tax      = tax;
 		this.passHash = PasswordHash.hash(password);
 		dueDate       = due;
+		this.setPerPay(perPay);
 
 	}
 	
@@ -124,6 +126,14 @@ public class User {
 		
 		return (hoursWorked*hourlyWage) - (hoursWorked*hourlyWage*tax);
 		
+	}
+
+	public String getPerPay() {
+		return perPay;
+	}
+
+	public void setPerPay(String perPay) {
+		this.perPay = perPay;
 	}
 
 }

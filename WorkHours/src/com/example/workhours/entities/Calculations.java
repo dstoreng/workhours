@@ -35,7 +35,7 @@ public class Calculations {
 		}
 		
 		int hours = total / 60;
-		int minutes = total & 60;
+		int minutes = total % 60;
 		
 		return (hours + (minutes / 60)) * salary;
 	}
@@ -61,7 +61,70 @@ public class Calculations {
 		}
 		
 		int hours = total / 60;
-		int minutes = total & 60;
+		int minutes = total % 60;
+		
+		return (hours + (minutes / 60)) * salary;
+	}
+	
+	/**
+	 * Returns this weeks salary, all hours are included
+	 * */
+	public double getNextWeeksSalary() {
+		
+		DateTime time = new DateTime();
+		int year  = time.getYear();
+		int month = time.getMonthOfYear();
+		int week  = time.getWeekOfWeekyear();
+		
+		double salary = u.getHourlyWage();
+		int total = 0;
+		
+		for(Shift s : shifts) {
+			
+			if((s.getFrom().getYear() == year) &&
+					(s.getFrom().getMonthOfYear() == month &&
+					(s.getFrom().getWeekyear() == week)))
+			{
+				
+				total += s.getMinutes();
+			}
+		}
+		
+		int hours = total / 60;
+		int minutes = total % 60;
+		
+		return (hours + (minutes / 60)) * salary;
+	}
+	
+	
+	/**
+	 * Returns last weeks salary, only confirmed hours are included
+	 * */
+	public double getPrevWeeksSalary() {
+		
+		DateTime time = new DateTime();
+		time          = time.minusWeeks(1);
+		int year      = time.getYear();
+		int month     = time.getMonthOfYear();
+		int week      = time.getWeekOfWeekyear();
+		
+		double salary = u.getHourlyWage();
+		int total = 0;
+		
+		for(Shift s : shifts) {
+			
+			if((s.getFrom().getYear() == year) &&
+					(s.getFrom().getMonthOfYear() == month &&
+					(s.getFrom().getWeekyear() == week)))
+			{
+				
+				if(s.isWorked())
+					total += s.getMinutes();
+			}
+		}
+		
+		int hours = total / 60;
+		int minutes = total % 60;
 		
 		return (hours + (minutes / 60)) * salary;
 	}
