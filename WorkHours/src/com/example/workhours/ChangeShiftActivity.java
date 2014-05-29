@@ -28,6 +28,7 @@ public class ChangeShiftActivity extends Activity {
 	private DateTime date;
 	private LinearLayout actionBox;
 	private TimePicker from, to;
+	private Notifier notifier;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +47,8 @@ public class ChangeShiftActivity extends Activity {
 		
 		// Notify equals notification, cancel it.
 		if(shift.isNotify()){
-			Notifier n = new Notifier(this, this, shift);
-			n.cancel();
+			notifier = new Notifier(this, this, shift);
+			notifier.cancel();
 		}
 
 		if (shift != null) {
@@ -103,9 +104,14 @@ public class ChangeShiftActivity extends Activity {
 		
 		//Update notification manager
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		nm.cancel(shift.getId());	
-		Notifier n = new Notifier(this, this, shift);
-		n.schedule();
+		nm.cancel(shift.getId());
+		
+		//Schedule notification if shifts hasnt already happened
+		if(shift.getTo().isAfter(DateTime.now()))
+		{
+			notifier = new Notifier(this, this, shift);
+			notifier.schedule();
+		}
 		
 		/*
 		 * Broadcast event to views that needs to be updated
