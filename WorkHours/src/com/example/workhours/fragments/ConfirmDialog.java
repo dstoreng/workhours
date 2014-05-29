@@ -1,7 +1,5 @@
 package com.example.workhours.fragments;
 
-import java.util.List;
-
 import org.joda.time.DateTime;
 
 import android.app.AlertDialog;
@@ -12,11 +10,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.widget.ToggleButton;
 
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
+import com.example.workhours.entities.Notifier;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.util.ConfirmService;
 
@@ -69,9 +67,24 @@ public class ConfirmDialog extends DialogFragment{
 												
 					}
 				})
-				.setNegativeButton("Cancel",
+				.setNegativeButton("Delete",
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {}
+							public void onClick(DialogInterface dialog, int id) {
+								ShiftDAO dao = new ShiftDAOImpl(c);
+								dao.open();
+								
+								//Need to cancel notification before we delete the shift, or bad things will happen
+								Shift s = dao.getShift(sId);
+								Notifier n = new Notifier(getActivity(), c, s);
+								n.cancel();
+								
+								dao.deleteShift(sId);
+								dao.close();
+								
+								//Broadcast event to views that needs to be updated
+								Intent update = new Intent("activity_listener");
+								LocalBroadcastManager.getInstance(c).sendBroadcast(update);
+							}
 						});
 		// Create the AlertDialog object and return it
 		return builder.create();
