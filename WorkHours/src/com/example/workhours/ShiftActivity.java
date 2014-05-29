@@ -20,7 +20,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TimePicker;
 
 import com.example.workhours.dao.ShiftDAO;
@@ -116,9 +115,8 @@ public class ShiftActivity extends Activity {
 		calEvent.setFrom(f);
 		calEvent.setTo(t);
 
-		// Now handle some other info, get email from shared prefs first.
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
+		// Get email from shared prefs
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String uid = prefs.getString("email", null);
 
 		boolean isWeekly = weekly.isChecked();
@@ -193,6 +191,10 @@ public class ShiftActivity extends Activity {
 			repeatLayout.setVisibility(View.INVISIBLE);
 			showVisible = false;
 		}
+	}
+	
+	public void clickRepeatCount(View v){
+		repeatCount.setText("");
 	}
 
 }

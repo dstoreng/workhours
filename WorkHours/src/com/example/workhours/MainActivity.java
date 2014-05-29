@@ -35,12 +35,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,8 +57,7 @@ public class MainActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_main);
 
-		mSectionsPagerAdapter = new SectionsPagerAdapter(this,
-				getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 	}
@@ -92,15 +88,13 @@ public class MainActivity extends FragmentActivity {
 		public void onReceive(Context context, Intent intent) {
 			
 			Intent schedule = new Intent("schedule");
-			LocalBroadcastManager.getInstance(getApplicationContext())
-					.sendBroadcast(schedule);
+			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(schedule);
 
 			new Timer().schedule(new TimerTask() {
 				@Override
 				public void run() {
 					Intent allEvents = new Intent("all_events");
-					LocalBroadcastManager.getInstance(getApplicationContext())
-							.sendBroadcast(allEvents);
+					LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(allEvents);
 				}
 			}, 100);
 		}
@@ -199,22 +193,18 @@ public class MainActivity extends FragmentActivity {
 		private UserDAO udao;
 		private TextView salaryLastMonth, salaryNextMonth, scheduledHours;
 
-		public ShiftFragment() {
-		}
+		public ShiftFragment() {}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			return inflater.inflate(R.layout.fragment_add_shift, container,
-					false);
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			return inflater.inflate(R.layout.fragment_add_shift, container, false);
 		}
 
 		@Override
 		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
 
-			CalendarView calendar = (CalendarView) getView().findViewById(
-					R.id.calendarMain);
+			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
 			date = calendar.getDate();
 			calendar.setOnDateChangeListener(new OnDateChangeListener() {
 				@Override
@@ -228,16 +218,14 @@ public class MainActivity extends FragmentActivity {
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(getActivity(),
-							ShiftActivity.class);
+					Intent intent = new Intent(getActivity(),ShiftActivity.class);
 					intent.putExtra("DATE", date);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
 				}
 			});
 
-			Button email = (Button) getView()
-					.findViewById(R.id.sendEmailButton);
+			Button email = (Button) getView().findViewById(R.id.sendEmailButton);
 			email.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

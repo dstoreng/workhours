@@ -10,10 +10,18 @@
         android:layout_weight="5" />
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:layout_weight="5" >
+        android:layout_weight="5"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" >
+
+        <Button
+            android:id="@+id/selectDateButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/button_select_date" />
 
         <RelativeLayout
             android:id="@+id/contentBoxMain"
@@ -21,19 +29,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <Button
-                android:id="@+id/selectDateButton"
-                android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/hoursText"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/button_select_date" />
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/salaryViewLast"
+                android:text="@string/textScheduledHours"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/selectDateButton"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
                 android:text="@string/textSalaryNext"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -41,46 +51,34 @@
                 android:id="@+id/salaryViewNext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/hoursText"
                 android:layout_below="@+id/textView1"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <TextView
-                android:id="@+id/salaryViewLast"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/hoursText"
-                android:layout_below="@+id/textView4"
-                android:text="Medium Text"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <TextView
-                android:id="@+id/hoursText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textView4"
-                android:layout_below="@+id/salaryViewLast"
-                android:text="@string/textScheduledHours"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/scheduledHours"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/salaryViewLast"
-                android:layout_below="@+id/hoursText"
-                android:text="Small Text"
+                android:layout_centerHorizontal="true"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/salaryViewNext"
                 android:text="@string/textSalaryLast"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/salaryViewLast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/textView4"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/scheduledHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/hoursText"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </RelativeLayout>
 
@@ -89,8 +87,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:onClick="sendEmail"
-            android:text="email" />
-
+            android:text="@string/button_send_email" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,7 +1,6 @@
 package com.example.workhours.entities;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Random;
 
 import org.joda.time.DateTime;
@@ -15,6 +14,7 @@ public class Shift implements Serializable, Comparable<Shift> {
 
 	private static final long serialVersionUID = 1L;
 	private String dateFormat = "dd/MM/yy - HH:mm";
+	private Random r;
 
 	private int id;
 	private String uId;
@@ -34,9 +34,7 @@ public class Shift implements Serializable, Comparable<Shift> {
 	 */
 	public Shift(boolean isNewInstance) {
 		if (isNewInstance) {
-			Random r = new Random();
-			Calendar c = Calendar.getInstance();
-			Long time = c.getTimeInMillis();
+			r = new Random();
 			this.id = r.nextInt();
 		}
 	}
