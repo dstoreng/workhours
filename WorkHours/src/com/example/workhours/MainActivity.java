@@ -99,7 +99,9 @@ public class MainActivity extends FragmentActivity {
 
 			Intent intent = new Intent(getBaseContext(),
 					InitScreenActivity.class);
-			startActivity(intent);
+			
+			if(session.isClosed())
+				startActivity(intent);
 			break;
 
 		default:
@@ -344,5 +346,4 @@ public class MainActivity extends FragmentActivity {
 			v.setAdapter(adapter);
 		}
 	}
-	
 }

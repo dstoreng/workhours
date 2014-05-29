@@ -4,10 +4,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import com.example.workhours.dao.ShiftDAO;
-import com.example.workhours.dao.ShiftDAOImpl;
-import com.example.workhours.entities.Shift;
-import com.example.workhours.util.ConfirmService;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -16,6 +12,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.ToggleButton;
+
+import com.example.workhours.dao.ShiftDAO;
+import com.example.workhours.dao.ShiftDAOImpl;
+import com.example.workhours.entities.Shift;
+import com.example.workhours.util.ConfirmService;
 
 public class ConfirmDialog extends DialogFragment{
 	private int sId;
