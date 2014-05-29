@@ -1,5 +1,6 @@
 package com.example.workhours.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -16,12 +17,12 @@ import com.example.workhours.R;
 import com.example.workhours.entities.Shift;
 
 public class EventAdapter extends ArrayAdapter<Shift> {
-	private final Context context;
-	private final List<Shift> list;
+	private Context context;
+	private List<Shift> list;
 	private int layoutId;
 	private boolean showImage;
 
-	public EventAdapter(Context context, int layoutId, List<Shift> list, boolean showImage) {
+	public EventAdapter(Context context, int layoutId, List<Shift> list, boolean showImage) {		
 		super(context, layoutId, list);
 		this.layoutId = layoutId;
 		this.context = context;
@@ -47,7 +48,7 @@ public class EventAdapter extends ArrayAdapter<Shift> {
 	        to.setText(s.getToFormatted());
 	        
 	        TextView hours = (TextView) convertView.findViewById(R.id.tvHours);
-	        hours.setText(Integer.toString(s.getHours()));
+	        hours.setText(Integer.toString(s.getHours()) + " ID: "  +Integer.toString(s.getId()));
 	        
 	        if(showImage){
 		        ImageView conf = (ImageView) convertView.findViewById(R.id.tvConfirmed);
@@ -63,4 +64,10 @@ public class EventAdapter extends ArrayAdapter<Shift> {
         return convertView;
 
 	  }
+	
+	public void swapItems(List<Shift> items){
+		list.clear();
+		this.list = items;
+		notifyDataSetChanged();
+	}
 }

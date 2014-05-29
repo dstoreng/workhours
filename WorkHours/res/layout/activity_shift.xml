@@ -39,12 +39,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/linearLayout1"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/shiftTo"
         android:orientation="horizontal" >
 
         <LinearLayout
+            android:id="@+id/actionBox"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical" >
 
@@ -52,8 +55,6 @@
                 android:id="@+id/repeatsBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginLeft="14dp"
                 android:onClick="Repeat_Click"
                 android:text="@string/box_repeats" />
 
@@ -61,37 +62,60 @@
                 android:id="@+id/notifyBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="14dp"
                 android:text="@string/box_notify" />
+            
         </LinearLayout>
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
+        <LinearLayout
+            android:id="@+id/repeatLayout"
             android:layout_width="0dip"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:visibility="invisible" >
 
-            <RadioButton
-                android:id="@+id/radioMonthly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/radio_monthly" />
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <RadioButton
-                android:id="@+id/radioWeekly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/radio_weekly" />
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/radioMonthly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/radio_monthly" />
+
+                <RadioButton
+                    android:id="@+id/radioWeekly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/radio_weekly" />
+            </RadioGroup>
+			
+             <TextView
+                 android:id="@+id/repeatView"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:text="Repeat count"
+                 android:textAppearance="?android:attr/textAppearanceMedium" />
+             
+            <EditText
+                android:id="@+id/repeatCount"
+                android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+                android:inputType="number" />
+
+        </LinearLayout>
     </LinearLayout>
-    
-	<LinearLayout
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:orientation="horizontal">
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/changeOk"
@@ -109,4 +133,5 @@
             android:onClick="Cancel_Click"
             android:text="@string/button_cancel_change" />
     </LinearLayout>
+
 </RelativeLayout>

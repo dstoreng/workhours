@@ -4,12 +4,15 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TimePicker;
@@ -23,12 +26,9 @@ public class ChangeShiftActivity extends Activity {
 	private Shift shift;
 	private ShiftDAO shiftDao;
 	private DateTime date;
-
-	private RadioButton weekly, monthly;
-	private RadioGroup radioGroup;
-	private CheckBox repeat, notify;
+	private LinearLayout actionBox;
 	private TimePicker from, to;
-	private boolean showVisible;
+	private Notifier notifier;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +41,14 @@ public class ChangeShiftActivity extends Activity {
 
 		Intent sender = getIntent();
 		shiftId = (Integer) sender.getSerializableExtra("SHIFT_ID");
-		Log.d("Change shift", "ID = " + shiftId);
 		shiftDao.open();
 		shift = shiftDao.getShift(shiftId);
 		shiftDao.close();
-		Log.d("Change shift", " retrieved shift from DB, ID = " + shift.getId());
 		
 		// Notify equals notification, cancel it.
 		if(shift.isNotify()){
-			Notifier n = new Notifier(this, this, shift);
-			n.cancel();
+			notifier = new Notifier(this, this, shift);
+			notifier.cancel();
 		}
 
 		if (shift != null) {
@@ -68,18 +66,6 @@ public class ChangeShiftActivity extends Activity {
 			to.setCurrentHour(ht);
 			to.setCurrentMinute(mt);
 
-			boolean rep = shift.isRepeat();
-			repeat.setChecked(rep);
-			if (rep) {
-				radioGroup.setVisibility(View.VISIBLE);
-				showVisible = true;
-				
-				if(shift.isRepeatWeekly())
-					weekly.setChecked(shift.isRepeatWeekly());
-				else
-					monthly.setChecked(shift.isRepeatMonthly());
-			}
-			notify.setChecked(shift.isNotify());
 		}
 
 	}
@@ -108,24 +94,6 @@ public class ChangeShiftActivity extends Activity {
 		shift.setFrom(f);
 		shift.setTo(t);
 
-		// Schedule notification
-		boolean notif = notify.isChecked();
-		if(notif){
-			shift.setNotify(true);
-			
-			Notifier n = new Notifier(this, this, shift);
-			n.schedule();
-		}else{
-			shift.setNotify(false);
-		}
-		shift.setRepeat(repeat.isChecked());
-
-		// repeat = true
-		if (showVisible) {
-			shift.setRepeatWeekly(weekly.isChecked());
-			shift.setRepeatMonthly(monthly.isChecked());
-		}
-
 		/*
 		 * Publish changes to DB
 		 */
@@ -133,8 +101,25 @@ public class ChangeShiftActivity extends Activity {
 		shiftDao.updateShift(shift.getId(), shift);
 		shiftDao.close();
 		
+		
+		//Update notification manager
+		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		nm.cancel(shift.getId());
+		
+		//Schedule notification if shifts hasnt already happened
+		if(shift.getTo().isAfter(DateTime.now()))
+		{
+			notifier = new Notifier(this, this, shift);
+			notifier.schedule();
+		}
+		
+		/*
+		 * Broadcast event to views that needs to be updated
+		 */
+		Intent update1 = new Intent("activity_listener");
+		LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(update1);
+		
 		shift = null;
-
 		finish();
 	}
 
@@ -142,26 +127,13 @@ public class ChangeShiftActivity extends Activity {
 		finish();
 	}
 
-	public void Repeat_Click(View v) {
-		if (!showVisible) {
-			radioGroup.setVisibility(View.VISIBLE);
-			showVisible = true;
-		} else {
-			radioGroup.setVisibility(View.INVISIBLE);
-			showVisible = false;
-		}
-	}
-
 	public void getHandles() {
 		from = (TimePicker) findViewById(R.id.shiftFrom);
 			from.setIs24HourView(true);
 		to = (TimePicker) findViewById(R.id.shiftTo);
 			to.setIs24HourView(true);
-		repeat = (CheckBox) findViewById(R.id.repeatsBox);
-		notify = (CheckBox) findViewById(R.id.notifyBox);
-		radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-		weekly = (RadioButton) findViewById(R.id.radioWeekly);
-		monthly = (RadioButton) findViewById(R.id.radioMonthly);
+		actionBox = (LinearLayout) findViewById(R.id.actionBox);
+			actionBox.setVisibility(View.INVISIBLE);
 	}
 
 }

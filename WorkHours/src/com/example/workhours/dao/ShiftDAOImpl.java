@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.workhours.entities.Shift;
 import com.example.workhours.util.ShiftOpenHelper;
@@ -112,7 +115,39 @@ public class ShiftDAOImpl implements ShiftDAO {
 		    cursor.close();
 		
 		Collections.sort(shifts);
+		
+		Log.d("DB GETSHIFTS","returning a list with size " + shifts.size());
 		return shifts;
+	}
+	
+	@Override
+	public List<Shift> getSchedule() {
+		Shift shift;
+		List<Shift> elems = new ArrayList<Shift>();
+		Cursor cursor = database.query(ShiftOpenHelper.TABLE_SHIFT,
+														allColumns, 
+														null, 
+														null, null, null, null);
+		
+		if (cursor != null)
+	        cursor.moveToFirst();	
+		
+		while(!cursor.isAfterLast()) {
+			
+			shift = cursorToShift(cursor);
+			if(shift.getFrom().isAfter(DateTime.now()))
+				elems.add(shift);
+			cursor.moveToNext();
+		}
+		
+		if(cursor != null && !cursor.isClosed())
+		    cursor.close();
+		
+		Collections.sort(elems);		
+		
+		
+		Log.d("DB GETSHIFTS","returning a list with size " + elems.size());
+		return elems;
 	}
 
 	@Override
