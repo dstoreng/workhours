@@ -1,7 +1,5 @@
 package com.example.workhours.entities;
 
-import android.util.Log;
-
 import com.example.workhours.util.PasswordHash;
 
 public class User {
@@ -12,26 +10,25 @@ public class User {
 	private String passHash;
 	private double hourlyWage;
 	private double tax;
+	private int dueDate;
 	 
 	
 	public User() {}
 	
 	public User(String name, String email, String password) {
 		
-		this(name, email, password, "", 0.0, 0.0);
+		this(name, email, password, "", 0.0, 0.0, 0);
 	}
 	
-	public User(String name, String email, String password, String empEmail, double hWage, double tax) {
+	public User(String name, String email, String password, String empEmail, double hWage, double tax, int due) {
 		
-		this.name  = name;
-		this.email = email;
+		this.name     = name;
+		this.email    = email;
 		employerEmail = empEmail;
-		hourlyWage = hWage;
-		this.tax = tax;
-		
-		Log.d("PASSWORD IN CLASS:", password);
-		
+		hourlyWage    = hWage;
+		this.tax      = tax;
 		this.passHash = PasswordHash.hash(password);
+		dueDate       = due;
 
 	}
 	
@@ -92,7 +89,41 @@ public class User {
 	public boolean isValidEmployerEmail(){
 		return ((employerEmail.trim().equals("")) || (employerEmail == null)) ? false : true;
 	}
+
+	public int getScheduleDue() {
+		return dueDate;
+	}
+
+	public void setDueDate(int dueDate) {
+		this.dueDate = dueDate;
+	}
 	
+	public double getTaxRate(double income) {
+		
+		if(income > 0 && income <= 14000) {
+			
+			tax = 0.105;
+		} else if (income > 140000 && income <= 48000) {
+			
+			tax = 0.175;
+		} else if (income > 48000 && income <= 70000) {
+			
+			tax = 0.30;
+		} else if(income > 70000) {
+			
+			tax = 0.330;
+		} else {
+			
+			tax = 0.45;
+		}
+		
+		return tax;
+	}
 	
+	public double calculateEarnings(double hoursWorked) {
+		
+		return (hoursWorked*hourlyWage) - (hoursWorked*hourlyWage*tax);
+		
+	}
 
 }

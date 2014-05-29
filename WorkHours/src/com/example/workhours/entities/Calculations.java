@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
-import android.util.Log;
-
 public class Calculations {
 	List<Shift> shifts;
 	User u;

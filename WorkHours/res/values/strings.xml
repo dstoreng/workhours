@@ -22,6 +22,7 @@
     <string name="text_display_start">Start</string>
     <string name="text_display_end">End</string>
     <string name="text_display_hours">Hours</string>
+    <string name="text_repeat_count">Repeat count</string>
 
     <string name="profile_name_label">Username</string>
     <string name="profile_email_label">Email</string>
@@ -31,20 +32,17 @@
    
     <string name="profile_title">Profile</string>
     <string name="tvConfirmed">Confirmed</string>
-    <string name="tvHours">Hours</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Button 	   Variables                 ****** -->
     <!-- ********************************************************** -->
 
     <string name="button_save_shift">Save shift</string>
-    <string name="button_cancel_change">Cancel</string>
-    <string name="button_save_change">Save</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="button_save">Save</string>
     <string name="button_select_date">Select date</string>
-
+    <string name="button_send_email">email</string>
     <string name="button_change_details">Change details</string>
-    <string name="button_save_details">Save details</string>
-    <string name="button_cancel_details">Cancel</string>
 
     <!-- ********************************************************** -->
     <!-- **********     Checkbox   Variables                 ****** -->
@@ -58,6 +56,7 @@
     <!-- ********************************************************** -->
     <!-- **********     ???????    Variables                 ****** -->
     <!-- ********************************************************** -->
+    <string name="image_desc">Img</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_init_screen">InitScreenActivity</string>

@@ -36,10 +36,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.Toast;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -67,36 +65,39 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(receiver,
-				new IntentFilter("activity_listener"));
+
+		LocalBroadcastManager.getInstance(getApplicationContext())
+				.registerReceiver(receiver,
+						new IntentFilter("activity_listener"));
 	}
 
 	@Override
 	protected void onPause() {
-		LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(receiver);
+		LocalBroadcastManager.getInstance(getApplicationContext())
+				.unregisterReceiver(receiver);
 
 		super.onPause();
 	}
 	
+	/*
+	 * This receives updates and pass it on to the views
+	 * There is a slight pause between the transactions because of DB accesss
+	 */
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
-		  @Override
-		  public void onReceive(Context context, Intent intent) {
-			  new Timer().schedule(new TimerTask() {          
-				    @Override
-				    public void run() {
-				    	Intent schedule = new Intent("schedule");
-						LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(schedule);	   
-				    }
-				}, 1000);
-				new Timer().schedule(new TimerTask() {          
-				    @Override
-				    public void run() {
-				    	Intent allEvents = new Intent("all_events");
-						LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(allEvents);	   
-				    }
-				}, 500);		
-		  }
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			
+			Intent schedule = new Intent("schedule");
+			LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(schedule);
+
+			new Timer().schedule(new TimerTask() {
+				@Override
+				public void run() {
+					Intent allEvents = new Intent("all_events");
+					LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(allEvents);
+				}
+			}, 100);
+		}
 	};
 
 	@Override
@@ -127,7 +128,9 @@ public class MainActivity extends FragmentActivity {
 
 			Intent intent = new Intent(getBaseContext(),
 					InitScreenActivity.class);
-			startActivity(intent);
+
+			if (session.isClosed())
+				startActivity(intent);
 			break;
 
 		default:
@@ -181,9 +184,8 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	/*
-	 * This fragment displays a calendar
-	 * The user can add new events or email existing 
-	 * It also displays useful info (salary, schedule)
+	 * This fragment displays a calendar The user can add new events or email
+	 * existing It also displays useful info (salary, schedule)
 	 */
 	public static class ShiftFragment extends Fragment {
 		private long date;
@@ -194,14 +196,14 @@ public class MainActivity extends FragmentActivity {
 		public ShiftFragment() {}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			return inflater.inflate(R.layout.fragment_add_shift, container, false);
 		}
-		
+
 		@Override
-		public void onActivityCreated(Bundle savedInstanceState){
+		public void onActivityCreated(Bundle savedInstanceState) {
 			super.onActivityCreated(savedInstanceState);
-			
+
 			CalendarView calendar = (CalendarView) getView().findViewById(R.id.calendarMain);
 			date = calendar.getDate();
 			calendar.setOnDateChangeListener(new OnDateChangeListener() {
@@ -216,8 +218,7 @@ public class MainActivity extends FragmentActivity {
 			btn.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(getActivity(),
-							ShiftActivity.class);
+					Intent intent = new Intent(getActivity(),ShiftActivity.class);
 					intent.putExtra("DATE", date);
 					intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 					startActivity(intent);
@@ -238,7 +239,7 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onResume() {
 			super.onResume();
-			
+
 			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
 			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
 			scheduledHours = (TextView) getView().findViewById(R.id.scheduledHours);
@@ -272,73 +273,70 @@ public class MainActivity extends FragmentActivity {
 			scheduledHours.setText(shours);
 		}
 	}
-	
+
 	/*
-	 * This fragment displays all upcoming shifts that are not confirmed
-	 * aka schedule
+	 * This fragment displays all upcoming shifts that are not confirmed aka
+	 * schedule
 	 */
 	public static class EventFragment extends ListFragment {
 		private ShiftDAO shiftDao;
 		private ListView rootView;
 		private EventAdapter adapter;
-		
+
 		public EventFragment() {
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {	
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			rootView = (ListView) inflater.inflate(R.layout.list_view, container, false);
-			
 			shiftDao = new ShiftDAOImpl(getActivity());
-			//adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), false);
-			//rootView.setAdapter(adapter);
 			
 			return rootView;
 		}
-
 
 		@Override
 		public void onListItemClick(ListView l, View v, int position, long id) {
 			TextView textViewItem = ((TextView) v.findViewById(R.id.tvFrom));
 			String sId = textViewItem.getTag().toString();
-
+			
+			//Pass the id to the activity handler
 			Intent intent = new Intent(getActivity(), ChangeShiftActivity.class);
 			intent.putExtra("SHIFT_ID", Integer.parseInt(sId));
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 			startActivity(intent);
 		}
-		
-		public List<Shift> getDBlolContent(){	
+
+		public List<Shift> getDBSContent() {
 			shiftDao.open();
-			List<Shift> piah = shiftDao.getSchedule();
+			List<Shift> lis = shiftDao.getSchedule();
 			shiftDao.close();
-	
-			return piah;
+
+			return lis;
 		}
-		
+
 		@Override
-		public void onResume(){
+		public void onResume() {
 			super.onResume();
-		
-			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver,new IntentFilter("schedule"));	
+
+			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter("schedule"));
 			refresh();
 		}
-		
+
 		@Override
 		public void onPause() {
-			Log.d("Schedule", "onPause");
 			LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateReceiver);
+			
 			super.onPause();
 		}
-		
-		public void refresh(){
-			Log.d("Schedule","refresh");
-			if(adapter != null)
+
+		public void refresh() {
+			if (adapter != null)
 				adapter.clear();
-			
+
 			List<Shift> li = new ArrayList<Shift>();
-			for(Shift s : getDBlolContent()){
-				if(s.getFrom().isAfter(DateTime.now()))
+			for (Shift s : getDBSContent()) 
+			{
+				if (s.getFrom().isAfter(DateTime.now()))
 					li.add(s);
 			}
 			adapter = new EventAdapter(getActivity(), R.layout.event_layout, li, false);
@@ -346,34 +344,32 @@ public class MainActivity extends FragmentActivity {
 			adapter.notifyDataSetChanged();
 		}
 		
+		//Receives message from the parent activity when time to refresh view
 		private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-			  @Override
-			  public void onReceive(Context context, Intent intent) {
-				  refresh();
-			  }
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				refresh();
+			}
 		};
 	}
-	
+
 	/*
-	 * This fragment displays all shifts to the user
-	 * It is possible to click an item to change the isWorked status.
+	 * This fragment displays all shifts to the user It is possible to click an
+	 * item to change the isWorked status.
 	 */
 	public static class AllEventsFragment extends ListFragment {
 		private ShiftDAO shiftDaoPiah;
 		private EventAdapter adapter;
 		private ListView rootView;
-		
+
 		public AllEventsFragment() {
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {	
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			rootView = (ListView) inflater.inflate(R.layout.list_view, container, false);
-			
 			shiftDaoPiah = new ShiftDAOImpl(getActivity());
-			//adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), true);
-			//rootView.setAdapter(adapter);
-			
+
 			return rootView;
 		}
 
@@ -382,52 +378,50 @@ public class MainActivity extends FragmentActivity {
 			TextView textViewItem = ((TextView) v.findViewById(R.id.tvFrom));
 			String sId = textViewItem.getTag().toString();
 			int ssId = Integer.parseInt(sId);
-			
+
 			DialogFragment dia = ConfirmDialog.newInstance(ssId);
 			dia.show(getFragmentManager(), "Confirm");
 		}
-		
-		public List<Shift> getDBContent(){	
+
+		public List<Shift> getDBContent() {
 			shiftDaoPiah.open();
 			List<Shift> piah = shiftDaoPiah.getShifts();
 			shiftDaoPiah.close();
-			
-			Log.d("All Events","found "+ piah.size() + " shifts");
-			
+
+			Log.d("All Events", "found " + piah.size() + " shifts");
+
 			return piah;
 		}
-		
+
 		@Override
-		public void onResume(){
+		public void onResume() {
 			super.onResume();
-		
-			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver,new IntentFilter("all_events"));	
+
+			LocalBroadcastManager.getInstance(getActivity()).registerReceiver(updateReceiver, new IntentFilter("all_events"));
 			refresh();
 		}
-		
+
 		@Override
 		public void onPause() {
-			Log.d("All Events", "onPause");
 			LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(updateReceiver);
 			super.onPause();
 		}
-		
-		public void refresh(){
-			Log.d("All Events","refresh");
-			if(adapter != null)
+
+		public void refresh() {
+			if (adapter != null)
 				adapter.clear();
 			adapter = new EventAdapter(getActivity(), R.layout.event_layout, getDBContent(), true);
 			rootView.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
 		}
 		
+		//Receives message from the parent activity when time to refresh view
 		private BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-			  @Override
-			  public void onReceive(Context context, Intent intent) {
-				  refresh();
-				  rootView.invalidate();
-			  }
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				refresh();
+				rootView.invalidate();
+			}
 		};
 	}
-	
 }

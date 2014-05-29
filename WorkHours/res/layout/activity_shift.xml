@@ -2,7 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity$AddShiftFragment" >
+    tools:context=".MainActivity$AddShiftFragment" 
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
     <TimePicker
         android:id="@+id/shiftFrom"
@@ -41,10 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout1"
         android:layout_alignParentRight="true"
+        android:baselineAligned="false"
         android:layout_below="@+id/shiftTo"
         android:orientation="horizontal" >
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/actionBox"
             android:layout_width="0dip"
             android:layout_height="match_parent"
@@ -56,15 +61,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="Repeat_Click"
-                android:text="@string/box_repeats" />
-
-            <CheckBox
-                android:id="@+id/notifyBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/box_notify" />
+                android:text="@string/box_repeats"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dip" />
             
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/repeatLayout"
@@ -92,19 +93,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/radio_weekly" />
             </RadioGroup>
-			
-             <TextView
-                 android:id="@+id/repeatView"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="Repeat count"
-                 android:textAppearance="?android:attr/textAppearanceMedium" />
              
             <EditText
                 android:id="@+id/repeatCount"
                 android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:inputType="number"
+                android:text="@string/text_repeat_count"
+                android:onClick="clickRepeatCount" />
 
         </LinearLayout>
     </LinearLayout>
@@ -115,23 +111,34 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="20" />
 
         <Button
             android:id="@+id/changeOk"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight=".33"
+            android:layout_weight="60"
             android:onClick="Save_Click"
-            android:text="@string/button_save_change" />
+            android:text="@string/button_save" />
 
         <Button
             android:id="@+id/changeCancel"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight=".33"
+            android:layout_weight="60"
             android:onClick="Cancel_Click"
-            android:text="@string/button_cancel_change" />
+            android:text="@string/button_cancel" />
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="20" />
+        
     </LinearLayout>
 
 </RelativeLayout>
