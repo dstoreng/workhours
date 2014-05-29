@@ -19,5 +19,7 @@
    	<string name="dialog_new_account_no">No</string>
    	<string name="schedule_due">Schedule Due</string>
    	<string name="day_due"></string>
-    
+   	<string name="payment">Payment</string>
+   	<string name="monthly">Monthly</string>
+   	<string name="weekly">Weekly</string>
 </resources>

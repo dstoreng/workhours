@@ -82,6 +82,12 @@ public class DetailsAdapter extends ArrayAdapter<User> {
 					detail = (TextView) convertView.findViewById(R.id.details_detail);
 					detail.setText(Integer.toString(u.getScheduleDue()));
 					break;
+				case 6:
+					header = (TextView) convertView.findViewById(R.id.details_header);
+					header.setText("Payment basis");
+					detail = (TextView) convertView.findViewById(R.id.details_detail);
+					detail.setText(u.getPerPay());
+					break;
 				default:
 					break;
 			}

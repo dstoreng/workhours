@@ -11,10 +11,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,12 +35,14 @@ public class ProfileActivity extends FragmentActivity {
 	private TextView due;
 	private EditText employer_email_value, hourly_wage_value, tax_number_value;
 	private ListView listView;
+	private Switch sw;
 	private String emp_email;
 	private Double hour_wage, tax_value;
 	private User user;
 	private boolean updatedDetails;
 	private SeekBar dueDateSelector;
 	private int dateDue;
+	private String payment_M;
 	
 	private DetailsAdapter adapter;
 	
@@ -80,6 +85,28 @@ public class ProfileActivity extends FragmentActivity {
 			
 		});
 		
+		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				
+				
+				Toast.makeText(getBaseContext(), "The Switch is " + (isChecked ? "on" : "off"),
+		                   Toast.LENGTH_SHORT).show();
+		    
+			if(isChecked) {
+		        //do stuff when Switch is ON -- weekly payments
+				payment_M = "weekly";
+		    } else {
+		        //do stuff when Switch if OFF -- monthly payments
+		    	payment_M = "monthly";
+		    }
+				
+			}
+			
+		});
+		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String user_email = prefs.getString("email", null);
 	
@@ -89,6 +116,7 @@ public class ProfileActivity extends FragmentActivity {
 		users.add(user);
 		
 		//BUGGY
+		users.add(null);
 		users.add(null);
 		users.add(null);
 		users.add(null);
@@ -126,7 +154,17 @@ public class ProfileActivity extends FragmentActivity {
 		s = Double.toString(user.getTax());
 		tax_number_value.setText(s);
 		
-		dueDateSelector.setProgress(user.getScheduleDue());		
+		dueDateSelector.setProgress(user.getScheduleDue());
+		
+		if(user.getPerPay().equals("weekly")) {
+			
+			sw.setChecked(true);
+			
+		} else if (user.getPerPay().equals("monthly")) {
+			
+			sw.setChecked(false);
+			
+		}
 		
 		trans.show(profile);
 		trans.commit();
@@ -156,6 +194,13 @@ public class ProfileActivity extends FragmentActivity {
 		if(dateDue != user.getScheduleDue()) {
 			
 			user.setDueDate(dateDue);
+			dao.updateUser(user);
+			updatedDetails = true;
+		}
+		
+		if(payment_M != user.getPerPay()) {
+			
+			user.setPerPay(payment_M);
 			dao.updateUser(user);
 			updatedDetails = true;
 		}
@@ -250,6 +295,7 @@ public class ProfileActivity extends FragmentActivity {
 		profile = (ProfileFragment) frag.findFragmentById(R.id.profile);
 		profile_d = (ProfileFragmentDetails) frag.findFragmentById(R.id.profile_details);
 		dueDateSelector = (SeekBar) findViewById(R.id.due_day);
+		sw = (Switch) findViewById(R.id.payment_mode);
 	}
 	
 	  @Override

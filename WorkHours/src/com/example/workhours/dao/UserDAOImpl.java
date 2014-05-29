@@ -26,7 +26,8 @@ public class UserDAOImpl implements UserDAO {
 			UserOpenHelper.COLUMN_EMPL,
 			UserOpenHelper.COLUMN_WAGE,
 			UserOpenHelper.COLUMN_TAX,
-			UserOpenHelper.COLUMN_SCH_DUE
+			UserOpenHelper.COLUMN_SCH_DUE,
+			UserOpenHelper.COLUMN_PER_PAY
 		};
 	
 	public UserDAOImpl(Context context) {
@@ -59,6 +60,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_WAGE, user.getHourlyWage());
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
 		values.put(UserOpenHelper.COLUMN_SCH_DUE, user.getScheduleDue());
+		values.put(UserOpenHelper.COLUMN_PER_PAY, user.getPerPay());
 		
 		database.insert(UserOpenHelper.TABLE_USER, null, values);
 	}
@@ -74,6 +76,7 @@ public class UserDAOImpl implements UserDAO {
 		values.put(UserOpenHelper.COLUMN_WAGE, user.getHourlyWage());
 		values.put(UserOpenHelper.COLUMN_TAX, user.getTax());
 		values.put(UserOpenHelper.COLUMN_SCH_DUE, user.getScheduleDue());
+		values.put(UserOpenHelper.COLUMN_PER_PAY, user.getPerPay());
 		
 		database.update(
 				UserOpenHelper.TABLE_USER,
@@ -125,6 +128,7 @@ public class UserDAOImpl implements UserDAO {
 		user.setHourlyWage(cursor.getDouble(4));
 		user.setTax(cursor.getDouble(5));
 		user.setDueDate(cursor.getInt(6));
+		user.setPerPay(cursor.getString(7));
 		
 		return user;
 	}
