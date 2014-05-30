@@ -146,7 +146,6 @@ public class Calculations {
 		}
 		double taxTotal = 0;
 		for(double d : values){
-			System.out.println("x = " +d);
 			taxTotal += d;
 		}
 		
