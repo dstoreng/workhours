@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
@@ -22,7 +22,7 @@ public class ChangeShiftActivity extends Activity {
 	private Shift shift;
 	private ShiftDAO shiftDao;
 	private DateTime date;
-	private LinearLayout actionBox;
+	private RelativeLayout actionBox;
 	private TimePicker from, to;
 	private Notifier notifier;
 
@@ -128,7 +128,7 @@ public class ChangeShiftActivity extends Activity {
 			from.setIs24HourView(true);
 		to = (TimePicker) findViewById(R.id.shiftTo);
 			to.setIs24HourView(true);
-		actionBox = (LinearLayout) findViewById(R.id.actionBox);
+		actionBox = (RelativeLayout) findViewById(R.id.actionBox);
 			actionBox.setVisibility(View.INVISIBLE);
 	}
 

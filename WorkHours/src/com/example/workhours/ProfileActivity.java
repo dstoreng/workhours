@@ -33,11 +33,11 @@ public class ProfileActivity extends FragmentActivity {
 
 	private UserDAO dao;
 	private TextView due;
-	private EditText employer_email_value, hourly_wage_value, tax_number_value;
+	private EditText employer_email_value, hourly_wage_value;
 	private ListView listView;
 	private Switch sw;
 	private String emp_email;
-	private Double hour_wage, tax_value;
+	private Double hour_wage;
 	private User user;
 	private boolean updatedDetails;
 	private SeekBar dueDateSelector;
@@ -85,6 +85,7 @@ public class ProfileActivity extends FragmentActivity {
 			
 		});
 		
+		payment_M = "monthly";
 		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -121,7 +122,6 @@ public class ProfileActivity extends FragmentActivity {
 		users.add(null);
 		users.add(null);
 		users.add(null);
-		users.add(null);
 		
 		adapter = new DetailsAdapter(this, R.layout.details_layout, users);
 		
@@ -150,9 +150,6 @@ public class ProfileActivity extends FragmentActivity {
 		
 		String s = Double.toString(user.getHourlyWage());
 		hourly_wage_value.setText(s);
-		
-		s = Double.toString(user.getTax());
-		tax_number_value.setText(s);
 		
 		dueDateSelector.setProgress(user.getScheduleDue());
 		
@@ -198,7 +195,7 @@ public class ProfileActivity extends FragmentActivity {
 			updatedDetails = true;
 		}
 		
-		if(payment_M != user.getPerPay()) {
+		if(!payment_M.equals( user.getPerPay())) {
 			
 			user.setPerPay(payment_M);
 			dao.updateUser(user);
@@ -220,36 +217,18 @@ public class ProfileActivity extends FragmentActivity {
 			updatedDetails = false;
 		}
 
-		try {
-			
-			tax_value = Double.parseDouble(tax_number_value.getText()
-					.toString());
-			
-			if(user.getTax() != tax_value) {
-			    
-				user.setTax(tax_value);
-			    updatedDetails = true;
-			    
-			}
-
-		} catch (Exception e) {
-			
-			updatedDetails =false;
-		}
-
 		if (updatedDetails == true) {
 			Toast.makeText(
 					this,
 					"Updated values are employer email: " + emp_email
-							+ " hourly wage: " + hour_wage + " tax: "
-							+ tax_value, Toast.LENGTH_SHORT).show();
+							+ " hourly wage: " + hour_wage, Toast.LENGTH_SHORT).show();
 			showOnlyDetails();
 			
 		/**
 		 * Non of the details have been modified
 		 * */
-		} else if(user.getEmployerEmail().equals(emp_email) && user.getHourlyWage() == hour_wage && 
-				user.getTax() == tax_value && user.getScheduleDue() == dateDue) {
+		} else if(user.getEmployerEmail().equals(emp_email) && user.getHourlyWage() == hour_wage 
+				&& user.getScheduleDue() == dateDue) {
 			
 			showOnlyDetails();
 		
@@ -291,7 +270,6 @@ public class ProfileActivity extends FragmentActivity {
 		due = (TextView) findViewById(R.id.due_date_displayer);
 		employer_email_value = (EditText) findViewById(R.id.change_employer_email);
 		hourly_wage_value = (EditText) findViewById(R.id.change_hourly_wage);
-		tax_number_value = (EditText) findViewById(R.id.change_tax);
 		profile = (ProfileFragment) frag.findFragmentById(R.id.profile);
 		profile_d = (ProfileFragmentDetails) frag.findFragmentById(R.id.profile_details);
 		dueDateSelector = (SeekBar) findViewById(R.id.due_day);

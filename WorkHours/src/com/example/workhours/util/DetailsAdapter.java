@@ -72,17 +72,11 @@ public class DetailsAdapter extends ArrayAdapter<User> {
 					break;
 				case 4:
 					header = (TextView) convertView.findViewById(R.id.details_header);
-					header.setText("Tax");
-					detail = (TextView) convertView.findViewById(R.id.details_detail);
-					detail.setText(Double.toString(u.getTax()));
-					break;
-				case 5:
-					header = (TextView) convertView.findViewById(R.id.details_header);
 					header.setText("Schedule due date");
 					detail = (TextView) convertView.findViewById(R.id.details_detail);
 					detail.setText(Integer.toString(u.getScheduleDue()));
 					break;
-				case 6:
+				case 5:
 					header = (TextView) convertView.findViewById(R.id.details_header);
 					header.setText("Payment basis");
 					detail = (TextView) convertView.findViewById(R.id.details_detail);
