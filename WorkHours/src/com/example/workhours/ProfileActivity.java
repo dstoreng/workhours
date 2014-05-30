@@ -11,14 +11,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workhours.dao.UserDAO;
@@ -32,7 +28,6 @@ import com.example.workhours.util.InputValidator;
 public class ProfileActivity extends FragmentActivity {
 
 	private UserDAO dao;
-	private TextView due;
 	private EditText employer_email_value, hourly_wage_value;
 	private ListView listView;
 	private Switch sw;
@@ -41,8 +36,8 @@ public class ProfileActivity extends FragmentActivity {
 	private User user;
 	private boolean updatedDetails;
 	private SeekBar dueDateSelector;
-	private int dateDue;
-	private String payment_M;
+	public static int dateDue;
+	public static String payment_M;
 	
 	private DetailsAdapter adapter;
 	
@@ -67,46 +62,6 @@ public class ProfileActivity extends FragmentActivity {
 		
 		dao = new UserDAOImpl(this);
 		dao.open();
-		
-		dueDateSelector.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-	
-				due.setText("Day of the month: " + Integer.toString(progress));
-				dateDue = progress;
-			}
-	
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {}
-	
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {}
-			
-		});
-		
-		payment_M = "monthly";
-		sw.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				
-				
-				Toast.makeText(getBaseContext(), "The Switch is " + (isChecked ? "on" : "off"),
-		                   Toast.LENGTH_SHORT).show();
-		    
-			if(isChecked) {
-		        //do stuff when Switch is ON -- weekly payments
-				payment_M = "weekly";
-		    } else {
-		        //do stuff when Switch if OFF -- monthly payments
-		    	payment_M = "monthly";
-		    }
-				
-			}
-			
-		});
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		String user_email = prefs.getString("email", null);
@@ -150,7 +105,7 @@ public class ProfileActivity extends FragmentActivity {
 		
 		String s = Double.toString(user.getHourlyWage());
 		hourly_wage_value.setText(s);
-		
+
 		dueDateSelector.setProgress(user.getScheduleDue());
 		
 		if(user.getPerPay().equals("weekly")) {
@@ -168,25 +123,6 @@ public class ProfileActivity extends FragmentActivity {
 	}
 
 	public void saveDetails(View v) {
-
-		emp_email = employer_email_value.getText().toString();
-		
-		if (emp_email.matches("")) {
-			
-		} else if (InputValidator.email(emp_email) == false) {
-			
-			Toast.makeText(this, "Email not valid", Toast.LENGTH_SHORT).show();
-			updatedDetails = false;
-			
-		} else {
-			
-			if(!user.getEmployerEmail().equals(emp_email)) {
-				
-				user.setEmployerEmail(emp_email);
-				dao.updateUser(user);
-				updatedDetails = true;
-			} 
-		}
 		
 		if(dateDue != user.getScheduleDue()) {
 			
@@ -215,6 +151,25 @@ public class ProfileActivity extends FragmentActivity {
 
 		} catch (Exception e) {
 			updatedDetails = false;
+		}
+		
+		emp_email = employer_email_value.getText().toString();
+		
+		if (emp_email.matches("")) {
+			
+		} else if (InputValidator.email(emp_email) == false) {
+			
+			Toast.makeText(this, "Email not valid", Toast.LENGTH_SHORT).show();
+			updatedDetails = false;
+			
+		} else {
+			
+			if(!user.getEmployerEmail().equals(emp_email)) {
+				
+				user.setEmployerEmail(emp_email);
+				dao.updateUser(user);
+				updatedDetails = true;
+			} 
 		}
 
 		if (updatedDetails == true) {
@@ -267,7 +222,6 @@ public class ProfileActivity extends FragmentActivity {
 	
 	private void getFields() {
 		
-		due = (TextView) findViewById(R.id.due_date_displayer);
 		employer_email_value = (EditText) findViewById(R.id.change_employer_email);
 		hourly_wage_value = (EditText) findViewById(R.id.change_hourly_wage);
 		profile = (ProfileFragment) frag.findFragmentById(R.id.profile);

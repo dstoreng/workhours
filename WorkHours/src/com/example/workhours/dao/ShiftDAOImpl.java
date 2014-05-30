@@ -61,7 +61,6 @@ public class ShiftDAOImpl implements ShiftDAO {
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
 		values.put(ShiftOpenHelper.COLUMN_M_REPEAT, shift.isRepeatMonthly());
 		values.put(ShiftOpenHelper.COLUMN_WORKED, shift.isWorked());
-	//	values.put(ShiftOpenHelper.COLUMN_WORKED, shift.getRepeatCount());
 		values.put(ShiftOpenHelper.COLUMN_REPEAT_COUNT, 1);
 		
 		database.insert(ShiftOpenHelper.TABLE_SHIFT, null, values);
@@ -173,7 +172,6 @@ public class ShiftDAOImpl implements ShiftDAO {
 		values.put(ShiftOpenHelper.COLUMN_W_REPEAT, shift.isRepeatWeekly());
 		values.put(ShiftOpenHelper.COLUMN_M_REPEAT, shift.isRepeatMonthly());
 		values.put(ShiftOpenHelper.COLUMN_WORKED, shift.isWorked());
-	//	values.put(ShiftOpenHelper.COLUMN_WORKED, shift.getRepeatCount());
 		values.put(ShiftOpenHelper.COLUMN_REPEAT_COUNT, 1);
 		
 		database.update(
@@ -203,8 +201,6 @@ public class ShiftDAOImpl implements ShiftDAO {
 		shift.setRepeatWeekly((cursor.getInt(6) == 1) ? true : false);
 		shift.setRepeatMonthly((cursor.getInt(7) == 1) ? true : false);
 		shift.setWorked((cursor.getInt(8) == 1) ? true : false);
-//		shift.setRepeatCount(cursor.getInt(9));
-	//	shift.setRepeatCount(1);
 		return shift;
 	}
 
