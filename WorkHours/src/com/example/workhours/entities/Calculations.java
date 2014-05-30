@@ -125,8 +125,32 @@ public class Calculations {
 			}
 		}	
 		int hours = total / 60;
-		int minutes = total & 60;
+		int minutes = total % 60;
 		return hours + "." + minutes;
+	}
+	
+	public double getEarnings(double income){
+		double[] values = new double[]{0,0,0,0};
+		values[0] = (income >= 14000) ? (14000*0.105) : (income*0.105);
+		
+		if(income > 14000){
+			values[1] = (income >= 48000) ? (34000*0.175) : (income-14000)*0.175;
+			
+			if(income > 48000){
+				values[2] = (income >= 70000) ? (22000*0.30) : (income-48000)*0.30;
+				
+				if(income > 70000){
+					values[3] = (income-70000)*0.330;		
+				}
+			}
+		}
+		double taxTotal = 0;
+		for(double d : values){
+			System.out.println("x = " +d);
+			taxTotal += d;
+		}
+		
+		return income - taxTotal;
 	}
 
 }

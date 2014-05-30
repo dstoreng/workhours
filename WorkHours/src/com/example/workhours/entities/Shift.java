@@ -95,6 +95,12 @@ public class Shift implements Serializable, Comparable<Shift> {
 		return p.getMinutes();
 	}
 	
+	public String getDuration(){
+		int hours = this.getMinutes() / 60;
+		int minutes = this.getMinutes() % 60;
+		return hours + "." + minutes;
+	}
+	
 	public void setWorked(boolean worked){
 		this.worked = worked;
 	}

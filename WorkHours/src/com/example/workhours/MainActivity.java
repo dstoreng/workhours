@@ -273,8 +273,8 @@ public class MainActivity extends FragmentActivity {
 			
 			if(usr.getPerPay().equals("monthly")) {
 				
-				 last = cl.getPrevMonthSalary();
-				 next = cl.getNextMonthSalary();
+				 last = cl.getEarnings(cl.getPrevMonthSalary());
+				 next = cl.getEarnings(cl.getNextMonthSalary());
 				 shours = cl.getScheduledHours();
 				 
 				 /**
@@ -283,8 +283,8 @@ public class MainActivity extends FragmentActivity {
 				 
 			} else if (usr.getPerPay().equals("weekly")) {
 				
-				last = cl.getPrevWeeksSalary();
-				next = cl.getNextWeeksSalary();
+				last = cl.getEarnings(cl.getPrevWeeksSalary());
+				next = cl.getEarnings(cl.getNextWeeksSalary());
 				shours = cl.getScheduledHours();
 			}
 

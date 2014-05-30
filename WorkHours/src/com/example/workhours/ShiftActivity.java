@@ -192,9 +192,5 @@ public class ShiftActivity extends Activity {
 			showVisible = false;
 		}
 	}
-	
-	public void clickRepeatCount(View v){
-		repeatCount.setText("");
-	}
 
 }
