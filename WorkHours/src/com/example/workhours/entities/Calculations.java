@@ -5,7 +5,6 @@ import java.util.List;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
-import org.joda.time.Period;
 
 public class Calculations {
 	List<Shift> shifts;
