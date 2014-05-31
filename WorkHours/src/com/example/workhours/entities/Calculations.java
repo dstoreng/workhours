@@ -128,6 +128,11 @@ public class Calculations {
 		return hours + "." + minutes;
 	}
 	
+	/**
+	 * 
+	 * @param income, value to calculate earnings from
+	 * @return income after tax
+	 */
 	public double getEarnings(double income){
 		double[] values = new double[]{0,0,0,0};
 		values[0] = (income >= 14000) ? (14000*0.105) : (income*0.105);

@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
+import com.example.workhours.entities.Notifier;
 import com.example.workhours.entities.User;
 import com.example.workhours.fragments.ProfileFragment;
 import com.example.workhours.fragments.ProfileFragmentDetails;
@@ -192,6 +193,8 @@ public class ProfileActivity extends FragmentActivity {
 			
 			user.setDueDate(dateDue);
 			dao.updateUser(user);
+			Notifier n = new Notifier(this, getApplicationContext(), null, user);
+			n.dueDateNotify();
 			updatedDetails = true;
 		}
 		
