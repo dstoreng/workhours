@@ -1,7 +1,6 @@
 package com.example.workhours;
 
 import java.util.Arrays;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -33,6 +32,8 @@ public class LoginOptionsActivity extends Activity {
     private String email;
 	private static User account = null;
 	private UserDAO dao;
+	
+	private SharedPreferences preferences;
     
     private Session.StatusCallback callback = new Session.StatusCallback() {
         
@@ -158,20 +159,21 @@ public class LoginOptionsActivity extends Activity {
              Log.d("user email", (String) user.getProperty("email"));
              
             email = (String) user.getProperty("email");
-           
-            boolean exisitingAccount = false;
- 			dao.open();
- 			List<User> users = dao.getUsers();
- 			for(User u : users) {
- 				
- 				if(u.getEmail().equals(email)) 
- 					exisitingAccount = true;
- 			}
+            
+            boolean isExisitingAccount = false;
+            dao.open();
+            
+            try {
+            	
+            	dao.getUser(email);
+            	isExisitingAccount = true;
+            	
+            } catch(Exception e) {}
  			
- 			if(exisitingAccount) {
-             
-	           //Stores username in shared preferences 
-	 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+ 			if(isExisitingAccount) {
+ 				
+	           //Stores user in shared preferences 
+	 			preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	 			SharedPreferences.Editor editor = preferences.edit();
 	 			
 	 			editor.putString("email", (String) user.getProperty("email"));
@@ -181,33 +183,21 @@ public class LoginOptionsActivity extends Activity {
 	             startActivity(intent);
 	             
  			} else {
- 				
- 				/**
-				 * Needs some work to be done properly 
-				 * */
- 				/*
- 				CreateAccountDialog dialog = new CreateAccountDialog();
- 				account = new User(user.getUsername(), email, "default8");
- 				dialog.setUser(account);
- 				dialog.show(getFragmentManager(), "missiles");
- 				*/
- 				
- 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+ 			
+ 				preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	 			SharedPreferences.Editor editor = preferences.edit();
 	 			
 	 			account = new User(user.getUsername(), (String) user.getProperty("email"), "default8");
 	 			dao.open();
    				dao.addUser(account);
+   				
 	 			
-	 			editor.putString("user", user.getUsername());
+   				editor.putString("email", (String) user.getProperty("email"));
 				editor.commit();
 				
 				Intent intent = new Intent(getBaseContext(), MainActivity.class);
             	startActivity(intent);
  			}
-             
-        } else {
-          
-        }
+        } else {}
     }
 }

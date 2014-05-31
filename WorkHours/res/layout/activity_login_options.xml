@@ -8,29 +8,60 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$DummySectionFragment" >
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/login_email"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/section_label"
+        android:layout_alignLeft="@+id/linearLayout1"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="18dp"
-        android:onClick="buttonClick"
-        android:text="@string/login_email" />
+        android:layout_marginBottom="14dp"
+        android:orientation="horizontal" >
 
-    <com.facebook.widget.LoginButton
-        xmlns:fb="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+
+        <Button
+            android:id="@+id/login_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:layout_weight="80"
+            android:onClick="buttonClick"
+            android:text="@string/login_email" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/login_email"
-        android:layout_alignLeft="@+id/section_label"
-        android:layout_alignRight="@+id/login_email"
-        fb:login_text="Login with Facebook" />
+        android:layout_above="@+id/linearLayout2"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+
+        <com.facebook.widget.LoginButton
+            xmlns:fb="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/login_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+            fb:login_text="Login with Facebook" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+    </LinearLayout>
 
 </RelativeLayout>

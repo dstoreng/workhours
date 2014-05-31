@@ -38,29 +38,25 @@ public class ProfileFragment extends Fragment {
 		
 		employer_email_value.setOnFocusChangeListener(new OnFocusChangeListener() {
 			
-			boolean isFirstTimeFocus = true;
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				
-				if(hasFocus && isFirstTimeFocus) {
+				if(hasFocus) {
 					
 					employer_email_value.setText("");
-					isFirstTimeFocus = false;
 			    }
 				
 			}
 		});
 		
 		hourly_wage_value.setOnFocusChangeListener(new OnFocusChangeListener() {
-			boolean isFirstTimeFocus = true;
 			
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				
-				if(hasFocus && isFirstTimeFocus) {
+				if(hasFocus) {
 					
 					hourly_wage_value.setText("");
-					isFirstTimeFocus = false;
 			    }
 			}
 		});
@@ -96,9 +92,8 @@ public class ProfileFragment extends Fragment {
 		        //do stuff when Switch if OFF -- monthly payments
 		    	ProfileActivity.payment_M = "monthly";
 		    }
-				
+
 			}
-			
 		});
 
 		return view;

@@ -93,12 +93,19 @@ public class ShiftDAOImpl implements ShiftDAO {
 	}
 
 	@Override
-	public List<Shift> getShifts() {
+	public List<Shift> getShifts(String uID) {
 		
 		Shift shift;
 		
-		Cursor cursor = database.query(ShiftOpenHelper.TABLE_SHIFT,
-				allColumns, null, null, null, null, null);
+		Cursor cursor = database.query(
+				ShiftOpenHelper.TABLE_SHIFT,
+				allColumns, 
+				" uID ='" + uID + "'", 
+				null, 
+				null, 
+				null, 
+				null
+				);
 		
 		if (cursor != null)
 	        cursor.moveToFirst();	
@@ -120,12 +127,12 @@ public class ShiftDAOImpl implements ShiftDAO {
 	}
 	
 	@Override
-	public List<Shift> getSchedule() {
+	public List<Shift> getSchedule(String uID) {
 		Shift shift;
 		List<Shift> elems = new ArrayList<Shift>();
 		Cursor cursor = database.query(ShiftOpenHelper.TABLE_SHIFT,
 														allColumns, 
-														null, 
+														" uID ='" + uID + "'", 
 														null, null, null, null);
 		
 		if (cursor != null)

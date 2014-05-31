@@ -1,7 +1,6 @@
 package com.example.workhours;
 
 import java.util.Arrays;
-import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +33,8 @@ public class SignUpOptionsActivity extends Activity {
     private String email;
 	private static User account = null;
 	private UserDAO dao;
+	
+	private SharedPreferences preferences;
     
 	private Session.StatusCallback callback = new Session.StatusCallback() {
         
@@ -159,19 +160,20 @@ public class SignUpOptionsActivity extends Activity {
              
             email = (String) user.getProperty("email");
            
-            boolean exisitingAccount = false;
+            boolean isExisitingAccount = false;
  			dao.open();
- 			List<User> users = dao.getUsers();
- 			for(User u : users) {
- 				
- 				if(u.getEmail().equals(email)) 
- 					exisitingAccount = true;
- 			}
  			
- 			if(exisitingAccount) {
+ 			try {
+            
+            	dao.getUser(email);
+            	isExisitingAccount = true;
+            	
+            } catch(Exception e) {}
+ 		
+ 			if(isExisitingAccount) {
              
 	           //Stores username in shared preferences 
-	 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+	 			preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	 			SharedPreferences.Editor editor = preferences.edit();
 	 			
 	 			editor.putString("email", (String) user.getProperty("email"));
@@ -182,7 +184,7 @@ public class SignUpOptionsActivity extends Activity {
 	             
  			} else {
  	
- 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+ 				preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 	 			SharedPreferences.Editor editor = preferences.edit();
 	 			
 	 			account = new User(user.getUsername(), email, "default8");

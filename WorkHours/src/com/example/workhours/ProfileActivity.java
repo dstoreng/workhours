@@ -10,11 +10,13 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.workhours.dao.UserDAO;
@@ -28,6 +30,7 @@ import com.example.workhours.util.InputValidator;
 public class ProfileActivity extends FragmentActivity {
 
 	private UserDAO dao;
+	private TextView due;
 	private EditText employer_email_value, hourly_wage_value;
 	private ListView listView;
 	private Switch sw;
@@ -89,14 +92,15 @@ public class ProfileActivity extends FragmentActivity {
 
 	public void changeDetails(View v) {
 		
-		showOnlyFragment();
+		showChangeDetails();
 		updatedDetails = false;
 	}
+	
 	/**
 	 * Hides the fragment containing the user details
-	 * and brings up the fragment for changing details
+	 * and brings up the fragment for changing the details
 	 * */
-	private void showOnlyFragment() {
+	private void showChangeDetails() {
 		
 		trans = frag.beginTransaction();
 		trans.hide(profile_d);
@@ -105,8 +109,11 @@ public class ProfileActivity extends FragmentActivity {
 		
 		String s = Double.toString(user.getHourlyWage());
 		hourly_wage_value.setText(s);
+		hour_wage = 0.0;
 
 		dueDateSelector.setProgress(user.getScheduleDue());
+		due.setText("Day of the month: " + Integer.toString(user.getScheduleDue()));
+		dateDue = user.getScheduleDue();
 		
 		if(user.getPerPay().equals("weekly")) {
 			
@@ -124,14 +131,28 @@ public class ProfileActivity extends FragmentActivity {
 
 	public void saveDetails(View v) {
 		
-		if(dateDue != user.getScheduleDue()) {
+		Log.d("INFORMASJON",
+			"Employer Email: " + user.getEmployerEmail() + "-" + employer_email_value.getText().toString() + 
+			" Hourly Wage: " + user.getHourlyWage() + "-" + hourly_wage_value.getText().toString() + 
+			" Due Date: " + user.getScheduleDue() + "-" + dateDue + 
+			"Per Pay: " + user.getPerPay() + "-" + payment_M
+			);
+		
+		if(dateDue == 0) {
+			
+			Toast.makeText(this, "Due date can't be 0", Toast.LENGTH_SHORT).show();
+			updatedDetails = false;
+		}
+		
+		else if(dateDue != user.getScheduleDue()) {
 			
 			user.setDueDate(dateDue);
 			dao.updateUser(user);
 			updatedDetails = true;
+			
 		}
 		
-		if(!payment_M.equals( user.getPerPay())) {
+		if(!payment_M.equals(user.getPerPay())) {
 			
 			user.setPerPay(payment_M);
 			dao.updateUser(user);
@@ -150,6 +171,7 @@ public class ProfileActivity extends FragmentActivity {
 			} 
 
 		} catch (Exception e) {
+			Toast.makeText(this, "Parse failed,invalid value", Toast.LENGTH_LONG).show();
 			updatedDetails = false;
 		}
 		
@@ -177,27 +199,27 @@ public class ProfileActivity extends FragmentActivity {
 					this,
 					"Updated values are employer email: " + emp_email
 							+ " hourly wage: " + hour_wage, Toast.LENGTH_SHORT).show();
-			showOnlyDetails();
+			showDetails();
 			
 		/**
 		 * Non of the details have been modified
 		 * */
 		} else if(user.getEmployerEmail().equals(emp_email) && user.getHourlyWage() == hour_wage 
-				&& user.getScheduleDue() == dateDue) {
+				&& user.getScheduleDue() == dateDue && user.getPerPay().equals(payment_M)) {
 			
-			showOnlyDetails();
+			showDetails();
 		
 		} else{
 			
-			showOnlyFragment();
+			showChangeDetails();
 		}
 	}
 
 	public void cancelUpdate(View v) {
-		showOnlyDetails();
+		showDetails();
 	}
 
-	private void showOnlyDetails() {
+	private void showDetails() {
 		
 		fillForm();
 		
@@ -210,7 +232,7 @@ public class ProfileActivity extends FragmentActivity {
 		
 		users.remove(0);
 		users.add(0, user);
-		adapter.setUser(users);
+		DetailsAdapter.user = users;
 		
 		adapter.notifyDataSetChanged();
 
@@ -228,6 +250,7 @@ public class ProfileActivity extends FragmentActivity {
 		profile_d = (ProfileFragmentDetails) frag.findFragmentById(R.id.profile_details);
 		dueDateSelector = (SeekBar) findViewById(R.id.due_day);
 		sw = (Switch) findViewById(R.id.payment_mode);
+		due = (TextView) findViewById(R.id.due_date_displayer);
 	}
 	
 	  @Override

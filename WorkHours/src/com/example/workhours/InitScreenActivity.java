@@ -1,20 +1,18 @@
 package com.example.workhours;
 
-import java.util.List;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
 
 import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
 import com.example.workhours.entities.User;
 import com.example.workhours.util.PageAssister;
-
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
 
 public class InitScreenActivity extends Activity {
 	
@@ -26,39 +24,27 @@ public class InitScreenActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_init_screen);
-	
-		/*Debug purposes*/
-		dao = new UserDAOImpl(this);
-
-		dao.open();
-		List<User> users = dao.getUsers();
-		for(User u : users) {
 			
-			Log.d("USER", u.toString());
-		}
-
+		dao = new UserDAOImpl(this);
+		dao.open();
 		
-	//	dao.dropUser();
-		/*
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		SharedPreferences.Editor editor = preferences.edit(); 
-		*/
-	//  editor.putString("user", user.getName());
-	//	editor.clear();
-	//	editor.putString("user", null);
-	//	editor.commit();
-		
+		for(User u: dao.getUsers())
+			Log.d("USER IN DB", u.toString());
 		/**
 		 * If the user has an existing account
 		 * and hasn't logged out since the last session
 		 * The user is navigated to the main page 
 		 * */
-		SharedPreferences preferences2 = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		String existingAccount = preferences2.getString("email", null);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		String existingAccount = preferences.getString("email", null);
+	//	SharedPreferences.Editor editor = preferences.edit(); 
+	//	editor.clear();
+//		editor.commit();
+//		dao.dropUser();
 		
 		if(existingAccount != null){
 			
-			Log.d("account", "exists");
+			Log.d("ACCOUNT", "exists");
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
 		} 
@@ -91,6 +77,10 @@ public class InitScreenActivity extends Activity {
 	    dao.close();
 	    super.onPause();
 	  }
-	
+	  
+	@Override
+	public void onBackPressed() {
 
+		  moveTaskToBack(true);
+	  }
 }

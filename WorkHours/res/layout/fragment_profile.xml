@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -7,80 +7,112 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin" >
-
-    <TextView
-        android:id="@+id/employer_email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/employer_email_label"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/change_employer_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress" />
-
-    <TextView
-        android:id="@+id/hourly_wage_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hourly_wage_label"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <EditText
-        android:id="@+id/change_hourly_wage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/schedule_due_date_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/schedule_due"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <SeekBar
-        android:id="@+id/due_day"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="31"
-        android:progress="1" />
-
-    <TextView
-        android:id="@+id/due_date_displayer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/day_due"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
     
-        <Switch
-        android:id="@+id/payment_mode"
-        android:textOff="@string/monthly"
-        android:textOn="@string/weekly"
-        android:layout_width="wrap_content"
+    <LinearLayout 
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/payment" />
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+        
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+        
+        
+    	<LinearLayout  
+    	    android:id="@+id/linearLayout1"
+        	android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="80"
+        	android:orientation="vertical">
+        
+    		<TextView
+        		android:id="@+id/employer_email_label"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/employer_email_label"
+        		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    		<EditText
+    		    android:id="@+id/change_employer_email"
+    		    android:layout_width="match_parent"
+    		    android:layout_height="wrap_content"
+    		    android:inputType="textEmailAddress" />
+
+    		<TextView
+        		android:id="@+id/hourly_wage_label"
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:text="@string/hourly_wage_label"
+        		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    		<EditText
+        		android:id="@+id/change_hourly_wage"
+       			android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:inputType="numberDecimal"
+        		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    		<TextView
+        		android:id="@+id/schedule_due_date_label"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/schedule_due"
+        		android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    		<SeekBar
+        		android:id="@+id/due_day"
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:max="31"
+        		android:progress="1" />
+
+    		<TextView
+        		android:id="@+id/due_date_displayer"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/day_due"
+        		android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+        	<Switch
+        		android:id="@+id/payment_mode"
+        		android:textOff="@string/monthly"
+        		android:textOn="@string/weekly"
+       	 		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:text="@string/payment" />
+            
+            
+        </LinearLayout>
+        
+    	<View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="10" />
+     
+        
+    </LinearLayout>
+
+    
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="108dp"
-        android:layout_weight="0.23"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="bottom"
         android:orientation="horizontal" >
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="20" />
+            android:layout_weight="10" />
 
         <Button
             android:id="@+id/button_save_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="60"
+            android:layout_weight="80"
             android:onClick="saveDetails"
             android:text="@string/button_save" />
 
@@ -88,14 +120,14 @@
             android:id="@+id/button_cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="60"
+            android:layout_weight="80"
             android:onClick="cancelUpdate"
             android:text="@string/button_cancel" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="20" />
+            android:layout_weight="10" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

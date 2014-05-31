@@ -39,7 +39,7 @@ public class EmailService extends IntentService {
 		
 		if (u.isValidEmployerEmail()) {
 			sDao.open();
-			shifts = sDao.getShifts();
+			shifts = sDao.getShifts(uid);
 			sDao.close();
 			
 			/*
