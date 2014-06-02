@@ -3,7 +3,6 @@ package com.example.workhours;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
@@ -14,8 +13,6 @@ public class Bootloader extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d("STARTUP", "YOLO");
-		
 		Notifier n;
 		ShiftDAO sdao = new ShiftDAOImpl(context);
 		sdao.open();

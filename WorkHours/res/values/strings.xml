@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_section1">New shift</string>
     <string name="title_section2">Schedule</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section3">My archive</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_shift_fragment">ShiftFragment</string>
     <string name="action_profile">Profile</string>
