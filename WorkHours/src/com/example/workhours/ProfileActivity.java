@@ -193,7 +193,7 @@ public class ProfileActivity extends FragmentActivity {
 			
 			user.setDueDate(dateDue);
 			dao.updateUser(user);
-			Notifier n = new Notifier(this, getApplicationContext(), null, user);
+			Notifier n = new Notifier(getApplicationContext(), null, user);
 			n.dueDateNotify();
 			updatedDetails = true;
 		}

@@ -95,6 +95,9 @@ public class Shift implements Serializable, Comparable<Shift> {
 		return p.getMinutes();
 	}
 	
+	/**
+	 * Returns the ENTIRE TIMESPAN in readable string format (h.m)
+	 */
 	public String getDuration(){
 		int hours = this.getMinutes() / 60;
 		int minutes = this.getMinutes() % 60;

@@ -83,8 +83,8 @@ public class ConfirmDialog extends DialogFragment{
 								try{
 									//Need to cancel notification before we delete the shift, or bad things will happen
 									Shift s = dao.getShift(sId);
-									Notifier n = new Notifier(getActivity(), c, s, null);
-									n.cancel();
+									Notifier n = new Notifier(c, s, null);
+									n.cancelShiftNotify();
 									
 									dao.deleteShift(sId);
 									

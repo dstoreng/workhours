@@ -43,8 +43,8 @@ public class ChangeShiftActivity extends Activity {
 		
 		// Notify equals notification, cancel it.
 		if(shift.isNotify()){
-			notifier = new Notifier(this, this, shift, null);
-			notifier.cancel();
+			notifier = new Notifier(this, shift, null);
+			notifier.cancelShiftNotify();
 		}
 
 		if (shift != null) {
@@ -105,7 +105,7 @@ public class ChangeShiftActivity extends Activity {
 		//Schedule notification if shifts hasnt already happened
 		if(shift.getTo().isAfter(DateTime.now()))
 		{
-			notifier = new Notifier(this, this, shift, null);
+			notifier = new Notifier(this, shift, null);
 			notifier.shiftNotify();
 		}
 		

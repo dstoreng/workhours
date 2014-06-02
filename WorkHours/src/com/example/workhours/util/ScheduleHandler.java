@@ -14,7 +14,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 public class ScheduleHandler extends IntentService {
 
@@ -37,7 +36,7 @@ public class ScheduleHandler extends IntentService {
 		String mail = intent.getStringExtra("DUE_DATE");
 		
 		//The notification is a shift confirmation
-		if(shiftId != 0)
+		if(mail == null)
 		{
 			dao = new ShiftDAOImpl(getApplicationContext());
 			

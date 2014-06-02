@@ -69,7 +69,7 @@ public class ShiftActivity extends Activity {
 			//Schedule notification if shifts hasnt already happened
 			if(t.getTo().isAfter(DateTime.now()))
 			{
-				notifier = new Notifier(this, this, t, null);
+				notifier = new Notifier(this, t, null);
 				notifier.shiftNotify();
 			}
 		}

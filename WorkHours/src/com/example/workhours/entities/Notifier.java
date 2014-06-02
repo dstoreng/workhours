@@ -1,5 +1,7 @@
 package com.example.workhours.entities;
 
+import org.joda.time.DateTime;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -16,8 +18,8 @@ public class Notifier {
 	private Shift s;
 	private User u;
 	
-	public Notifier(Activity a, Context c, Shift shift, User user){
-		mgr = (AlarmManager) a.getSystemService(Context.ALARM_SERVICE);
+	public Notifier(Context c, Shift shift, User user){
+		mgr = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
 		i = new Intent(c, ScheduleHandler.class);
 		
 		// Schedule shift notifycation
@@ -43,14 +45,32 @@ public class Notifier {
 		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + s.getMillisDone() , pi);
 	}
 	
+	/**
+	 * Schedules notification based on due date set in profile
+	 */
 	public void dueDateNotify(){
-		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10000, pi);
+		DateTime then;
+		
+		//If day is invalid, set it to the last day of the month
+		try{
+			then = new DateTime().withDayOfMonth(u.getScheduleDue());
+		}catch(Exception e){
+			then = new DateTime().dayOfMonth().withMaximumValue();
+		}
+		then = then.withHourOfDay(14);
+		
+		// Now is after then, add one month.
+		if(DateTime.now().compareTo(then) > 0)
+			then.plusMonths(1);
+		
+		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
+				SystemClock.elapsedRealtime() + (then.getMillis() - DateTime.now().getMillis()), pi);
 	}
 	
 	/**
 	 * Cancel a notification for a shift
 	 */
-	public void cancel(){
+	public void cancelShiftNotify(){
 		mgr.cancel(pi);
 	}
 	
