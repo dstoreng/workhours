@@ -17,7 +17,7 @@ import com.example.workhours.entities.User;
 public class DetailsAdapter extends ArrayAdapter<User> {
 	
 	private final Context context;
-	private List<User> user;
+	public static List<User> user;
 	private int layoutId;
 	
 	private TextView header, detail;
@@ -25,9 +25,9 @@ public class DetailsAdapter extends ArrayAdapter<User> {
 	public DetailsAdapter(Context context, int layoutId, List<User> user) {
 		super(context, layoutId, user);
 		
-		this.context  = context;
-		this.layoutId = layoutId;
-		this.user     = user;
+		this.context            = context;
+		this.layoutId           = layoutId;
+		DetailsAdapter.user     = user;
 	}
 	
 	@Override
@@ -92,9 +92,11 @@ public class DetailsAdapter extends ArrayAdapter<User> {
 	      
         return convertView;
 	}
-	
+	//Public fields and direct field access 3-7x faster than virtual method calls
+	/*
 	public void setUser(List<User> user) {
 		
 		this.user = user;
 	}
+	*/
 }

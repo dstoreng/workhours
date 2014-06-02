@@ -13,8 +13,8 @@ public interface ShiftDAO {
 	 * Returns a list of shifts sorted by start date.
 	 * @return ArrayList
 	 */
-	public List<Shift> getShifts();
-	public List<Shift> getSchedule();
+	public List<Shift> getShifts(String uID);
+	public List<Shift> getSchedule(String uID);
 	public void deleteShift(Integer sID);
 	public void updateShift(Integer sID, Shift shift);
 	public void open();

@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.joda.time.DateTime;
+
 import com.example.workhours.entities.Calculations;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.entities.User;
@@ -41,6 +42,7 @@ import android.widget.CalendarView;
 import android.widget.CalendarView.OnDateChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.example.workhours.dao.ShiftDAO;
 import com.example.workhours.dao.ShiftDAOImpl;
 import com.example.workhours.dao.UserDAO;
@@ -50,6 +52,8 @@ import com.facebook.Session;
 public class MainActivity extends FragmentActivity {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
+	SharedPreferences prefs;
+	public static String uid;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +132,9 @@ public class MainActivity extends FragmentActivity {
 
 			Intent intent = new Intent(getBaseContext(),
 					InitScreenActivity.class);
-
-			if (session.isClosed())
-				startActivity(intent);
+			
+			startActivity(intent);
+			
 			break;
 
 		default:
@@ -191,7 +195,7 @@ public class MainActivity extends FragmentActivity {
 		private long date;
 		private ShiftDAO sdao;
 		private UserDAO udao;
-		private TextView salaryLastMonth, salaryNextMonth, scheduledHours;
+		private TextView salaryLastMonth, salaryNextMonth, scheduledHours, SalaryLastPeriod, SalaryNextPeriod;
 
 		public ShiftFragment() {}
 
@@ -243,16 +247,18 @@ public class MainActivity extends FragmentActivity {
 			salaryLastMonth = (TextView) getView().findViewById(R.id.salaryViewLast);
 			salaryNextMonth = (TextView) getView().findViewById(R.id.salaryViewNext);
 			scheduledHours = (TextView) getView().findViewById(R.id.scheduledHours);
+			SalaryLastPeriod = (TextView) getView().findViewById(R.id.textView1);
+			SalaryNextPeriod = (TextView) getView().findViewById(R.id.textView4);
 
 			sdao = new ShiftDAOImpl(getActivity());
 			udao = new UserDAOImpl(getActivity());
 
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-			String uid = prefs.getString("email", null);
+			uid = prefs.getString("email", null);
 
 			// Get shifts
 			sdao.open();
-			List<Shift> shifts = sdao.getShifts();
+			List<Shift> shifts = sdao.getShifts(uid);
 			sdao.close();
 
 			// Get user
@@ -282,6 +288,9 @@ public class MainActivity extends FragmentActivity {
 					 * */
 				 
 			} else if (usr.getPerPay().equals("weekly")) {
+				
+				SalaryLastPeriod.setText("Salary last week");
+				SalaryNextPeriod.setText("Salary next week");
 				
 				last = cl.getEarnings(cl.getPrevWeeksSalary());
 				next = cl.getEarnings(cl.getNextWeeksSalary());
@@ -328,7 +337,7 @@ public class MainActivity extends FragmentActivity {
 
 		public List<Shift> getDBSContent() {
 			shiftDao.open();
-			List<Shift> lis = shiftDao.getSchedule();
+			List<Shift> lis = shiftDao.getSchedule(uid);
 			shiftDao.close();
 
 			return lis;
@@ -405,7 +414,7 @@ public class MainActivity extends FragmentActivity {
 
 		public List<Shift> getDBContent() {
 			shiftDaoPiah.open();
-			List<Shift> piah = shiftDaoPiah.getShifts();
+			List<Shift> piah = shiftDaoPiah.getShifts(uid);
 			shiftDaoPiah.close();
 
 			Log.d("All Events", "found " + piah.size() + " shifts");
@@ -444,4 +453,10 @@ public class MainActivity extends FragmentActivity {
 			}
 		};
 	}
+	
+	@Override
+	public void onBackPressed() {
+
+		  moveTaskToBack(true);
+	  }
 }

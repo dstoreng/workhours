@@ -150,7 +150,7 @@ public class UserDAOImpl implements UserDAO {
 								null, 
 								null
 								);
-		if (cursor != null)
+		if (cursor != null && cursor.moveToFirst())
 	        cursor.moveToFirst();			
 		
 		
@@ -177,7 +177,8 @@ public class UserDAOImpl implements UserDAO {
 								null, 
 								null
 								);
-		if (cursor != null)
+		
+		if (cursor != null && cursor.moveToFirst())
 	        cursor.moveToFirst();			
 		
 		

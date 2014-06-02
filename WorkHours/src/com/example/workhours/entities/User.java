@@ -18,7 +18,7 @@ public class User {
 	
 	public User(String name, String email, String password) {
 		
-		this(name, email, password, "", 0.0, 0.0, 0, "");
+		this(name, email, password, "example@example.com", 0.0, 0.0, 1, "monthly");
 	}
 	
 	public User(String name, String email, String password, String empEmail, double hWage, double tax, int due, String perPay) {
@@ -30,7 +30,7 @@ public class User {
 		this.tax      = tax;
 		this.passHash = PasswordHash.hash(password);
 		dueDate       = due;
-		this.setPerPay(perPay);
+		this.perPay   = perPay;
 
 	}
 	

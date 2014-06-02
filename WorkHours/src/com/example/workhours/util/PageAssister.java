@@ -30,26 +30,11 @@ public class PageAssister {
 		if(v.getId() == R.id.sign_up_email)
 			
 			intent = new Intent(v.getContext(), SignUpEmailActivity.class);
-		/*
-		//Unimplemented
-		if(v.getId() == R.id.sign_up_facebook)
-			
-			intent = null;
-			*/
-		//	intent = new Intent(v.getContext(), SignUpOptionsActivity.class);
 		
 		if(v.getId() == R.id.login_email)
 			
 			intent = new Intent(v.getContext(), LoginActivity.class);
-		/*
-		//Unimplemented
-		if(v.getId() == R.id.login_facebook)
-			
-			intent = null;
-		//	intent = new Intent(v.getContext(), LoginOptionsActivity.class);
-		*/
 		
 		return intent;
 	}
-
 }
