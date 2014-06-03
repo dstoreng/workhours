@@ -18,7 +18,6 @@ import android.support.v4.app.NotificationCompat;
 public class ScheduleHandler extends IntentService {
 
 	private final String TITLE_CONFIRM = "Workhours - Confirm Shift";
-	private final String CONTENT_CONFIRM = "Did you work from ";
 	private final String TITLE_REMINDER = "Workhours";
 	private final String CONTENT_REMINDER1 = "Reminder for ";
 	private final String CONTENT_REMINDER2 = ", have you emailed your hours?";
@@ -48,7 +47,7 @@ public class ScheduleHandler extends IntentService {
 			NotificationCompat.Builder nb = new NotificationCompat.Builder(this)
 				.setSmallIcon(R.drawable.ic_action_share)
 				.setContentTitle(TITLE_CONFIRM)
-				.setContentText(CONTENT_CONFIRM + s.getFromFormatted() + " to " + s.getToFormatted());
+				.setContentText(s.getFromFormatted() + " to " + s.getToFormatted());
 			
 			//Build action change
 			Intent change = new Intent(this, ChangeShiftActivity.class);

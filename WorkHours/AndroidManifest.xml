@@ -18,20 +18,26 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/DannyDark" >
-
         <activity
             android:name="com.example.workhours.InitScreenActivity"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <meta-data android:value="@string/app_id" android:name="com.facebook.sdk.ApplicationId"/>
-        <activity android:name="com.facebook.LoginActivity"></activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:windowSoftInputMode="adjustResize" >
+        </activity>
         <activity
             android:name="com.example.workhours.ShiftFragment"
             android:label="@string/app_name" >
@@ -44,21 +50,21 @@
             android:name="com.example.workhours.MainActivity"
             android:label="@string/app_name" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.workhours.ProfileActivity"
-            android:parentActivityName="com.example.workhours.MainActivity" 
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
-             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.workhours.MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:parentActivityName="com.example.workhours.MainActivity"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.workhours.MainActivity" />
         </activity>
         <activity
             android:name="com.example.workhours.LoginOptionsActivity"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -67,27 +73,27 @@
         </activity>
         <activity
             android:name="com.example.workhours.SignUpOptionsActivity"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="com.example.workhours.SignUpEmailActivity"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" >
         </activity>
         <activity
             android:name="com.example.workhours.Login"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="com.example.workhours.LoginActivity"
-            android:windowSoftInputMode="stateHidden"
-         	android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name" >
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
             android:name="com.example.workhours.ChangeShiftDialog"
@@ -97,19 +103,20 @@
             android:name="com.example.workhours.ChangeShiftActivity"
             android:label="@string/title_activity_change_shift" >
         </activity>
+
         <service android:name="com.example.workhours.util.ScheduleHandler" >
-   		 </service>
-   		 <service android:name="com.example.workhours.util.ConfirmService" >
-   		 </service>
-   		 <service android:name="com.example.workhours.util.EmailService" >
-   		 </service>
-   		 <receiver android:name="com.example.workhours.Bootloader" >
+        </service>
+        <service android:name="com.example.workhours.util.ConfirmService" >
+        </service>
+        <service android:name="com.example.workhours.util.EmailService" >
+        </service>
+
+        <receiver android:name="com.example.workhours.Bootloader" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" >
                 </action>
             </intent-filter>
         </receiver>
-   		 
     </application>
 
 </manifest>

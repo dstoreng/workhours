@@ -36,7 +36,7 @@ public class LoginActivity extends Activity {
 		dao = new UserDAOImpl(this);
 		getFields();
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 

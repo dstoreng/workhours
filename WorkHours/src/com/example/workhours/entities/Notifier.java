@@ -2,7 +2,6 @@ package com.example.workhours.entities;
 
 import org.joda.time.DateTime;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
