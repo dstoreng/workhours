@@ -149,8 +149,6 @@ public class ProfileActivity extends FragmentActivity {
 			
 			user.setDueDate(dateDue);
 			dao.updateUser(user);
-			Notifier n = new Notifier(getApplicationContext(), null, user);
-			n.dueDateNotify();
 			updatedDetails = true;
 			
 		}
@@ -216,6 +214,9 @@ public class ProfileActivity extends FragmentActivity {
 			
 			showChangeDetails();
 		}
+		
+		Notifier n = new Notifier(getApplicationContext(), null, user);
+		n.dueDateNotify();
 	}
 
 	public void cancelUpdate(View v) {

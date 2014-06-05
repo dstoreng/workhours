@@ -1,5 +1,12 @@
 package com.example.workhours.util;
 
+import android.app.IntentService;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
 import com.example.workhours.ChangeShiftActivity;
 import com.example.workhours.R;
 import com.example.workhours.dao.ShiftDAO;
@@ -8,12 +15,6 @@ import com.example.workhours.dao.UserDAO;
 import com.example.workhours.dao.UserDAOImpl;
 import com.example.workhours.entities.Shift;
 import com.example.workhours.entities.User;
-
-import android.app.IntentService;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
 
 public class ScheduleHandler extends IntentService {
 
@@ -37,6 +38,7 @@ public class ScheduleHandler extends IntentService {
 		//The notification is a shift confirmation
 		if(mail == null)
 		{
+			Log.d("SCHEDULE HANDLER", "HANDLE SHFIT");
 			dao = new ShiftDAOImpl(getApplicationContext());
 			
 			dao.open();
@@ -70,6 +72,7 @@ public class ScheduleHandler extends IntentService {
 		
 		//The notification is a reminder to email worked hours
 		}else{
+			Log.d("SCHEDULE HANDLER", "HANDLE DUEDATE");
 			uDao = new UserDAOImpl(getApplicationContext());
 			uDao.open();
 			User u = uDao.getUser(mail);

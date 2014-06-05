@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.example.workhours.util.ScheduleHandler;
 
@@ -47,23 +48,48 @@ public class Notifier {
 	/**
 	 * Schedules notification based on due date set in profile
 	 */
-	public void dueDateNotify(){
-		DateTime then;
+	public void dueDateNotify(){		
+		DateTime next;
 		
 		//If day is invalid, set it to the last day of the month
 		try{
-			then = new DateTime().withDayOfMonth(u.getScheduleDue());
+			next = new DateTime().withDayOfMonth(u.getScheduleDue());
 		}catch(Exception e){
-			then = new DateTime().dayOfMonth().withMaximumValue();
+			next = new DateTime().dayOfMonth().withMaximumValue();
 		}
-		then = then.withHourOfDay(14);
+		//next = next.withHourOfDay(9).withMinuteOfHour(20);
+		next = next.plusMinutes(1);
+		Log.d("NOTIFIER", next.toString());
 		
-		// Now is after then, add one month.
-		if(DateTime.now().compareTo(then) > 0)
-			then.plusMonths(1);
+		// Now is after then, add one month or week
+		if(DateTime.now().compareTo(next) > 0){
+			if(u.getPerPay().equals("weekly")){
+				do
+				{
+					next = next.plusDays(7);
+				}while(DateTime.now().compareTo(next) > 0);					
+			}else{
+				next = next.plusMonths(1);
+			}
+			next = next.plusMonths(1);
+			Log.d("NOTIFIER", "ADDED 1 MONTH");
+		}
+		Log.d("NOTIFIER", next.toString());
 		
-		mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 
-				SystemClock.elapsedRealtime() + (then.getMillis() - DateTime.now().getMillis()), pi);
+		long first = next.getMillis() - DateTime.now().getMillis();
+		if(u.getPerPay().equals("weekly"))
+		{
+			//DateTime week2 = next.plusDays(7);
+			DateTime week2 = next.plusSeconds(30);
+			long interval = week2.getMillis() - next.getMillis();
+			
+			mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + first, interval, pi);
+		}else{
+			DateTime month2 = next.plusMonths(1);
+			long interval = month2.getMillis() - next.getMillis();
+			
+			mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + first, interval, pi);
+		}
 	}
 	
 	/**
