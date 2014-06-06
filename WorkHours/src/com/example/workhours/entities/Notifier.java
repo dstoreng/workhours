@@ -32,7 +32,14 @@ public class Notifier {
 		}else{
 			u = user;
 			i.putExtra("DUE_DATE", u.getEmail());
-			pi = PendingIntent.getService(c, 0, i, 0);
+			
+			//Generate a user id from email string, otherwise users will delete each others notifs.
+			String str = u.getEmail();
+			int strId = 0;
+			for(char x : str.toCharArray()){
+				strId += (int)x;
+			}
+			pi = PendingIntent.getService(c, strId, i, 0);
 		}
 		
 	}
@@ -57,9 +64,7 @@ public class Notifier {
 		}catch(Exception e){
 			next = new DateTime().dayOfMonth().withMaximumValue();
 		}
-		//next = next.withHourOfDay(9).withMinuteOfHour(20);
-		next = next.plusMinutes(1);
-		Log.d("NOTIFIER", next.toString());
+		next = next.withHourOfDay(15);
 		
 		// Now is after then, add one month or week
 		if(DateTime.now().compareTo(next) > 0){
@@ -72,22 +77,17 @@ public class Notifier {
 				next = next.plusMonths(1);
 			}
 			next = next.plusMonths(1);
-			Log.d("NOTIFIER", "ADDED 1 MONTH");
 		}
-		Log.d("NOTIFIER", next.toString());
-		
 		long first = next.getMillis() - DateTime.now().getMillis();
+		
 		if(u.getPerPay().equals("weekly"))
 		{
-			//DateTime week2 = next.plusDays(7);
-			DateTime week2 = next.plusSeconds(30);
+			DateTime week2 = next.plusDays(7);
 			long interval = week2.getMillis() - next.getMillis();
-			
 			mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + first, interval, pi);
 		}else{
 			DateTime month2 = next.plusMonths(1);
-			long interval = month2.getMillis() - next.getMillis();
-			
+			long interval = month2.getMillis() - next.getMillis();	
 			mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + first, interval, pi);
 		}
 	}

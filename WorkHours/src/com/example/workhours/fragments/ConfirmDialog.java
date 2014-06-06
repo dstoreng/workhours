@@ -38,17 +38,19 @@ public class ConfirmDialog extends DialogFragment{
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		sId = getArguments().getInt("num");
 		final Context c = getActivity();
+		
 		ToggleButton tb = new ToggleButton(c);
 		tb.setTextOff("NO");
 		tb.setTextOn("YES");
 		tb.setChecked(false);
 		final ToggleButton toggleButton = tb;
 		
-		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(c);
 		builder.setView(toggleButton);
 		builder.setTitle("Have you worked this shift?")
 				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					
+					// Ok button, set the shift to worked with provided boolean
 					public void onClick(DialogInterface dialog, int id) 
 					{
 						boolean confirm = toggleButton.isChecked();
@@ -76,6 +78,8 @@ public class ConfirmDialog extends DialogFragment{
 				})
 				.setNegativeButton("Delete",
 						new DialogInterface.OnClickListener() {
+							
+							// Delete pressed, delete shift.
 							public void onClick(DialogInterface dialog, int id) {
 								ShiftDAO dao = new ShiftDAOImpl(c);
 								dao.open();
