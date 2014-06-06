@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -132,13 +131,6 @@ public class ProfileActivity extends FragmentActivity {
 
 	public void saveDetails(View v) {
 		
-		Log.d("INFORMASJON",
-			"Employer Email: " + user.getEmployerEmail() + "-" + employer_email_value.getText().toString() + 
-			" Hourly Wage: " + user.getHourlyWage() + "-" + hourly_wage_value.getText().toString() + 
-			" Due Date: " + user.getScheduleDue() + "-" + dateDue + 
-			"Per Pay: " + user.getPerPay() + "-" + payment_M
-			);
-		
 		if(dateDue == 0) {
 			
 			Toast.makeText(this, "Due date can't be 0", Toast.LENGTH_SHORT).show();
@@ -172,7 +164,7 @@ public class ProfileActivity extends FragmentActivity {
 			} 
 
 		} catch (Exception e) {
-			Toast.makeText(this, "Parse failed,invalid value", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Invalid value", Toast.LENGTH_LONG).show();
 			updatedDetails = false;
 		}
 		
@@ -196,12 +188,7 @@ public class ProfileActivity extends FragmentActivity {
 		}
 
 		if (updatedDetails == true) {
-			Toast.makeText(
-					this,
-					"Updated values are employer email: " + emp_email
-							+ " hourly wage: " + hour_wage, Toast.LENGTH_SHORT).show();
 			showDetails();
-			
 		/**
 		 * Non of the details have been modified
 		 * */
